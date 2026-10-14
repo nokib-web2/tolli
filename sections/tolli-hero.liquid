@@ -1,0 +1,1314 @@
+{%- liquid
+  assign is_first = false
+  if section.index == 1
+    assign is_first = true
+  endif
+
+  assign heading_html = section.settings.heading | escape | replace: '[', '<span class="tolli-hl">' | replace: ']', '</span>' | replace: '|', ' <br class="tolli-hero__br">'
+  assign sticker_html = section.settings.sticker_text | escape | replace: '|', '<br>'
+
+  assign ratio_desktop = 1.544
+  if section.settings.image != blank
+    assign ratio_desktop = section.settings.image.aspect_ratio
+  endif
+  assign ratio_mobile = ratio_desktop
+  if section.settings.mobile_image != blank
+    assign ratio_mobile = section.settings.mobile_image.aspect_ratio
+  endif
+
+  assign heading_tag = section.settings.heading_tag | default: 'h1'
+
+  assign is_split = false
+  assign is_bg = false
+  if section.settings.desktop_layout == 'split' or section.settings.desktop_layout == 'background'
+    assign is_split = true
+  endif
+  if section.settings.desktop_layout == 'background'
+    assign is_bg = true
+  endif
+  assign desktop_sizes = '(min-width: 990px) 100vw, 130vw'
+  if is_split and is_bg == false
+    assign desktop_sizes = '(min-width: 990px) 55vw, 130vw'
+  endif
+-%}
+
+{%- capture hero_actions -%}
+  {%- if section.settings.button_label != blank -%}
+    <div class="tolli-hero__cta">
+      <a class="tolli-btn" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
+        <span>{{ section.settings.button_label | escape }}</span>
+        {% render 'tolli-icon', icon: 'arrow', class: 'tolli-btn__arrow' %}
+      </a>
+    </div>
+  {%- endif -%}
+  {%- if section.blocks.size > 0 -%}
+    <ul class="tolli-hero__points" role="list">
+      {%- for block in section.blocks -%}
+        <li class="tolli-hero__point" {{ block.shopify_attributes }}>
+          <span class="tolli-hero__point-icon" aria-hidden="true">{% render 'tolli-icon', icon: 'check' %}</span>
+          {{- block.settings.text | escape -}}
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .tolli-hero {
+    --hero-text: {{ section.settings.text_color }};
+    --hero-hl: {{ section.settings.highlight_color }};
+    --hero-burst: {{ section.settings.burst_color }};
+    --hero-h-m: {{ section.settings.heading_size_mobile }}px;
+    --hero-h-d: {{ section.settings.heading_size_desktop }}px;
+    --hero-sub-m: {{ section.settings.subheading_size_mobile }}px;
+    --hero-sub-d: {{ section.settings.subheading_size_desktop }}px;
+    --hero-img-w-m: {{ section.settings.mobile_image_width }}%;
+    --hero-zone-m: {{ section.settings.mobile_product_zone }}vw;
+    --hero-ratio-m: {{ ratio_mobile }};
+    --hero-focal-d: {{ section.settings.desktop_focal_x }}% {{ section.settings.desktop_focal_y }}%;
+    --hero-min-h-d: max({{ section.settings.desktop_min_height }}px, calc({{ section.settings.desktop_height }}vh - var(--tolli-announce-h, 0px)));
+    --hero-overlay: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    --hero-top-offset: {% if is_first %}var(--tolli-header-offset, 0px){% else %}0px{% endif %};
+    --hero-cta-overlap: {{ section.settings.cta_overlap }}px;
+    --hero-cta-max: {{ section.settings.cta_max_width }}px;
+    --tolli-btn-bg: {{ section.settings.button_bg }};
+    --tolli-btn-color: {{ section.settings.button_text }};
+    --hero-sticker-bg: {{ section.settings.sticker_bg }};
+    --hero-sticker-color: {{ section.settings.sticker_color }};
+    --hero-sticker-size-m: {{ section.settings.sticker_size_mobile }}px;
+    --hero-sticker-size-d: {{ section.settings.sticker_size_desktop }}px;
+    --hero-sticker-x-m: {{ section.settings.sticker_x_mobile }}%;
+    --hero-sticker-y-m: {{ section.settings.sticker_y_mobile }}%;
+    --hero-sticker-x-d: {{ section.settings.sticker_x_desktop }}%;
+    --hero-sticker-y-d: {{ section.settings.sticker_y_desktop }}%;
+    --hero-sticker-rotate: {{ section.settings.sticker_rotation }}deg;
+    --hero-sun-color: {{ section.settings.sun_color }};
+    --hero-sun-size-m: {{ section.settings.sun_size_mobile }}px;
+    --hero-sun-size-d: {{ section.settings.sun_size_desktop }}px;
+    --hero-sun-x: {{ section.settings.sun_x }}%;
+    --hero-sun-y: {{ section.settings.sun_y }}%;
+    --hero-points-color: {{ section.settings.points_color }};
+    --hero-ratio-d: {{ ratio_desktop }};
+    --hero-card-radius: {{ section.settings.card_radius }}px;
+    --hero-shape: {{ section.settings.shape_color | default: 'transparent' }};
+    --hero-text-fade: {{ section.settings.bg_text_fade | divided_by: 100.0 }};
+    --hero-copy-w: {{ section.settings.bg_copy_width }}%;
+    background: {{ section.settings.section_background }};
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+  }
+  #shopify-section-{{ section.id }} .tolli-hero__stage {
+    background: {{ section.settings.stage_background }};
+  }
+  @media screen and (min-width: 990px) {
+    #shopify-section-{{ section.id }} .tolli-hero--split {
+      background: {{ section.settings.split_background }};
+    }
+    #shopify-section-{{ section.id }} .tolli-hero--split .tolli-hero__stage {
+      background: transparent;
+    }
+    #shopify-section-{{ section.id }} .tolli-hero--bg {
+      background: {{ section.settings.section_background }};
+    }
+  }
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .tolli-hero {
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+  }
+{%- endstyle -%}
+
+<style>
+  .tolli-hero {
+    overflow: hidden;
+  }
+  .tolli-hero__stage {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    padding-top: calc(var(--hero-top-offset) + 0.4rem);
+    padding-bottom: var(--hero-zone-m);
+  }
+
+  /* ---- Media ---- */
+  .tolli-hero__visual {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .tolli-hero__media {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: var(--hero-img-w-m);
+    aspect-ratio: var(--hero-ratio-m);
+    transform: translateX(-50%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 14%);
+  }
+  .tolli-hero__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom;
+  }
+  .tolli-hero__img--desktop-only {
+    display: none;
+  }
+  .tolli-hero__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(255, 253, 247, var(--hero-overlay)) 0%, rgba(255, 253, 247, 0) 55%);
+  }
+
+  /* ---- Copy ---- */
+  .tolli-hero__content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: var(--hero-text);
+  }
+  .tolli-hero__heading {
+    position: relative;
+    display: inline-block;
+    font-size: var(--hero-h-m);
+    line-height: 0.96;
+    color: var(--hero-text);
+    margin: 0;
+  }
+  .tolli-hero__heading .tolli-hl {
+    color: var(--hero-hl);
+  }
+  .tolli-hero__heading .tolli-burst {
+    position: absolute;
+    top: 0.12em;
+    width: 0.66em;
+    height: 0.66em;
+    color: var(--hero-burst);
+  }
+  .tolli-hero__heading .tolli-burst--left {
+    right: 100%;
+    margin-right: 0.08em;
+  }
+  .tolli-hero__heading .tolli-burst--right {
+    left: 100%;
+    margin-left: 0.08em;
+  }
+  .tolli-hero__sub {
+    margin: 0.7rem auto 0;
+    max-width: 60rem;
+    font-family: var(--tolli-font-body);
+    font-size: var(--hero-sub-m);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--hero-text);
+  }
+
+  /* ---- Decorations ---- */
+  .tolli-hero__sticker {
+    position: absolute;
+    z-index: 3;
+    left: var(--hero-sticker-x-m);
+    top: var(--hero-sticker-y-m);
+    transform: translate(-50%, -50%) rotate(var(--hero-sticker-rotate));
+    padding: 0.55em 0.85em 0.6em;
+    border-radius: 52% 48% 46% 54% / 58% 54% 46% 42%;
+    background: var(--hero-sticker-bg);
+    color: var(--hero-sticker-color);
+    font-family: var(--tolli-font-script);
+    font-size: var(--hero-sticker-size-m);
+    line-height: 1.05;
+    text-align: center;
+    white-space: nowrap;
+    box-shadow: 0 0.6rem 1.4rem rgba(0, 0, 0, 0.08);
+    pointer-events: none;
+  }
+  .tolli-hero__sticker .tolli-burst {
+    position: absolute;
+    top: -0.55em;
+    right: -0.45em;
+    width: 0.9em;
+    height: 0.9em;
+    color: var(--hero-burst);
+  }
+  .tolli-hero__sun {
+    position: absolute;
+    z-index: 1;
+    left: var(--hero-sun-x);
+    top: var(--hero-sun-y);
+    width: var(--hero-sun-size-m);
+    height: var(--hero-sun-size-m);
+    color: var(--hero-sun-color);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .tolli-hero__sun svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ---- CTA + points ---- */
+  .tolli-hero__cta {
+    position: relative;
+    z-index: 4;
+    margin-top: calc(-1 * var(--hero-cta-overlap));
+  }
+  .tolli-hero__cta .tolli-btn {
+    max-width: var(--hero-cta-max);
+    margin: 0 auto;
+    display: flex;
+  }
+  .tolli-hero__points {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.2rem 0;
+    margin: 1.4rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--tolli-font-body);
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--hero-points-color);
+  }
+  .tolli-hero__point-icon,
+  .tolli-hero__actions--inline,
+  .tolli-hero__eyebrow {
+    display: none;
+  }
+  .tolli-hero__point + .tolli-hero__point::before {
+    content: '';
+    display: inline-block;
+    width: 0.32em;
+    height: 0.32em;
+    margin: 0 0.75em;
+    border-radius: 50%;
+    background: currentColor;
+    vertical-align: middle;
+    opacity: 0.8;
+  }
+
+  /* ---- Entrance animation ---- */
+  @media (prefers-reduced-motion: no-preference) {
+    .tolli-hero--animate .tolli-hero__content {
+      animation: tolliHeroUp 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+    .tolli-hero--animate .tolli-hero__sticker {
+      animation: tolliHeroPop 0.6s 0.6s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+    }
+    .tolli-hero--animate .tolli-hero__img {
+      animation: tolliHeroZoom 1.4s ease-out both;
+    }
+  }
+  @keyframes tolliHeroUp {
+    from { opacity: 0; transform: translateY(1.6rem); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes tolliHeroPop {
+    from { opacity: 0; transform: translate(-50%, -50%) rotate(var(--hero-sticker-rotate)) scale(0.6); }
+    to { opacity: 1; transform: translate(-50%, -50%) rotate(var(--hero-sticker-rotate)) scale(1); }
+  }
+  @keyframes tolliHeroZoom {
+    from { transform: scale(1.04); }
+    to { transform: none; }
+  }
+
+  /* ---- Tablet: larger type, mobile-style image layout ---- */
+  @media screen and (min-width: 750px) {
+    .tolli-hero__stage {
+      padding-top: calc(var(--hero-top-offset) + 1.2rem);
+    }
+    .tolli-hero__heading {
+      font-size: min(var(--hero-h-d), 8vw);
+    }
+    .tolli-hero__sub {
+      font-size: var(--hero-sub-d);
+      margin-top: 1.2rem;
+    }
+    .tolli-hero__sticker {
+      font-size: var(--hero-sticker-size-d);
+    }
+    .tolli-hero__sun {
+      width: var(--hero-sun-size-d);
+      height: var(--hero-sun-size-d);
+    }
+    .tolli-hero__points {
+      font-size: 1.8rem;
+      margin-top: 1.8rem;
+    }
+  }
+
+  /* ---- Desktop: full-bleed cover image (layout "Full width") ---- */
+  @media screen and (min-width: 990px) {
+    .tolli-hero__img--mobile-only {
+      display: none;
+    }
+    .tolli-hero__img--desktop-only {
+      display: block;
+    }
+    .tolli-hero:not(.tolli-hero--split) .tolli-hero__stage {
+      min-height: var(--hero-min-h-d);
+      padding-bottom: 0;
+    }
+    .tolli-hero:not(.tolli-hero--split) .tolli-hero__media {
+      inset: 0;
+      left: 0;
+      width: 100%;
+      aspect-ratio: auto;
+      transform: none;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+    .tolli-hero:not(.tolli-hero--split) .tolli-hero__img {
+      object-position: var(--hero-focal-d);
+    }
+    .tolli-hero:not(.tolli-hero--split).tolli-hero--single-line-desktop .tolli-hero__br {
+      display: none;
+    }
+    .tolli-hero__sticker {
+      left: var(--hero-sticker-x-d);
+      top: var(--hero-sticker-y-d);
+    }
+  }
+
+  /* ---- Desktop: split layout (copy + framed scene) ---- */
+  @media screen and (min-width: 990px) {
+    .tolli-hero--split {
+      position: relative;
+      padding-bottom: 0;
+    }
+    .tolli-hero--split .tolli-hero__stage {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+      align-items: center;
+      column-gap: clamp(4rem, 5vw, 9rem);
+      max-width: var(--page-width, 140rem);
+      margin: 0 auto;
+      min-height: 0;
+      padding: calc(var(--hero-top-offset) + 2.4rem) var(--tolli-gutter) clamp(5.6rem, 7vw, 9.6rem);
+      background: transparent;
+      overflow: visible;
+    }
+    .tolli-hero--split .tolli-hero__stage::before {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      left: -14rem;
+      top: 18%;
+      width: 52rem;
+      height: 52rem;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 220, 50, 0.3) 0%, rgba(255, 220, 50, 0) 68%);
+      pointer-events: none;
+    }
+    .tolli-hero--split .tolli-hero__actions--below {
+      display: none;
+    }
+
+    /* Copy column */
+    .tolli-hero--split .tolli-hero__content {
+      grid-row: 1;
+      grid-column: 1;
+      padding: 0;
+      text-align: left;
+    }
+    .tolli-hero--split.tolli-hero--image-left .tolli-hero__content {
+      grid-column: 2;
+    }
+    .tolli-hero--split .tolli-hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin: 0 0 2.4rem;
+      padding: 0.7rem 1.6rem;
+      border-radius: 99rem;
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(0, 62, 85, 0.1);
+      box-shadow: 0 0.6rem 1.6rem rgba(0, 62, 85, 0.06);
+      font-family: var(--tolli-font-body);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--hero-text);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+    }
+    .tolli-hero--split .tolli-hero__eyebrow-dot {
+      width: 0.9rem;
+      height: 0.9rem;
+      border-radius: 50%;
+      background: var(--hero-hl);
+      box-shadow: 0 0 0 0.4rem rgba(237, 0, 86, 0.15);
+    }
+    .tolli-hero--split .tolli-hero__heading {
+      font-size: min(var(--hero-h-d), 6vw);
+      line-height: 0.95;
+    }
+    .tolli-hero--split .tolli-hero__heading .tolli-burst--left {
+      display: none;
+    }
+    .tolli-hero--split .tolli-hero__sub {
+      margin: 2rem 0 0;
+      max-width: 48rem;
+      font-size: var(--hero-sub-d);
+      font-weight: 600;
+      line-height: 1.35;
+      opacity: 0.92;
+    }
+    .tolli-hero--split .tolli-hero__actions--inline {
+      display: block;
+      margin-top: 3.6rem;
+    }
+    .tolli-hero--split .tolli-hero__cta {
+      margin: 0;
+    }
+    .tolli-hero--split .tolli-hero__cta .tolli-btn {
+      display: inline-flex;
+      width: auto;
+      min-width: 28rem;
+      max-width: var(--hero-cta-max);
+      min-height: 6rem;
+      padding: 1rem 4rem;
+      margin: 0;
+      border-radius: 1.6rem;
+      font-size: 2rem;
+    }
+    .tolli-hero--split .tolli-hero__points {
+      justify-content: flex-start;
+      gap: 1rem;
+      margin-top: 2.4rem;
+      font-size: 1.5rem;
+      color: var(--hero-text);
+    }
+    .tolli-hero--split .tolli-hero__point {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.7rem 1.6rem 0.7rem 0.8rem;
+      border-radius: 99rem;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 62, 85, 0.08);
+    }
+    .tolli-hero--split .tolli-hero__point + .tolli-hero__point::before {
+      display: none;
+    }
+    .tolli-hero--split .tolli-hero__point-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 50%;
+      background: var(--tolli-mint);
+      color: var(--hero-text);
+    }
+    .tolli-hero--split .tolli-hero__point-icon svg {
+      width: 1.4rem;
+      height: 1.4rem;
+    }
+
+    /* Image column */
+    .tolli-hero--split .tolli-hero__visual {
+      position: relative;
+      inset: auto;
+      grid-row: 1;
+      grid-column: 2;
+      z-index: 1;
+      pointer-events: auto;
+    }
+    .tolli-hero--split.tolli-hero--image-left .tolli-hero__visual {
+      grid-column: 1;
+    }
+    .tolli-hero--split .tolli-hero__visual::before {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      inset: 7% -3.5% -6% 5%;
+      border-radius: var(--hero-card-radius);
+      background: var(--hero-shape);
+      transform: rotate(3deg);
+    }
+    .tolli-hero--split .tolli-hero__media {
+      position: relative;
+      left: auto;
+      bottom: auto;
+      width: 100%;
+      aspect-ratio: var(--hero-ratio-d);
+      transform: none;
+      border-radius: var(--hero-card-radius);
+      overflow: hidden;
+      box-shadow: 0 3.2rem 6.4rem -2.4rem rgba(0, 62, 85, 0.38);
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+    .tolli-hero--split .tolli-hero__img {
+      object-position: center;
+    }
+    .tolli-hero--split .tolli-hero__sticker {
+      left: var(--hero-sticker-x-d);
+      top: var(--hero-sticker-y-d);
+      font-size: var(--hero-sticker-size-d);
+      box-shadow: 0 1.2rem 2.4rem rgba(0, 62, 85, 0.18);
+    }
+    .tolli-hero--split .tolli-hero__sun {
+      z-index: 2;
+    }
+  }
+
+  /* ---- Desktop: background image with copy on top (layout "Background image") ---- */
+  @media screen and (min-width: 990px) {
+    .tolli-hero--bg .tolli-hero__stage {
+      grid-template-columns: minmax(0, var(--hero-copy-w)) minmax(0, 1fr);
+      max-width: none;
+      align-items: center;
+      padding-left: max(var(--tolli-gutter), calc((100% - var(--page-width, 140rem)) / 2 + var(--tolli-gutter)));
+      padding-right: max(var(--tolli-gutter), calc((100% - var(--page-width, 140rem)) / 2 + var(--tolli-gutter)));
+      padding-bottom: clamp(4rem, 5vw, 8rem);
+      overflow: hidden;
+    }
+    .tolli-hero--bg-image .tolli-hero__stage {
+      aspect-ratio: var(--hero-ratio-d);
+    }
+    .tolli-hero--bg-screen .tolli-hero__stage {
+      min-height: var(--hero-min-h-d);
+    }
+    .tolli-hero--bg.tolli-hero--image-left .tolli-hero__stage {
+      grid-template-columns: minmax(0, 1fr) minmax(0, var(--hero-copy-w));
+    }
+    .tolli-hero--bg .tolli-hero__stage::before {
+      display: none;
+    }
+    .tolli-hero--bg .tolli-hero__stage::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(90deg, rgba(255, 253, 247, var(--hero-text-fade)) 0%, rgba(255, 253, 247, calc(var(--hero-text-fade) * 0.6)) 35%, rgba(255, 253, 247, 0) 60%);
+    }
+    .tolli-hero--bg.tolli-hero--image-left .tolli-hero__stage::after {
+      background: linear-gradient(270deg, rgba(255, 253, 247, var(--hero-text-fade)) 0%, rgba(255, 253, 247, calc(var(--hero-text-fade) * 0.6)) 35%, rgba(255, 253, 247, 0) 60%);
+    }
+    .tolli-hero--bg .tolli-hero__content {
+      z-index: 2;
+    }
+    .tolli-hero--bg .tolli-hero__visual {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      grid-row: auto;
+      grid-column: auto;
+      pointer-events: none;
+    }
+    .tolli-hero--bg .tolli-hero__visual::before {
+      display: none;
+    }
+    .tolli-hero--bg.tolli-hero--image-left .tolli-hero__visual {
+      grid-column: auto;
+    }
+    .tolli-hero--bg .tolli-hero__media {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      aspect-ratio: auto;
+      border-radius: 0;
+      box-shadow: none;
+      animation: none !important;
+    }
+    .tolli-hero--bg .tolli-hero__img {
+      object-position: var(--hero-focal-d);
+    }
+  }
+
+  @media screen and (min-width: 990px) and (prefers-reduced-motion: no-preference) {
+    .tolli-hero--split.tolli-hero--animate .tolli-hero__media {
+      animation: tolliHeroFloat 7s ease-in-out 1.2s infinite;
+    }
+  }
+  @keyframes tolliHeroFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-0.8rem); }
+  }
+</style>
+
+<section
+  class="tolli-section tolli-hero{% if is_split %} tolli-hero--split tolli-hero--image-{{ section.settings.image_side }}{% endif %}{% if is_bg %} tolli-hero--bg tolli-hero--bg-{{ section.settings.bg_height }}{% endif %}{% if section.settings.animate %} tolli-hero--animate{% endif %}{% unless section.settings.keep_break_desktop %} tolli-hero--single-line-desktop{% endunless %}"
+  aria-label="{{ section.settings.heading | remove: '[' | remove: ']' | replace: '|', ' ' | escape }}"
+>
+  <div class="tolli-hero__stage">
+    <div class="tolli-hero__visual">
+    <div class="tolli-hero__media">
+      {%- if section.settings.image != blank -%}
+        {%- assign desktop_class = 'tolli-hero__img' -%}
+        {%- if section.settings.mobile_image != blank -%}
+          {%- assign desktop_class = 'tolli-hero__img tolli-hero__img--desktop-only' -%}
+          {{
+            section.settings.mobile_image
+            | image_url: width: 1500
+            | image_tag:
+              class: 'tolli-hero__img tolli-hero__img--mobile-only',
+              widths: '500, 750, 1000, 1250, 1500',
+              sizes: '(min-width: 990px) 1px, 130vw',
+              loading: 'eager',
+              fetchpriority: 'high',
+              alt: section.settings.mobile_image.alt
+          }}
+        {%- endif -%}
+        {{
+          section.settings.image
+          | image_url: width: 3000
+          | image_tag:
+            class: desktop_class,
+            widths: '600, 900, 1200, 1500, 1800, 2200, 2600, 3000',
+            sizes: desktop_sizes,
+            loading: 'eager',
+            fetchpriority: 'high',
+            alt: section.settings.image.alt
+        }}
+      {%- else -%}
+        <img
+          class="tolli-hero__img"
+          src="{{ 'tolli-hero.jpg' | asset_url }}"
+          width="1558"
+          height="1009"
+          alt="Tolli Strawberry Lemonade pouch with a glass of pink lemonade"
+          loading="eager"
+          fetchpriority="high"
+        >
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_sticker and section.settings.sticker_text != blank -%}
+      <span class="tolli-hero__sticker" aria-hidden="true">
+        {{ sticker_html }}
+        <span class="tolli-burst">{% render 'tolli-icon', icon: 'burst-small' %}</span>
+      </span>
+    {%- endif -%}
+    </div>
+
+    {%- if section.settings.overlay_opacity > 0 -%}
+      <div class="tolli-hero__overlay" aria-hidden="true"></div>
+    {%- endif -%}
+
+    {%- if section.settings.show_sun -%}
+      <span class="tolli-hero__sun" aria-hidden="true">{% render 'tolli-icon', icon: 'sun' %}</span>
+    {%- endif -%}
+
+    <div class="tolli-hero__content tolli-container">
+      {%- if is_split and section.settings.eyebrow != blank -%}
+        <p class="tolli-hero__eyebrow"><span class="tolli-hero__eyebrow-dot" aria-hidden="true"></span>{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <{{ heading_tag }} class="tolli-display tolli-hero__heading">
+          {%- if section.settings.show_bursts -%}
+            <span class="tolli-burst tolli-burst--left" aria-hidden="true">{% render 'tolli-icon', icon: 'burst' %}</span>
+          {%- endif -%}
+          {{ heading_html }}
+          {%- if section.settings.show_bursts -%}
+            <span class="tolli-burst tolli-burst--right tolli-burst--mirror" aria-hidden="true">{% render 'tolli-icon', icon: 'burst' %}</span>
+          {%- endif -%}
+        </{{ heading_tag }}>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="tolli-hero__sub">{{ section.settings.subheading | escape }}</p>
+      {%- endif -%}
+      {%- if is_split and hero_actions != blank -%}
+        <div class="tolli-hero__actions tolli-hero__actions--inline">
+          {{ hero_actions }}
+        </div>
+      {%- endif -%}
+    </div>
+
+  </div>
+
+  {%- if hero_actions != blank -%}
+    <div class="tolli-container tolli-hero__actions tolli-hero__actions--below">
+      {{ hero_actions }}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Tolli hero",
+  "tag": "div",
+  "class": "tolli-hero-section",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Place this as the first home page section so the transparent header floats over it."
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Wrap words in [brackets] to highlight them. Use | for a line break.",
+      "default": "Your [feel-good]|daily sip."
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Heading tag (SEO)",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "min": 24,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading size on mobile",
+      "default": 38
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "min": 36,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size on desktop",
+      "default": 72
+    },
+    {
+      "type": "checkbox",
+      "id": "keep_break_desktop",
+      "label": "Keep the line break on desktop",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bursts",
+      "label": "Show accent strokes beside heading",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Refreshing hydration & clear protein."
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_mobile",
+      "min": 12,
+      "max": 26,
+      "step": 1,
+      "unit": "px",
+      "label": "Subheading size on mobile",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_desktop",
+      "min": 14,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "Subheading size on desktop",
+      "default": 24
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text colour",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight colour",
+      "default": "#ED0056"
+    },
+    {
+      "type": "color",
+      "id": "burst_color",
+      "label": "Accent stroke colour",
+      "default": "#ED0056"
+    },
+    {
+      "type": "header",
+      "content": "Desktop layout (990px and wider)"
+    },
+    {
+      "type": "select",
+      "id": "desktop_layout",
+      "label": "Layout",
+      "options": [
+        { "value": "background", "label": "Background image – copy over the image" },
+        { "value": "split", "label": "Split – copy beside a framed image" },
+        { "value": "full", "label": "Full width – centred copy over the image" }
+      ],
+      "default": "background"
+    },
+    {
+      "type": "paragraph",
+      "content": "Background image: use a wide image with the product on the right and empty space on the left for the copy."
+    },
+    {
+      "type": "select",
+      "id": "bg_height",
+      "label": "Height (background image)",
+      "options": [
+        { "value": "screen", "label": "Fill the screen (cover)" },
+        { "value": "image", "label": "Fit image (nothing cropped)" }
+      ],
+      "info": "Fill the screen uses Desktop height and focal point. Fit image shows the whole image and can be taller than the screen.",
+      "default": "screen"
+    },
+    {
+      "type": "range",
+      "id": "bg_copy_width",
+      "min": 30,
+      "max": 70,
+      "step": 1,
+      "unit": "%",
+      "label": "Copy column width (background image)",
+      "default": 46
+    },
+    {
+      "type": "range",
+      "id": "bg_text_fade",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Soft fade behind copy (background image)",
+      "info": "Lightens the side of the image behind the text.",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "image_side",
+      "label": "Image / product side",
+      "options": [
+        { "value": "right", "label": "Right" },
+        { "value": "left", "label": "Left" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Badge above heading (split)",
+      "default": "Launch prices now live"
+    },
+    {
+      "type": "color_background",
+      "id": "split_background",
+      "label": "Background (split)",
+      "default": "linear-gradient(160deg, #E4F5FC 0%, #FFFDF7 52%, #FDECF1 100%)"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Image corner radius (split)",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "shape_color",
+      "label": "Backing card colour (split)",
+      "info": "The tilted shape behind the image. Clear it to hide.",
+      "default": "#CFEFE2"
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Desktop image",
+      "info": "Landscape scene, product at the bottom centre. 2400 × 1550px recommended. The bundled Strawberry Lemonade scene is shown when empty."
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image (optional)",
+      "info": "Falls back to the desktop image."
+    },
+    {
+      "type": "range",
+      "id": "mobile_image_width",
+      "min": 100,
+      "max": 180,
+      "step": 5,
+      "unit": "%",
+      "label": "Mobile & tablet image zoom",
+      "info": "Above 100% crops the sides so the product looks bigger.",
+      "default": 125
+    },
+    {
+      "type": "range",
+      "id": "mobile_product_zone",
+      "min": 20,
+      "max": 100,
+      "step": 1,
+      "unit": "vw",
+      "label": "Mobile & tablet space for the product",
+      "info": "Space kept below the text so the product isn't covered.",
+      "default": 47
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "min": 50,
+      "max": 100,
+      "step": 2,
+      "unit": "vh",
+      "label": "Desktop height (990px and wider)",
+      "info": "100 = the hero fills the screen below the announcement bar.",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "desktop_min_height",
+      "min": 400,
+      "max": 1000,
+      "step": 20,
+      "unit": "px",
+      "label": "Desktop minimum height",
+      "default": 560
+    },
+    {
+      "type": "range",
+      "id": "desktop_focal_x",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Desktop focal point – horizontal",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "desktop_focal_y",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Desktop focal point – vertical",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Top fade for text legibility",
+      "default": 0
+    },
+    {
+      "type": "color_background",
+      "id": "stage_background",
+      "label": "Background behind the image",
+      "info": "Visible above the image on tall mobile screens.",
+      "default": "linear-gradient(90deg, #F8E9DB 0%, #F1F6F6 50%, #E3F0E6 100%)"
+    },
+    {
+      "type": "header",
+      "content": "\"Just add water\" sticker"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sticker",
+      "label": "Show sticker",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sticker_text",
+      "label": "Sticker text",
+      "info": "Use | for a line break.",
+      "default": "Just|add water."
+    },
+    {
+      "type": "color",
+      "id": "sticker_bg",
+      "label": "Sticker background",
+      "default": "#FFDC32"
+    },
+    {
+      "type": "color",
+      "id": "sticker_color",
+      "label": "Sticker text colour",
+      "default": "#003E55"
+    },
+    {
+      "type": "range",
+      "id": "sticker_size_mobile",
+      "min": 10,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Sticker text size on mobile",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "sticker_size_desktop",
+      "min": 14,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Sticker text size on desktop",
+      "default": 26
+    },
+    {
+      "type": "range",
+      "id": "sticker_x_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Mobile position – horizontal",
+      "default": 86
+    },
+    {
+      "type": "range",
+      "id": "sticker_y_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Mobile position – vertical",
+      "default": 74
+    },
+    {
+      "type": "range",
+      "id": "sticker_x_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Desktop position – horizontal",
+      "default": 92
+    },
+    {
+      "type": "range",
+      "id": "sticker_y_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Desktop position – vertical",
+      "default": 74
+    },
+    {
+      "type": "range",
+      "id": "sticker_rotation",
+      "min": -30,
+      "max": 30,
+      "step": 1,
+      "unit": "°",
+      "label": "Sticker rotation",
+      "default": -10
+    },
+    {
+      "type": "header",
+      "content": "Sun decoration"
+    },
+    {
+      "type": "paragraph",
+      "content": "The bundled hero image already includes a sun. Turn this on if your image doesn't."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sun",
+      "label": "Show sun",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "sun_color",
+      "label": "Sun colour",
+      "default": "#FFDC32"
+    },
+    {
+      "type": "range",
+      "id": "sun_size_mobile",
+      "min": 30,
+      "max": 160,
+      "step": 2,
+      "unit": "px",
+      "label": "Sun size on mobile",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "sun_size_desktop",
+      "min": 40,
+      "max": 260,
+      "step": 4,
+      "unit": "px",
+      "label": "Sun size on desktop",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "sun_x",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Sun position – horizontal",
+      "default": 88
+    },
+    {
+      "type": "range",
+      "id": "sun_y",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Sun position – vertical",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop tolli"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "info": "Defaults to all products."
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Button background",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "cta_max_width",
+      "min": 240,
+      "max": 1200,
+      "step": 20,
+      "unit": "px",
+      "label": "Button maximum width",
+      "default": 520
+    },
+    {
+      "type": "range",
+      "id": "cta_overlap",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Button overlap onto image",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Highlights under the button"
+    },
+    {
+      "type": "paragraph",
+      "content": "Add \"Highlight\" blocks (e.g. Zero sugar, Light & fruity)."
+    },
+    {
+      "type": "color",
+      "id": "points_color",
+      "label": "Highlights colour",
+      "default": "#6E7E86"
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "color",
+      "id": "section_background",
+      "label": "Background below the image",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom padding on mobile",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 140,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom padding on desktop",
+      "default": 16
+    },
+    {
+      "type": "checkbox",
+      "id": "animate",
+      "label": "Entrance animation",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "point",
+      "name": "Highlight",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Zero sugar"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli hero",
+      "blocks": [
+        { "type": "point", "settings": { "text": "Zero sugar" } },
+        { "type": "point", "settings": { "text": "Light & fruity" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

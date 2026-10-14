@@ -1,0 +1,56 @@
+{%- comment -%}
+  Shared section background image + wavy top/bottom edges.
+  Place inside a section root that has the class "tolli-has-decor".
+  Reads settings: bg_style ('none' | 'leaves' | 'custom'), bg_image,
+  bg_opacity, bg_position, bg_fixed, wave_top, wave_bottom, wave_color, wave_bottom_color.
+  Usage: {% render 'tolli-section-decor', section: section %}
+{%- endcomment -%}
+{%- style -%}
+  #shopify-section-{{ section.id }} .tolli-has-decor {
+    --decor-opacity: {{ section.settings.bg_opacity | default: 100 | divided_by: 100.0 }};
+    --decor-position: center {{ section.settings.bg_position | default: 'center' }};
+    --decor-wave: {{ section.settings.wave_color | default: '#FFFDF7' }};
+    --decor-wave-bottom: {{ section.settings.wave_bottom_color | default: section.settings.wave_color | default: '#FFFDF7' }};
+  }
+  {%- if section.settings.bg_fixed %}
+    /* Fixed (parallax) background: the layer's clip-path keeps the fixed image inside this section */
+    #shopify-section-{{ section.id }} .tolli-decor__bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      height: 100lvh;
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+  {%- endif %}
+{%- endstyle -%}
+
+{%- liquid
+  assign decor_has_bg = false
+  if section.settings.bg_style == 'scene' or section.settings.bg_style == 'leaves'
+    assign decor_has_bg = true
+  endif
+  if section.settings.bg_style == 'custom' and section.settings.bg_image != blank
+    assign decor_has_bg = true
+  endif
+-%}
+{%- if decor_has_bg -%}
+  <div class="tolli-decor__layer" aria-hidden="true">
+    {%- if section.settings.bg_style == 'custom' -%}
+      {{ section.settings.bg_image | image_url: width: 2400 | image_tag: class: 'tolli-decor__bg', widths: '750, 1100, 1500, 1900, 2400', sizes: '100vw', loading: 'lazy', alt: '' }}
+    {%- elsif section.settings.bg_style == 'scene' -%}
+      <img class="tolli-decor__bg" src="{{ 'tolli-hero.jpg' | asset_url }}" width="1558" height="1009" loading="lazy" alt="">
+    {%- else -%}
+      <img class="tolli-decor__bg" src="{{ 'tolli-bg-leaves.jpg' | asset_url }}" width="2000" height="803" loading="lazy" alt="">
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{%- if section.settings.wave_top -%}
+  <svg class="tolli-wave tolli-wave--top" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 0h1440v22c-180 26-360 34-560 18S480 6 300 14C180 19 80 30 0 38Z"/></svg>
+{%- endif -%}
+{%- if section.settings.wave_bottom -%}
+  <svg class="tolli-wave tolli-wave--bottom" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 0h1440v30c-200 20-420 22-640 6S420 4 240 10C140 13 60 20 0 28Z"/></svg>
+{%- endif -%}

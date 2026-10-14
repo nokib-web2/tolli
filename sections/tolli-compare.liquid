@@ -1,0 +1,447 @@
+{% render 'tolli-section-style', section: section %}
+
+{%- liquid
+  assign others = section.settings.competitor_count | plus: 0
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .tolli-compare {
+    --cmp-cols: {{ others | plus: 1 }};
+    --cmp-us-bg: {{ section.settings.us_bg }};
+    --cmp-us-text: {{ section.settings.us_text }};
+    --cmp-card: {{ section.settings.card_bg }};
+  }
+{%- endstyle -%}
+
+<style>
+  .tolli-compare__table {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) repeat(var(--cmp-cols), minmax(0, 1fr));
+    max-width: 96rem;
+    margin: 0 auto;
+    padding: 0 0.8rem 0.8rem;
+    border-radius: 2.4rem;
+    background: var(--cmp-card);
+    box-shadow: 0 2rem 4rem -2.4rem rgba(0, 62, 85, 0.25);
+  }
+  .tolli-compare__cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 5.6rem;
+    padding: 1rem 0.4rem;
+    border-top: 1px solid rgba(0, 62, 85, 0.08);
+    text-align: center;
+  }
+  .tolli-compare__cell--label {
+    justify-content: flex-start;
+    padding-left: 1rem;
+    text-align: left;
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .tolli-compare__cell--head {
+    min-height: 7.2rem;
+    border-top: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    opacity: 0.8;
+  }
+  .tolli-compare__cell--us {
+    background: var(--cmp-us-bg);
+    color: var(--cmp-us-text);
+    border-top-color: rgba(255, 255, 255, 0.12);
+  }
+  .tolli-compare__cell--us.tolli-compare__cell--head {
+    opacity: 1;
+    border-radius: 1.8rem 1.8rem 0 0;
+    margin-top: -1.2rem;
+    padding-top: 2rem;
+    --tolli-logo-color: var(--cmp-us-text);
+    --tolli-logo-size: 2.6rem;
+  }
+  .tolli-compare__cell--us.tolli-compare__cell--last {
+    border-radius: 0 0 1.8rem 1.8rem;
+    margin-bottom: -1.2rem;
+    padding-bottom: 2rem;
+  }
+  .tolli-compare__mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+  }
+  .tolli-compare__mark svg {
+    width: 1.7rem;
+    height: 1.7rem;
+  }
+  .tolli-compare__mark--yes {
+    background: #d6f1e6;
+    color: #0c7a55;
+  }
+  .tolli-compare__cell--us .tolli-compare__mark--yes {
+    background: var(--tolli-yellow);
+    color: var(--tolli-navy);
+  }
+  .tolli-compare__mark--no {
+    background: var(--tolli-blush);
+    color: var(--tolli-pink);
+  }
+  .tolli-compare__mark--some {
+    background: rgba(0, 62, 85, 0.08);
+    color: rgba(0, 62, 85, 0.6);
+  }
+  .tolli-compare__note {
+    max-width: 96rem;
+    margin: 2.4rem auto 0;
+    font-size: 1.3rem;
+    text-align: center;
+    opacity: 0.7;
+  }
+  .tolli-compare__legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem 1.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 1.2rem;
+  }
+  .tolli-compare__legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .tolli-compare__legend .tolli-compare__mark {
+    width: 2rem;
+    height: 2rem;
+  }
+  .tolli-compare__legend .tolli-compare__mark svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .tolli-compare__table {
+      padding: 0 2rem 2rem;
+    }
+    .tolli-compare__cell {
+      min-height: 6.8rem;
+      padding: 1.2rem 1.2rem;
+    }
+    .tolli-compare__cell--label {
+      padding-left: 2rem;
+      font-size: 1.7rem;
+    }
+    .tolli-compare__cell--head {
+      min-height: 8.8rem;
+      font-size: 1.6rem;
+    }
+    .tolli-compare__cell--us.tolli-compare__cell--head {
+      --tolli-logo-size: 3.6rem;
+    }
+    .tolli-compare__mark {
+      width: 3.8rem;
+      height: 3.8rem;
+    }
+    .tolli-compare__mark svg {
+      width: 2rem;
+      height: 2rem;
+    }
+    .tolli-compare__legend {
+      font-size: 1.4rem;
+    }
+  }
+</style>
+
+{%- capture mark_yes -%}<span class="tolli-compare__mark tolli-compare__mark--yes">{% render 'tolli-icon', icon: 'check' %}</span><span class="visually-hidden">Yes</span>{%- endcapture -%}
+{%- capture mark_no -%}<span class="tolli-compare__mark tolli-compare__mark--no">{% render 'tolli-icon', icon: 'x' %}</span><span class="visually-hidden">No</span>{%- endcapture -%}
+{%- capture mark_some -%}<span class="tolli-compare__mark tolli-compare__mark--some">{% render 'tolli-icon', icon: 'minus' %}</span><span class="visually-hidden">Sometimes</span>{%- endcapture -%}
+
+<div class="tolli-section tolli-compare">
+  <div class="tolli-container">
+    {% render 'tolli-section-head', section: section %}
+
+    <div class="tolli-compare__table" role="table" aria-label="{{ section.settings.title | remove: '[' | remove: ']' | replace: '|', ' ' | escape }}">
+      <div class="tolli-compare__cell tolli-compare__cell--head tolli-compare__cell--label" role="columnheader"><span class="visually-hidden">Feature</span></div>
+      <div class="tolli-compare__cell tolli-compare__cell--head tolli-compare__cell--us" role="columnheader">
+        {%- render 'tolli-logo' -%}
+      </div>
+      <div class="tolli-compare__cell tolli-compare__cell--head" role="columnheader">{{ section.settings.competitor_1 | escape }}</div>
+      {%- if others > 1 -%}
+        <div class="tolli-compare__cell tolli-compare__cell--head" role="columnheader">{{ section.settings.competitor_2 | escape }}</div>
+      {%- endif -%}
+
+      {%- for block in section.blocks -%}
+        <div class="tolli-compare__cell tolli-compare__cell--label" role="rowheader" {{ block.shopify_attributes }}>{{ block.settings.label | escape }}</div>
+        {%- for col in (0..others) -%}
+          {%- liquid
+            case col
+              when 0
+                assign value = block.settings.us
+              when 1
+                assign value = block.settings.competitor_1
+              else
+                assign value = block.settings.competitor_2
+            endcase
+          -%}
+          <div class="tolli-compare__cell{% if col == 0 %} tolli-compare__cell--us{% if forloop.parentloop.last %} tolli-compare__cell--last{% endif %}{% endif %}" role="cell">
+            {%- case value -%}
+              {%- when 'yes' -%}{{ mark_yes }}
+              {%- when 'no' -%}{{ mark_no }}
+              {%- else -%}{{ mark_some }}
+            {%- endcase -%}
+          </div>
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+
+    <div class="tolli-compare__note">
+      <ul class="tolli-compare__legend" role="list">
+        <li>{{ mark_yes }}<span aria-hidden="true">Yes</span></li>
+        <li>{{ mark_some }}<span aria-hidden="true">Sometimes</span></li>
+        <li>{{ mark_no }}<span aria-hidden="true">No</span></li>
+      </ul>
+      {%- if section.settings.footnote != blank -%}
+        <p style="margin: 1rem 0 0;">{{ section.settings.footnote | escape }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Tolli comparison",
+  "tag": "div",
+  "class": "tolli-compare-section",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The tolli difference"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "info": "Wrap words in [brackets] to highlight them. Use | for a line break.",
+      "default": "Why sip [tolli?]"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_burst",
+      "label": "Show accent strokes after title",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Intro text",
+      "default": "See how tolli compares with what's usually in the fridge."
+    },
+    {
+      "type": "header",
+      "content": "Columns"
+    },
+    {
+      "type": "select",
+      "id": "competitor_count",
+      "label": "Number of comparison columns",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "text",
+      "id": "competitor_1",
+      "label": "Column 1 name",
+      "default": "Typical sports drink"
+    },
+    {
+      "type": "text",
+      "id": "competitor_2",
+      "label": "Column 2 name",
+      "default": "Milky protein shake"
+    },
+    {
+      "type": "text",
+      "id": "footnote",
+      "label": "Footnote",
+      "default": "Comparison based on typical products in each category."
+    },
+    {
+      "type": "header",
+      "content": "Colours & spacing"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Table background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "us_bg",
+      "label": "Tolli column background",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "us_text",
+      "label": "Tolli column text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text colour",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight colour",
+      "default": "#ED0056"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 24,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Title size on mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "min": 30,
+      "max": 90,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size on desktop",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding on mobile",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding on mobile",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding on desktop",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding on desktop",
+      "default": 96
+    }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Feature",
+          "default": "Zero sugar"
+        },
+        {
+          "type": "select",
+          "id": "us",
+          "label": "tolli",
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "some", "label": "Sometimes" },
+            { "value": "no", "label": "No" }
+          ],
+          "default": "yes"
+        },
+        {
+          "type": "select",
+          "id": "competitor_1",
+          "label": "Column 1",
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "some", "label": "Sometimes" },
+            { "value": "no", "label": "No" }
+          ],
+          "default": "no"
+        },
+        {
+          "type": "select",
+          "id": "competitor_2",
+          "label": "Column 2",
+          "options": [
+            { "value": "yes", "label": "Yes" },
+            { "value": "some", "label": "Sometimes" },
+            { "value": "no", "label": "No" }
+          ],
+          "default": "no"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli comparison",
+      "blocks": [
+        { "type": "row", "settings": { "label": "Zero sugar", "us": "yes", "competitor_1": "some", "competitor_2": "some" } },
+        { "type": "row", "settings": { "label": "Electrolytes for hydration", "us": "yes", "competitor_1": "yes", "competitor_2": "no" } },
+        { "type": "row", "settings": { "label": "Light & refreshing, not milky", "us": "yes", "competitor_1": "yes", "competitor_2": "no" } },
+        { "type": "row", "settings": { "label": "Plant based & vegan", "us": "yes", "competitor_1": "some", "competitor_2": "some" } },
+        { "type": "row", "settings": { "label": "Easy to carry — just add water", "us": "yes", "competitor_1": "no", "competitor_2": "some" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

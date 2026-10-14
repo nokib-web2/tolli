@@ -1,0 +1,10 @@
+{%- comment -%}
+  Formats a price in cents. With a prefix (e.g. "S$") it prints prefix + amount,
+  otherwise the store's money format.
+  Usage: {% render 'tolli-money', cents: variant.price, prefix: 'S$' %}
+{%- endcomment -%}
+{%- if prefix != blank -%}
+  {{- cents | money_without_currency | prepend: prefix -}}
+{%- else -%}
+  {{- cents | money -}}
+{%- endif -%}

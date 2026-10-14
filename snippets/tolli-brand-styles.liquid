@@ -1,0 +1,332 @@
+{%- comment -%}
+  Tolli brand foundation: Google Fonts, colour tokens and the shared
+  component styles used by every tolli-* section.
+  Rendered once from layout/theme.liquid.
+{%- endcomment -%}
+{%- liquid
+  assign font_display = settings.tolli_font_display | default: 'Lilita One'
+  assign font_body = settings.tolli_font_body | default: 'Nunito Sans'
+  assign font_script = settings.tolli_font_script | default: 'Kaushan Script'
+-%}
+
+{%- if settings.tolli_load_fonts -%}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family={{ font_display | replace: ' ', '+' }}&family={{ font_body | replace: ' ', '+' }}:wght@400;600;700;800;900&family={{ font_script | replace: ' ', '+' }}&display=swap"
+  >
+{%- endif -%}
+
+{% style %}
+  :root {
+    --tolli-navy: {{ settings.tolli_navy | default: '#003E55' }};
+    --tolli-navy-rgb: {{ settings.tolli_navy.red | default: 0 }}, {{ settings.tolli_navy.green | default: 62 }}, {{ settings.tolli_navy.blue | default: 85 }};
+    --tolli-pink: {{ settings.tolli_pink | default: '#ED0056' }};
+    --tolli-cream: {{ settings.tolli_cream | default: '#FFFDF7' }};
+    --tolli-mint: {{ settings.tolli_mint | default: '#E8F7F1' }};
+    --tolli-blush: {{ settings.tolli_blush | default: '#FDECF1' }};
+    --tolli-sky: {{ settings.tolli_sky | default: '#E4F5FC' }};
+    --tolli-yellow: {{ settings.tolli_yellow | default: '#FFDC32' }};
+    --tolli-red: {{ settings.tolli_red | default: '#F52224' }};
+
+    --tolli-font-display: '{{ font_display }}', 'Arial Rounded MT Bold', system-ui, sans-serif;
+    --tolli-font-body: '{{ font_body }}', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --tolli-font-script: '{{ font_script }}', 'Brush Script MT', cursive;
+
+    {%- if settings.tolli_apply_fonts_globally %}
+      --font-heading-family: var(--tolli-font-display);
+      --font-heading-style: normal;
+      --font-heading-weight: 400;
+      --font-body-family: var(--tolli-font-body);
+      --font-body-style: normal;
+      --font-body-weight: 400;
+      --font-body-weight-bold: 800;
+    {%- endif %}
+  }
+
+  /* ---------- Shared Tolli components ---------- */
+  .tolli-section {
+    font-family: var(--tolli-font-body);
+    color: var(--tolli-navy);
+    position: relative;
+  }
+  .tolli-section *,
+  .tolli-section *::before,
+  .tolli-section *::after {
+    box-sizing: border-box;
+  }
+  /* Matches the theme's .page-width so every Tolli section lines up with the header */
+  :root {
+    --tolli-gutter: 1.5rem;
+  }
+  @media screen and (min-width: 750px) {
+    :root {
+      --tolli-gutter: 5rem;
+    }
+  }
+  .tolli-container {
+    width: 100%;
+    max-width: var(--page-width, 140rem);
+    margin: 0 auto;
+    padding-left: var(--tolli-gutter);
+    padding-right: var(--tolli-gutter);
+  }
+
+  .tolli-display {
+    font-family: var(--tolli-font-display);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 0.98;
+    color: var(--tolli-navy);
+    margin: 0;
+  }
+  .tolli-hl {
+    color: var(--tolli-pink);
+  }
+  .tolli-script {
+    font-family: var(--tolli-font-script);
+    font-weight: 400;
+  }
+  .tolli-nowrap {
+    white-space: nowrap;
+  }
+
+  /* Wordmark */
+  .tolli-logo {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--tolli-logo-color, var(--tolli-navy));
+    line-height: 1;
+    text-decoration: none;
+  }
+  .tolli-logo__word {
+    font-family: var(--tolli-font-display);
+    font-weight: 400;
+    font-size: var(--tolli-logo-size, 5.2rem);
+    letter-spacing: -0.02em;
+    line-height: 0.9;
+  }
+  .tolli-logo__i {
+    position: relative;
+    display: inline-block;
+  }
+  .tolli-logo__dot {
+    position: absolute;
+    top: -0.02em;
+    left: 50%;
+    width: 0.27em;
+    height: 0.27em;
+    border-radius: 50%;
+    background: var(--tolli-logo-dot, var(--tolli-pink));
+    transform: translateX(-38%);
+  }
+  .tolli-logo__tagline {
+    margin-top: 0.4rem;
+    font-family: var(--tolli-font-body);
+    font-size: var(--tolli-tagline-size, 1.5rem);
+    font-weight: 600;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  /* Decorative pink "burst" strokes used beside headings */
+  .tolli-burst {
+    display: inline-block;
+    flex: none;
+    width: 0.62em;
+    height: 0.62em;
+    color: var(--tolli-pink);
+    vertical-align: middle;
+    pointer-events: none;
+  }
+  .tolli-burst svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .tolli-burst--mirror svg {
+    transform: scaleX(-1);
+  }
+
+  /* Shared section background image + wavy edges (snippet: tolli-section-decor) */
+  .tolli-has-decor {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    overflow-x: clip;
+    overflow-y: visible;
+  }
+  .tolli-has-decor > .tolli-container {
+    position: relative;
+    z-index: 2;
+  }
+  .tolli-decor__layer {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    clip-path: inset(0);
+    pointer-events: none;
+  }
+  .tolli-decor__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--decor-position, center);
+    opacity: var(--decor-opacity, 1);
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18%, #000 82%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0, #000 18%, #000 82%, transparent 100%);
+  }
+  .tolli-wave {
+    position: absolute;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 2.8rem;
+    color: var(--decor-wave, var(--tolli-cream));
+    pointer-events: none;
+  }
+  .tolli-wave path {
+    fill: currentColor;
+  }
+  /* Waves start 6px inside the neighbouring section so their anti-aliased edge
+     sits over the matching colour, never over a background photo (no hairline seams) */
+  .tolli-wave--top {
+    top: -6px;
+  }
+  .tolli-wave--bottom {
+    bottom: -6px;
+    transform: rotate(180deg);
+    color: var(--decor-wave-bottom, var(--decor-wave, var(--tolli-cream)));
+  }
+  @media screen and (min-width: 750px) {
+    .tolli-wave {
+      height: 5.6rem;
+    }
+  }
+
+  /* Shared section heading */
+  .tolli-head {
+    max-width: 76rem;
+    margin: 0 auto 2.8rem;
+    text-align: center;
+  }
+  .tolli-head--left {
+    margin-left: 0;
+    text-align: left;
+  }
+  .tolli-head__eyebrow {
+    display: inline-block;
+    margin: 0 0 1.2rem;
+    padding: 0.5rem 1.3rem;
+    border-radius: 99rem;
+    background: var(--tolli-eyebrow-bg, rgba(237, 0, 86, 0.09));
+    color: var(--tolli-eyebrow-color, var(--tolli-pink));
+    font-family: var(--tolli-font-body);
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+  .tolli-head__title {
+    font-size: var(--tolli-title-m, 3.4rem);
+    color: var(--tolli-text, var(--tolli-navy));
+  }
+  .tolli-head__title .tolli-hl,
+  .tolli-head__title .tolli-burst {
+    color: var(--tolli-head-hl, var(--tolli-pink));
+  }
+  .tolli-head__title .tolli-burst {
+    width: 0.6em;
+    height: 0.6em;
+    margin-top: -0.1em;
+    margin-left: 0.04em;
+    vertical-align: top;
+  }
+  .tolli-head__text {
+    max-width: 60rem;
+    margin: 1.2rem auto 0;
+    font-size: 1.6rem;
+    line-height: 1.5;
+    opacity: 0.88;
+  }
+  .tolli-head--left .tolli-head__text {
+    margin-left: 0;
+  }
+  .tolli-section--dark {
+    --tolli-eyebrow-bg: rgba(255, 255, 255, 0.12);
+    --tolli-eyebrow-color: var(--tolli-yellow);
+  }
+  @media screen and (min-width: 750px) {
+    .tolli-head {
+      margin-bottom: 4.8rem;
+    }
+    .tolli-head__title {
+      font-size: var(--tolli-title-d, 5.2rem);
+    }
+    .tolli-head__text {
+      font-size: 1.8rem;
+    }
+  }
+
+  /* Primary navy button */
+  .tolli-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+    width: 100%;
+    min-height: 4.6rem;
+    padding: 0.9rem 2.4rem;
+    border: 0;
+    border-radius: var(--tolli-btn-radius, 1.4rem);
+    background: var(--tolli-btn-bg, var(--tolli-navy));
+    color: var(--tolli-btn-color, #fff);
+    font-family: var(--tolli-font-body);
+    font-size: 1.8rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: 0;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 0.6rem 1.6rem rgba(var(--tolli-navy-rgb), 0.16);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tolli-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 1rem 2.2rem rgba(var(--tolli-navy-rgb), 0.24);
+  }
+  .tolli-btn:focus-visible {
+    outline: 3px solid var(--tolli-pink);
+    outline-offset: 3px;
+  }
+  .tolli-btn__arrow {
+    width: 1em;
+    height: 1em;
+    flex: none;
+    transition: transform 0.2s ease;
+  }
+  .tolli-btn:hover .tolli-btn__arrow {
+    transform: translateX(3px);
+  }
+  @media screen and (min-width: 750px) {
+    .tolli-btn {
+      font-size: 2rem;
+      min-height: 5.4rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tolli-btn,
+    .tolli-btn__arrow {
+      transition: none;
+    }
+  }
+{% endstyle %}

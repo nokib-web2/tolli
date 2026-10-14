@@ -1,0 +1,364 @@
+{%- style -%}
+  #shopify-section-{{ section.id }} .tolli-marquee {
+    --mq-bg: {{ section.settings.band_color }};
+    --mq-text: {{ section.settings.text_color }};
+    --mq-icon: {{ section.settings.icon_color }};
+    --mq-speed: {{ section.settings.speed }}s;
+    --mq-tilt: {{ section.settings.tilt }}deg;
+    --mq-size-m: {{ section.settings.text_size_mobile }}px;
+    --mq-size-d: {{ section.settings.text_size_desktop }}px;
+    background: {{ section.settings.background }};
+    padding-top: {{ section.settings.padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+  }
+  #shopify-section-{{ section.id }} {
+    position: relative;
+    z-index: 3;
+  }
+  {%- if section.settings.transparent_bg %}
+    #shopify-section-{{ section.id }} .tolli-marquee {
+      background: transparent;
+      overflow: visible;
+    }
+  {%- endif %}
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .tolli-marquee {
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+      margin: calc(-1 * {{ section.settings.overlap_desktop }}px) 0;
+    }
+  }
+{%- endstyle -%}
+
+<style>
+  .tolli-marquee {
+    overflow: hidden;
+  }
+  .tolli-marquee__band {
+    width: 104%;
+    margin-left: -2%;
+    padding: 1.2rem 0;
+    background: var(--mq-bg);
+    color: var(--mq-text);
+    transform: rotate(var(--mq-tilt));
+    overflow: hidden;
+  }
+  .tolli-marquee__track {
+    display: flex;
+    width: max-content;
+    animation: tolliMarquee var(--mq-speed) linear infinite;
+  }
+  .tolli-marquee:hover .tolli-marquee__track {
+    animation-play-state: paused;
+  }
+  .tolli-marquee--reverse .tolli-marquee__track {
+    animation-direction: reverse;
+  }
+  .tolli-marquee__list {
+    display: flex;
+    flex: none;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tolli-marquee__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.6rem;
+    padding-right: 1.6rem;
+    font-family: var(--tolli-font-display);
+    font-size: var(--mq-size-m);
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .tolli-marquee--uppercase .tolli-marquee__item {
+    text-transform: uppercase;
+  }
+  .tolli-marquee__icon {
+    display: inline-flex;
+    width: 1em;
+    height: 1em;
+    color: var(--mq-icon);
+  }
+  .tolli-marquee__icon svg {
+    width: 100%;
+    height: 100%;
+  }
+  @keyframes tolliMarquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tolli-marquee__track {
+      animation: none;
+      width: auto;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .tolli-marquee__list[aria-hidden='true'] {
+      display: none;
+    }
+    .tolli-marquee__list {
+      flex-wrap: wrap;
+      justify-content: center;
+      row-gap: 0.8rem;
+    }
+  }
+  @media screen and (min-width: 750px) {
+    .tolli-marquee__band {
+      padding: 1.6rem 0;
+    }
+    .tolli-marquee__item {
+      gap: 2.4rem;
+      padding-right: 2.4rem;
+      font-size: var(--mq-size-d);
+    }
+  }
+</style>
+
+{%- capture marquee_items -%}
+  {%- for block in section.blocks -%}
+    <li class="tolli-marquee__item" {{ block.shopify_attributes }}>
+      <span>{{ block.settings.text | escape }}</span>
+      <span class="tolli-marquee__icon" aria-hidden="true">{% render 'tolli-icon', icon: section.settings.separator %}</span>
+    </li>
+  {%- endfor -%}
+{%- endcapture -%}
+
+<div class="tolli-marquee{% if section.settings.reverse %} tolli-marquee--reverse{% endif %}{% if section.settings.uppercase %} tolli-marquee--uppercase{% endif %}">
+  <div class="tolli-marquee__band">
+    <div class="tolli-marquee__track">
+      {%- for i in (1..4) -%}
+        <ul class="tolli-marquee__list" role="list"{% unless forloop.first %} aria-hidden="true"{% endunless %}>
+          {{ marquee_items }}
+        </ul>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Tolli benefits ticker",
+  "tag": "div",
+  "class": "tolli-marquee-section",
+  "max_blocks": 10,
+  "settings": [
+    {
+      "type": "select",
+      "id": "separator",
+      "label": "Separator icon",
+      "options": [
+        {
+          "value": "sun",
+          "label": "Sun"
+        },
+        {
+          "value": "sparkle",
+          "label": "Sparkle"
+        },
+        {
+          "value": "drop",
+          "label": "Drop"
+        },
+        {
+          "value": "star",
+          "label": "Star"
+        }
+      ],
+      "default": "sun"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 10,
+      "max": 80,
+      "step": 2,
+      "unit": "s",
+      "label": "Scroll duration",
+      "info": "Higher is slower.",
+      "default": 36
+    },
+    {
+      "type": "checkbox",
+      "id": "reverse",
+      "label": "Scroll left to right",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "tilt",
+      "min": -4,
+      "max": 4,
+      "step": 0.5,
+      "unit": "°",
+      "label": "Tilt",
+      "default": -1.5
+    },
+    {
+      "type": "checkbox",
+      "id": "uppercase",
+      "label": "Uppercase text",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "text_size_mobile",
+      "min": 14,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size on mobile",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "text_size_desktop",
+      "min": 16,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "label": "Text size on desktop",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Colours & spacing"
+    },
+    {
+      "type": "color",
+      "id": "band_color",
+      "label": "Band colour",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text colour",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon colour",
+      "default": "#FFDC32"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Section background",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_bg",
+      "label": "Transparent background",
+      "info": "Lets the band float over the sections above and below.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "overlap_desktop",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Overlap neighbours on desktop",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Top padding on mobile",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom padding on mobile",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 140,
+      "step": 2,
+      "unit": "px",
+      "label": "Top padding on desktop",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 140,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom padding on desktop",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Benefit",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Zero sugar"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli benefits ticker",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "text": "Zero sugar"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "5 electrolytes + 3 vitamins"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "22g clear protein"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "Plant based & vegan"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "Just add water"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

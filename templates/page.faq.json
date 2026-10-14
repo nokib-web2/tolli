@@ -1,0 +1,162 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "tolli_faq_page": {
+      "type": "tolli-faq-page",
+      "blocks": {
+        "q_drinks_1": {
+          "type": "question",
+          "settings": {
+            "category": "drinks",
+            "question": "What is tolli Daily Hydration?",
+            "answer": "<p>A strawberry lemonade drink mix with 5 electrolytes and 3 vitamins.</p>",
+            "open_by_default": true
+          }
+        },
+        "q_drinks_2": {
+          "type": "question",
+          "settings": {
+            "category": "drinks",
+            "question": "What is tolli Clear Protein?",
+            "answer": "<p>Refreshing raspberry lemonade protein water with 22g protein per serving.</p>",
+            "open_by_default": true
+          }
+        },
+        "q_drinks_3": {
+          "type": "question",
+          "settings": {
+            "category": "drinks",
+            "question": "Are both drinks zero sugar?",
+            "answer": "<p>Yes! Both tolli Daily Hydration and tolli Clear Protein are completely zero sugar, giving you all the vibrant, refreshing flavour without the sugar crash.</p>",
+            "open_by_default": false
+          }
+        },
+        "q_drinks_4": {
+          "type": "question",
+          "settings": {
+            "category": "drinks",
+            "question": "How does vitamin C support immunity?",
+            "answer": "<p>Vitamin C is a powerful antioxidant that supports normal immune function, helps protect cells against oxidative stress, and aids in daily energy metabolism.</p>",
+            "open_by_default": false
+          }
+        },
+        "q_drinks_5": {
+          "type": "question",
+          "settings": {
+            "category": "drinks",
+            "question": "Are the drinks vegan?",
+            "answer": "<p>Yes. Both tolli Daily Hydration and tolli Clear Protein are 100% plant-based and vegan.</p>",
+            "open_by_default": false
+          }
+        },
+        "q_drinks_6": {
+          "type": "question",
+          "settings": {
+            "category": "drinks",
+            "question": "How many servings are in each pouch?",
+            "answer": "<p>tolli Daily Hydration contains 15 servings per pouch (S$1.66 per serving), while tolli Clear Protein contains 10 servings per pouch (S$2.49 per serving).</p>",
+            "open_by_default": false
+          }
+        },
+        "q_mix_1": {
+          "type": "question",
+          "settings": {
+            "category": "mix",
+            "question": "How do I make it?",
+            "answer": "<p>Mix a serving with cold water. Follow the directions on your pouch.</p>",
+            "open_by_default": true
+          }
+        },
+        "q_mix_2": {
+          "type": "question",
+          "settings": {
+            "category": "mix",
+            "question": "How much water should I use?",
+            "answer": "<p>We recommend mixing one serving with 350ml to 500ml of cold water. Adjust to your personal taste: less water for a stronger, fruit-forward taste, or more water for a lighter, extra-refreshing sip. Add ice if you like!</p>",
+            "open_by_default": false
+          }
+        },
+        "q_mix_3": {
+          "type": "question",
+          "settings": {
+            "category": "mix",
+            "question": "When can I enjoy tolli?",
+            "answer": "<p>Daily Hydration is perfect throughout the day: during busy work hours, hot sunny afternoons, or after a workout. Clear Protein is ideal post-exercise or as a refreshing, light protein boost between meals.</p>",
+            "open_by_default": false
+          }
+        },
+        "q_orders_1": {
+          "type": "question",
+          "settings": {
+            "category": "orders",
+            "question": "Where do you deliver?",
+            "answer": "<p>Delivery options are shown at checkout.</p>",
+            "open_by_default": true
+          }
+        },
+        "q_orders_2": {
+          "type": "question",
+          "settings": {
+            "category": "orders",
+            "question": "How can I get help with my order?",
+            "answer": "<p>Our team is always happy to help! Reach out through our Contact Us page or email us anytime at hello@drinktolli.com.</p>",
+            "open_by_default": false
+          }
+        }
+      },
+      "block_order": [
+        "q_drinks_1",
+        "q_drinks_2",
+        "q_drinks_3",
+        "q_drinks_4",
+        "q_drinks_5",
+        "q_drinks_6",
+        "q_mix_1",
+        "q_mix_2",
+        "q_mix_3",
+        "q_orders_1",
+        "q_orders_2"
+      ],
+      "settings": {
+        "eyebrow": "HERE TO HELP",
+        "title_line_1": "Good questions.",
+        "title_line_2": "Fresh answers.",
+        "subtitle": "Get to know your feel-good sips.",
+        "cat_1_title": "The drinks",
+        "cat_2_title": "Mix & sip",
+        "cat_3_title": "Orders & delivery",
+        "contact_title": "Still curious?",
+        "contact_text": "We're here to help.",
+        "contact_button_label": "Contact us",
+        "contact_button_link": "shopify://pages/contact",
+        "show_product_cards": true,
+        "card_1_eyebrow": "Daily Hydration",
+        "card_1_title": "Strawberry Lemonade",
+        "card_1_specs": "5 electrolytes + 3 vitamins\n15 servings",
+        "card_1_btn": "Shop hydration",
+        "card_1_link": "shopify://products/tolli-hydration-strawberry-lemonade",
+        "card_2_eyebrow": "Clear Protein",
+        "card_2_title": "Raspberry Lemonade",
+        "card_2_specs": "22g protein\n10 servings",
+        "card_2_btn": "Shop clear protein",
+        "card_2_link": "shopify://products/tolli-clear-protein-raspberry-lemonade",
+        "background": "#FFFDF7",
+        "padding_top_mobile": 24,
+        "padding_bottom_mobile": 48,
+        "padding_top_desktop": 48,
+        "padding_bottom_desktop": 80
+      }
+    }
+  },
+  "order": [
+    "tolli_faq_page"
+  ]
+}

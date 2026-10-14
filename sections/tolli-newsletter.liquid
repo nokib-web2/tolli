@@ -1,0 +1,513 @@
+{% render 'tolli-section-style', section: section %}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .tolli-news {
+    --news-card: {{ section.settings.card_bg }};
+    --news-card-text: {{ section.settings.card_text }};
+    --news-accent: {{ section.settings.accent_color }};
+    --tolli-btn-bg: {{ section.settings.button_bg }};
+    --tolli-btn-color: {{ section.settings.button_text }};
+  }
+{%- endstyle -%}
+
+<style>
+  .tolli-news__card {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    display: grid;
+    gap: 2.4rem;
+    padding: 3.6rem 2rem;
+    border-radius: 1.6rem;
+    background: var(--news-card);
+    color: var(--news-card-text);
+    text-align: center;
+    --tolli-text: var(--news-card-text);
+    --tolli-head-hl: var(--news-accent);
+    --tolli-eyebrow-bg: rgba(255, 255, 255, 0.12);
+    --tolli-eyebrow-color: var(--news-accent);
+  }
+  .tolli-news__card .tolli-head {
+    margin-bottom: 0;
+  }
+  .tolli-news__sun {
+    position: absolute;
+    z-index: -1;
+    top: -4.8rem;
+    right: -4.8rem;
+    width: 11rem;
+    height: 11rem;
+    color: var(--news-accent);
+    opacity: 0.85;
+    animation: tolliSpin 40s linear infinite;
+  }
+  .tolli-news__sun svg {
+    width: 100%;
+    height: 100%;
+  }
+  .tolli-news__blob {
+    position: absolute;
+    z-index: -1;
+    left: -6rem;
+    bottom: -8rem;
+    width: 22rem;
+    height: 22rem;
+    border-radius: 50%;
+    background: rgba(237, 0, 86, 0.35);
+    filter: blur(40px);
+  }
+  @keyframes tolliSpin {
+    to { transform: rotate(360deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tolli-news__sun {
+      animation: none;
+    }
+  }
+  .tolli-news__form {
+    width: 100%;
+    max-width: 52rem;
+    margin: 0 auto;
+  }
+  .tolli-news__field {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .tolli-news__input-wrap {
+    position: relative;
+    flex: 1;
+  }
+  .tolli-news__input-wrap svg {
+    position: absolute;
+    top: 50%;
+    left: 1.6rem;
+    width: 2rem;
+    height: 2rem;
+    transform: translateY(-50%);
+    color: var(--tolli-navy);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .tolli-news__input {
+    width: 100%;
+    min-height: 5.2rem;
+    padding: 0 1.6rem 0 4.6rem;
+    border: 2px solid transparent;
+    border-radius: 1rem;
+    background: #fff;
+    color: var(--tolli-navy);
+    font-family: var(--tolli-font-body);
+    font-size: 1.6rem;
+  }
+  .tolli-news__input:focus {
+    outline: none;
+    border-color: var(--news-accent);
+  }
+  .tolli-news__form .tolli-btn {
+    min-height: 5.2rem;
+    border-radius: 1rem;
+    white-space: nowrap;
+  }
+  .tolli-news__note {
+    margin: 1.2rem 0 0;
+    font-size: 1.2rem;
+    opacity: 0.7;
+  }
+  .tolli-news__msg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    margin: 0 0 1.2rem;
+    padding: 1rem 1.4rem;
+    border-radius: 1.2rem;
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+  .tolli-news__msg--success {
+    background: rgba(232, 247, 241, 0.15);
+  }
+  .tolli-news__msg--error {
+    background: rgba(237, 0, 86, 0.2);
+  }
+  .tolli-news__msg svg {
+    width: 2rem;
+    height: 2rem;
+    color: var(--news-accent);
+  }
+
+  @media screen and (min-width: 750px) {
+    .tolli-news__card {
+      padding: 5.6rem 4.8rem;
+    }
+    .tolli-news__field {
+      flex-direction: row;
+    }
+    .tolli-news__form .tolli-btn {
+      width: auto;
+      padding: 0 3.2rem;
+    }
+    .tolli-news__sun {
+      width: 17rem;
+      height: 17rem;
+      top: -7.2rem;
+      right: -6.4rem;
+    }
+  }
+  @media screen and (min-width: 990px) {
+    .tolli-news__card {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+      gap: 6.4rem;
+      padding: 6.4rem;
+      text-align: left;
+    }
+    .tolli-news__card .tolli-head {
+      margin-left: 0;
+      text-align: left;
+    }
+    .tolli-news__card .tolli-head__text {
+      margin-left: 0;
+    }
+    .tolli-news__form {
+      margin: 0;
+    }
+    .tolli-news__msg {
+      justify-content: flex-start;
+    }
+  }
+</style>
+
+<div class="tolli-section tolli-has-decor tolli-news">
+  {% render 'tolli-section-decor', section: section %}
+  <div class="tolli-container">
+    <div class="tolli-news__card">
+      <span class="tolli-news__sun" aria-hidden="true">{% render 'tolli-icon', icon: 'sun' %}</span>
+      <span class="tolli-news__blob" aria-hidden="true"></span>
+
+      {% render 'tolli-section-head', section: section %}
+
+      <div class="tolli-news__form">
+        {%- assign news_form_id = 'TolliNewsletter-' | append: section.id -%}
+        {%- form 'customer', id: news_form_id -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          {%- if form.posted_successfully? -%}
+            <p class="tolli-news__msg tolli-news__msg--success" role="status" tabindex="-1" autofocus>
+              {% render 'tolli-icon', icon: 'check' %}
+              {{ section.settings.success_message | escape }}
+            </p>
+          {%- elsif form.errors -%}
+            <p class="tolli-news__msg tolli-news__msg--error" role="alert">
+              {{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}
+            </p>
+          {%- endif -%}
+          <div class="tolli-news__field">
+            <label class="tolli-news__input-wrap">
+              <span class="visually-hidden">{{ section.settings.placeholder | escape }}</span>
+              {% render 'tolli-icon', icon: 'mail' %}
+              <input
+                class="tolli-news__input"
+                type="email"
+                name="contact[email]"
+                value="{{ form.email }}"
+                placeholder="{{ section.settings.placeholder | escape }}"
+                autocomplete="email"
+                autocorrect="off"
+                autocapitalize="off"
+                required
+              >
+            </label>
+            <button type="submit" class="tolli-btn">
+              <span>{{ section.settings.button_label | escape }}</span>
+              {% render 'tolli-icon', icon: 'arrow', class: 'tolli-btn__arrow' %}
+            </button>
+          </div>
+          {%- if section.settings.note != blank -%}
+            <p class="tolli-news__note">{{ section.settings.note | escape }}</p>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Tolli newsletter",
+  "tag": "div",
+  "class": "tolli-newsletter-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Subscribers are added to Customers with the tag \"newsletter\" and email marketing consent."
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Stay in the loop"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "info": "Wrap words in [brackets] to highlight them. Use | for a line break.",
+      "default": "Join the [tolli club.]"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_burst",
+      "label": "Show accent strokes after title",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Be first to hear about new flavours, launch offers and good-vibe drops."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Email placeholder",
+      "default": "Your email address"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Join"
+    },
+    {
+      "type": "text",
+      "id": "note",
+      "label": "Small print",
+      "default": "No spam, just good sips. Unsubscribe any time."
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "You're in! Thanks for joining the tolli club."
+    },
+    {
+      "type": "header",
+      "content": "Colours & spacing"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "card_text",
+      "label": "Card text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent (highlight, sun)",
+      "default": "#FFDC32"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Button background",
+      "default": "#ED0056"
+    },
+    {
+      "type": "color",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Section background",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text colour",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight colour",
+      "default": "#FFDC32"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 24,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Title size on mobile",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "min": 30,
+      "max": 90,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size on desktop",
+      "default": 52
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding on mobile",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding on mobile",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding on desktop",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding on desktop",
+      "default": 72
+    },
+    {
+      "type": "header",
+      "content": "Background & edges"
+    },
+    {
+      "type": "select",
+      "id": "bg_style",
+      "label": "Background image",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "leaves",
+          "label": "Sunny leaves (built-in)"
+        },
+        {
+          "value": "scene",
+          "label": "Lemonade scene (built-in)"
+        },
+        {
+          "value": "custom",
+          "label": "Custom image"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Custom background image"
+    },
+    {
+      "type": "range",
+      "id": "bg_opacity",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Background image opacity",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "bg_position",
+      "label": "Background image position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "bg_fixed",
+      "label": "Fixed background while scrolling",
+      "info": "Parallax effect: the image stays still and the page scrolls over it.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "wave_top",
+      "label": "Wavy top edge",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "wave_bottom",
+      "label": "Wavy bottom edge",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "wave_color",
+      "label": "Top wave colour",
+      "info": "Match the background of the section above.",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "color",
+      "id": "wave_bottom_color",
+      "label": "Bottom wave colour",
+      "info": "Match the background of the section below.",
+      "default": "#FFFDF7"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli newsletter"
+    }
+  ]
+}
+{% endschema %}

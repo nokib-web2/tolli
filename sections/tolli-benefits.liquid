@@ -1,0 +1,556 @@
+{% render 'tolli-section-style', section: section %}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .tolli-benefits {
+    --tolli-btn-bg: {{ section.settings.button_bg }};
+    --tolli-btn-color: {{ section.settings.button_text }};
+  }
+{%- endstyle -%}
+
+<style>
+  .tolli-benefits {
+    position: relative;
+  }
+  .tolli-benefits__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tolli-benefit {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.6rem 1.4rem 1.8rem;
+    border-radius: 1.2rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+  .tolli-benefit:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .tolli-benefit__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.8rem;
+    height: 4.8rem;
+    border-radius: 1rem;
+    background: #fff;
+    box-shadow: 0 0 0 3px var(--benefit-color);
+    color: var(--tolli-navy);
+    transform: rotate(-6deg);
+  }
+  .tolli-benefit:nth-child(even) .tolli-benefit__icon {
+    transform: rotate(6deg);
+  }
+  .tolli-benefit__icon svg,
+  .tolli-benefit__icon img {
+    width: 2.8rem;
+    height: 2.8rem;
+    object-fit: contain;
+  }
+  .tolli-benefit__stat {
+    display: block;
+    font-family: var(--tolli-font-display);
+    font-size: 3.2rem;
+    line-height: 1;
+    color: var(--benefit-color);
+  }
+  .tolli-benefit__title {
+    margin: 0;
+    color: inherit;
+    font-family: var(--tolli-font-display);
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1.1;
+  }
+  .tolli-benefit__text {
+    margin: 0;
+    font-size: 1.4rem;
+    line-height: 1.45;
+    opacity: 0.82;
+  }
+  .tolli-benefits__action {
+    margin-top: 3.2rem;
+    text-align: center;
+  }
+  .tolli-benefits .tolli-btn {
+    width: auto;
+    padding: 0.9rem 3.2rem;
+  }
+
+  @media screen and (max-width: 379px) {
+    .tolli-benefits__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media screen and (min-width: 750px) {
+    .tolli-benefits__grid {
+      gap: 2rem;
+    }
+    .tolli-benefit {
+      padding: 2.8rem 2.4rem 3.2rem;
+      gap: 1.4rem;
+    }
+    .tolli-benefit__icon {
+      width: 6.4rem;
+      height: 6.4rem;
+      border-radius: 1.2rem;
+    }
+    .tolli-benefit__icon svg,
+    .tolli-benefit__icon img {
+      width: 3.8rem;
+      height: 3.8rem;
+    }
+    .tolli-benefit__stat {
+      font-size: 4.4rem;
+    }
+    .tolli-benefit__title {
+      font-size: 2.4rem;
+    }
+    .tolli-benefit__text {
+      font-size: 1.6rem;
+    }
+    .tolli-benefits__action {
+      margin-top: 4.8rem;
+    }
+  }
+  @media screen and (min-width: 990px) {
+    .tolli-benefits__grid {
+      grid-template-columns: repeat({{ section.settings.columns_desktop }}, minmax(0, 1fr));
+    }
+  }
+</style>
+
+<div class="tolli-section tolli-has-decor tolli-section--dark tolli-benefits">
+  {% render 'tolli-section-decor', section: section %}
+
+  <div class="tolli-container">
+    {% render 'tolli-section-head', section: section %}
+
+    <ul class="tolli-benefits__grid" role="list">
+      {%- for block in section.blocks -%}
+        <li class="tolli-benefit" style="--benefit-color: {{ block.settings.color }};" {{ block.shopify_attributes }}>
+          <span class="tolli-benefit__icon" aria-hidden="true">
+            {%- if block.settings.icon_image != blank -%}
+              {{ block.settings.icon_image | image_url: width: 160 | image_tag: width: 80, height: 80, loading: 'lazy', alt: '' }}
+            {%- else -%}
+              {% render 'tolli-icon', icon: block.settings.icon %}
+            {%- endif -%}
+          </span>
+          {%- if block.settings.stat != blank -%}
+            <span class="tolli-benefit__stat">{{ block.settings.stat | escape }}</span>
+          {%- endif -%}
+          <h3 class="tolli-benefit__title">{{ block.settings.title | escape }}</h3>
+          {%- if block.settings.text != blank -%}
+            <p class="tolli-benefit__text">{{ block.settings.text | escape }}</p>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+
+    {%- if section.settings.button_label != blank -%}
+      <div class="tolli-benefits__action">
+        <a class="tolli-btn" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
+          <span>{{ section.settings.button_label | escape }}</span>
+          {% render 'tolli-icon', icon: 'arrow', class: 'tolli-btn__arrow' %}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Tolli why tolli",
+  "tag": "div",
+  "class": "tolli-benefits-section",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Why tolli"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "info": "Wrap words in [brackets] to highlight them. Use | for a line break.",
+      "default": "Good for you.|[Great to sip.]"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_burst",
+      "label": "Show accent strokes after title",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Intro text",
+      "default": "Everything you want from a daily drink, nothing you don't. Light, fruity and made to fit your day."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Columns on desktop",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Find your flavour"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Button background",
+      "default": "#FFDC32"
+    },
+    {
+      "type": "color",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "#003E55"
+    },
+    {
+      "type": "header",
+      "content": "Colours & spacing"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text colour",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight colour",
+      "default": "#FFDC32"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 24,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Title size on mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "min": 30,
+      "max": 90,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size on desktop",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding on mobile",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding on mobile",
+      "default": 72
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding on desktop",
+      "default": 128
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding on desktop",
+      "default": 128
+    },
+    {
+      "type": "header",
+      "content": "Background & edges"
+    },
+    {
+      "type": "select",
+      "id": "bg_style",
+      "label": "Background image",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "leaves",
+          "label": "Sunny leaves (built-in)"
+        },
+        {
+          "value": "scene",
+          "label": "Lemonade scene (built-in)"
+        },
+        {
+          "value": "custom",
+          "label": "Custom image"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Custom background image"
+    },
+    {
+      "type": "range",
+      "id": "bg_opacity",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Background image opacity",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "bg_position",
+      "label": "Background image position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "bg_fixed",
+      "label": "Fixed background while scrolling",
+      "info": "Parallax effect: the image stays still and the page scrolls over it.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "wave_top",
+      "label": "Wavy top edge",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "wave_bottom",
+      "label": "Wavy bottom edge",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "wave_color",
+      "label": "Top wave colour",
+      "info": "Match the background of the section above.",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "color",
+      "id": "wave_bottom_color",
+      "label": "Bottom wave colour",
+      "info": "Match the background of the section below.",
+      "default": "#FFFDF7"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "zero-sugar",
+              "label": "Zero sugar"
+            },
+            {
+              "value": "drop",
+              "label": "Drop"
+            },
+            {
+              "value": "protein",
+              "label": "Energy bolt"
+            },
+            {
+              "value": "plant",
+              "label": "Leaf"
+            },
+            {
+              "value": "heart",
+              "label": "Heart"
+            },
+            {
+              "value": "sparkle",
+              "label": "Sparkle"
+            },
+            {
+              "value": "sun",
+              "label": "Sun"
+            },
+            {
+              "value": "glass",
+              "label": "Glass"
+            },
+            {
+              "value": "shield",
+              "label": "Shield"
+            },
+            {
+              "value": "smile",
+              "label": "Smile"
+            }
+          ],
+          "default": "zero-sugar"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Custom icon (optional)",
+          "info": "Upload a colourful PNG or SVG icon to replace the built-in one."
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Accent colour",
+          "default": "#FFDC32"
+        },
+        {
+          "type": "text",
+          "id": "stat",
+          "label": "Big number (optional)",
+          "info": "E.g. 0g, 22g, 5."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Zero sugar"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli why tolli",
+      "blocks": [
+        {
+          "type": "benefit",
+          "settings": {
+            "icon": "zero-sugar",
+            "color": "#FFDC32",
+            "stat": "0g",
+            "title": "Zero sugar",
+            "text": "All the flavour, none of the sugar."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon": "drop",
+            "color": "#E4F5FC",
+            "stat": "5+3",
+            "title": "Electrolytes & vitamins",
+            "text": "5 electrolytes and 3 vitamins in every hydration serving."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon": "protein",
+            "color": "#FDECF1",
+            "stat": "22g",
+            "title": "Clear protein",
+            "text": "Refreshing protein water — light, not milky."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon": "plant",
+            "color": "#E8F7F1",
+            "stat": "Vegan",
+            "title": "Plant based",
+            "text": "Both ranges are plant based and vegan."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

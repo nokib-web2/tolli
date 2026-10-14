@@ -1,0 +1,541 @@
+{% render 'tolli-section-style', section: section %}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .tolli-faq {
+    --faq-item: {{ section.settings.item_bg }};
+    --faq-open: {{ section.settings.item_open_bg }};
+    --faq-card: {{ section.settings.contact_bg }};
+    --tolli-btn-bg: {{ section.settings.button_bg }};
+    --tolli-btn-color: {{ section.settings.button_text }};
+  }
+{%- endstyle -%}
+
+<style>
+  .tolli-faq__layout {
+    display: grid;
+    gap: 2.4rem;
+  }
+  .tolli-faq__aside .tolli-head {
+    margin-bottom: 2rem;
+  }
+  .tolli-faq__contact {
+    display: none;
+  }
+  .tolli-faq__list {
+    display: grid;
+    gap: 1rem;
+  }
+  .tolli-faq__item {
+    border-radius: 1.2rem;
+    background: var(--faq-item);
+    border: 1px solid rgba(0, 62, 85, 0.08);
+    transition: background-color 0.25s ease;
+  }
+  .tolli-faq__item[open] {
+    background: var(--faq-open);
+  }
+  .tolli-faq__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.6rem;
+    padding: 1.6rem 1.6rem 1.6rem 2rem;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 800;
+    font-size: 1.6rem;
+    line-height: 1.35;
+  }
+  .tolli-faq__q::-webkit-details-marker {
+    display: none;
+  }
+  .tolli-faq__q:focus-visible {
+    outline: 3px solid var(--tolli-head-hl);
+    outline-offset: 2px;
+    border-radius: 1.2rem;
+  }
+  .tolli-faq__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    background: var(--tolli-navy);
+    color: #fff;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+  .tolli-faq__toggle svg {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+  .tolli-faq__item[open] .tolli-faq__toggle {
+    transform: rotate(45deg);
+    background: var(--tolli-head-hl);
+  }
+  .tolli-faq__a {
+    padding: 0 2rem 2rem;
+    font-size: 1.5rem;
+    line-height: 1.6;
+    opacity: 0.9;
+  }
+  .tolli-faq__a > :first-child {
+    margin-top: 0;
+  }
+  .tolli-faq__a > :last-child {
+    margin-bottom: 0;
+  }
+  .tolli-faq__a a {
+    color: inherit;
+    text-underline-offset: 0.3em;
+  }
+  .tolli-faq__contact-mobile {
+    margin-top: 2rem;
+    text-align: center;
+  }
+  .tolli-faq__contact-mobile p {
+    margin: 0 0 1.2rem;
+    font-weight: 700;
+  }
+  .tolli-faq .tolli-btn {
+    width: auto;
+    padding: 0.9rem 2.8rem;
+  }
+
+  @media screen and (min-width: 990px) {
+    .tolli-faq__layout {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: 6.4rem;
+      align-items: start;
+    }
+    .tolli-faq__aside {
+      position: sticky;
+      top: calc(var(--header-height, 100px) + 2.4rem);
+    }
+    .tolli-faq__contact {
+      display: block;
+      padding: 2.8rem;
+      border-radius: 1.4rem;
+      background: var(--faq-card);
+    }
+    .tolli-faq__contact-title {
+      margin: 0 0 0.6rem;
+      font-family: var(--tolli-font-display);
+      font-size: 2.6rem;
+      font-weight: 400;
+      line-height: 1.1;
+    }
+    .tolli-faq__contact-text {
+      margin: 0 0 2rem;
+      font-size: 1.6rem;
+      line-height: 1.5;
+    }
+    .tolli-faq__contact-mobile {
+      display: none;
+    }
+    .tolli-faq__q {
+      padding: 2rem 2rem 2rem 2.8rem;
+      font-size: 1.8rem;
+    }
+    .tolli-faq__a {
+      padding: 0 2.8rem 2.4rem;
+      font-size: 1.7rem;
+    }
+  }
+</style>
+
+<div class="tolli-section tolli-has-decor tolli-faq">
+  {% render 'tolli-section-decor', section: section %}
+  <div class="tolli-container">
+    <div class="tolli-faq__layout">
+      <div class="tolli-faq__aside">
+        {% render 'tolli-section-head', section: section, align: 'left' %}
+        {%- if section.settings.contact_title != blank or section.settings.button_label != blank -%}
+          <div class="tolli-faq__contact">
+            {%- if section.settings.contact_title != blank -%}
+              <p class="tolli-faq__contact-title">{{ section.settings.contact_title | escape }}</p>
+            {%- endif -%}
+            {%- if section.settings.contact_text != blank -%}
+              <p class="tolli-faq__contact-text">{{ section.settings.contact_text | escape }}</p>
+            {%- endif -%}
+            {%- if section.settings.button_label != blank -%}
+              <a class="tolli-btn" href="{{ section.settings.button_link | default: '/pages/contact' }}">
+                <span>{{ section.settings.button_label | escape }}</span>
+                {% render 'tolli-icon', icon: 'arrow', class: 'tolli-btn__arrow' %}
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div>
+        <div class="tolli-faq__list">
+          {%- for block in section.blocks -%}
+            <details class="tolli-faq__item" {{ block.shopify_attributes }}{% if forloop.first and section.settings.open_first %} open{% endif %}>
+              <summary class="tolli-faq__q">
+                <span>{{ block.settings.question | escape }}</span>
+                <span class="tolli-faq__toggle" aria-hidden="true">{% render 'tolli-icon', icon: 'plus' %}</span>
+              </summary>
+              <div class="tolli-faq__a">{{ block.settings.answer }}</div>
+            </details>
+          {%- endfor -%}
+        </div>
+
+        {%- if section.settings.button_label != blank -%}
+          <div class="tolli-faq__contact-mobile">
+            {%- if section.settings.contact_title != blank -%}
+              <p>{{ section.settings.contact_title | escape }}</p>
+            {%- endif -%}
+            <a class="tolli-btn" href="{{ section.settings.button_link | default: '/pages/contact' }}">
+              <span>{{ section.settings.button_label | escape }}</span>
+              {% render 'tolli-icon', icon: 'arrow', class: 'tolli-btn__arrow' %}
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{%- if section.settings.output_schema and section.blocks.size > 0 -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {%- for block in section.blocks -%}
+          {
+            "@type": "Question",
+            "name": {{ block.settings.question | json }},
+            "acceptedAnswer": { "@type": "Answer", "text": {{ block.settings.answer | strip_html | json }} }
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Tolli FAQ",
+  "tag": "div",
+  "class": "tolli-faq-section",
+  "max_blocks": 16,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "FAQ"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "info": "Wrap words in [brackets] to highlight them. Use | for a line break.",
+      "default": "Got questions?|[We've got answers.]"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_burst",
+      "label": "Show accent strokes after title",
+      "default": false
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Intro text",
+      "default": "Everything you need to know about tolli hydration and clear protein."
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first",
+      "label": "Open the first question",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "output_schema",
+      "label": "Add FAQ structured data for Google",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Contact card"
+    },
+    {
+      "type": "text",
+      "id": "contact_title",
+      "label": "Title",
+      "default": "Still curious?"
+    },
+    {
+      "type": "text",
+      "id": "contact_text",
+      "label": "Text",
+      "default": "Our team is happy to help with anything else."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Contact us"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "info": "Defaults to /pages/contact."
+    },
+    {
+      "type": "color",
+      "id": "contact_bg",
+      "label": "Card background",
+      "default": "#FFDC32"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Button background",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Colours & spacing"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "color",
+      "id": "item_bg",
+      "label": "Question background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "item_open_bg",
+      "label": "Open question background",
+      "default": "#E8F7F1"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text colour",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight colour",
+      "default": "#ED0056"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 24,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Title size on mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "min": 30,
+      "max": 90,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size on desktop",
+      "default": 52
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding on mobile",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding on mobile",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding on desktop",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding on desktop",
+      "default": 96
+    },
+    {
+      "type": "header",
+      "content": "Background & edges"
+    },
+    {
+      "type": "select",
+      "id": "bg_style",
+      "label": "Background image",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "leaves",
+          "label": "Sunny leaves (built-in)"
+        },
+        {
+          "value": "scene",
+          "label": "Lemonade scene (built-in)"
+        },
+        {
+          "value": "custom",
+          "label": "Custom image"
+        }
+      ],
+      "default": "leaves"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Custom background image"
+    },
+    {
+      "type": "range",
+      "id": "bg_opacity",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Background image opacity",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "bg_position",
+      "label": "Background image position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "bottom"
+    },
+    {
+      "type": "checkbox",
+      "id": "bg_fixed",
+      "label": "Fixed background while scrolling",
+      "info": "Parallax effect: the image stays still and the page scrolls over it.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "wave_top",
+      "label": "Wavy top edge",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "wave_bottom",
+      "label": "Wavy bottom edge",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "wave_color",
+      "label": "Top wave colour",
+      "info": "Match the background of the section above.",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "color",
+      "id": "wave_bottom_color",
+      "label": "Bottom wave colour",
+      "info": "Match the background of the section below.",
+      "default": "#FFFDF7"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Question"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Answer</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli FAQ",
+      "blocks": [
+        {
+          "type": "question"
+        },
+        {
+          "type": "question"
+        },
+        {
+          "type": "question"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

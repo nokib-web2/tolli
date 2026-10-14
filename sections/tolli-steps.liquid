@@ -1,0 +1,535 @@
+{% render 'tolli-section-style', section: section %}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .tolli-steps {
+    --step-circle: {{ section.settings.circle_color }};
+    --step-badge: {{ section.settings.badge_color }};
+    --step-line: {{ section.settings.line_color }};
+    --tolli-btn-bg: {{ section.settings.button_bg }};
+    --tolli-btn-color: {{ section.settings.button_text }};
+  }
+{%- endstyle -%}
+
+<style>
+  .tolli-steps__list {
+    position: relative;
+    display: grid;
+    gap: 2.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: tolli-step;
+  }
+  .tolli-steps__list::before {
+    content: '';
+    position: absolute;
+    top: 3.2rem;
+    bottom: 3.2rem;
+    left: 3.2rem;
+    border-left: 3px dashed var(--step-line);
+  }
+  .tolli-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 6.4rem minmax(0, 1fr);
+    align-items: center;
+    gap: 1.6rem;
+    counter-increment: tolli-step;
+  }
+  .tolli-step__icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 6.4rem;
+    height: 6.4rem;
+    border-radius: 50%;
+    background: var(--step-circle);
+    color: var(--tolli-navy);
+    box-shadow: 0 1rem 2rem rgba(0, 62, 85, 0.1);
+  }
+  .tolli-step__icon svg,
+  .tolli-step__icon img {
+    width: 3.4rem;
+    height: 3.4rem;
+    object-fit: contain;
+  }
+  .tolli-step__icon::after {
+    content: counter(tolli-step);
+    position: absolute;
+    top: -0.4rem;
+    right: -0.6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    background: var(--step-badge);
+    color: #fff;
+    font-family: var(--tolli-font-display);
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+  .tolli-step__title {
+    margin: 0;
+    color: inherit;
+    font-family: var(--tolli-font-display);
+    font-size: 2.2rem;
+    font-weight: 400;
+    line-height: 1.1;
+  }
+  .tolli-step__text {
+    margin: 0.4rem 0 0;
+    font-size: 1.5rem;
+    line-height: 1.45;
+    opacity: 0.85;
+  }
+  .tolli-steps__action {
+    margin-top: 3.2rem;
+    text-align: center;
+  }
+  .tolli-steps .tolli-btn {
+    width: auto;
+    padding: 0.9rem 3.2rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .tolli-steps__list {
+      grid-template-columns: repeat(var(--step-count), minmax(0, 1fr));
+      gap: 3.2rem;
+    }
+    .tolli-steps__list::before {
+      top: 5.6rem;
+      bottom: auto;
+      left: calc(50% / var(--step-count));
+      right: calc(50% / var(--step-count));
+      border-left: 0;
+      border-top: 3px dashed var(--step-line);
+    }
+    .tolli-step {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: center;
+      gap: 2rem;
+    }
+    .tolli-step__icon {
+      width: 11.2rem;
+      height: 11.2rem;
+    }
+    .tolli-step__icon svg,
+    .tolli-step__icon img {
+      width: 5.6rem;
+      height: 5.6rem;
+    }
+    .tolli-step__icon::after {
+      top: 0;
+      right: 0;
+      width: 3.4rem;
+      height: 3.4rem;
+      font-size: 2rem;
+    }
+    .tolli-step__title {
+      font-size: 2.8rem;
+    }
+    .tolli-step__text {
+      max-width: 32rem;
+      margin: 0.8rem auto 0;
+      font-size: 1.7rem;
+    }
+    .tolli-steps__action {
+      margin-top: 4.8rem;
+    }
+  }
+</style>
+
+<div class="tolli-section tolli-has-decor tolli-steps">
+  {% render 'tolli-section-decor', section: section %}
+  <div class="tolli-container">
+    {% render 'tolli-section-head', section: section %}
+
+    <ol class="tolli-steps__list" role="list" style="--step-count: {{ section.blocks.size | at_least: 1 }};">
+      {%- for block in section.blocks -%}
+        <li class="tolli-step" {{ block.shopify_attributes }}>
+          <span class="tolli-step__icon" aria-hidden="true">
+            {%- if block.settings.icon_image != blank -%}
+              {{ block.settings.icon_image | image_url: width: 200 | image_tag: width: 100, height: 100, loading: 'lazy', alt: '' }}
+            {%- else -%}
+              {% render 'tolli-icon', icon: block.settings.icon %}
+            {%- endif -%}
+          </span>
+          <div>
+            <h3 class="tolli-step__title">{{ block.settings.title | escape }}</h3>
+            {%- if block.settings.text != blank -%}
+              <p class="tolli-step__text">{{ block.settings.text | escape }}</p>
+            {%- endif -%}
+          </div>
+        </li>
+      {%- endfor -%}
+    </ol>
+
+    {%- if section.settings.button_label != blank -%}
+      <div class="tolli-steps__action">
+        <a class="tolli-btn" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
+          <span>{{ section.settings.button_label | escape }}</span>
+          {% render 'tolli-icon', icon: 'arrow', class: 'tolli-btn__arrow' %}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Tolli how it works",
+  "tag": "div",
+  "class": "tolli-steps-section",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "How it works"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "info": "Wrap words in [brackets] to highlight them. Use | for a line break.",
+      "default": "As easy as [1, 2, sip.]"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_burst",
+      "label": "Show accent strokes after title",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Intro text",
+      "default": "No shaker, no fuss. Make it at home, at your desk or after the gym."
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Start sipping"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Button background",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Colours & spacing"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#E8F7F1"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text colour",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight colour",
+      "default": "#ED0056"
+    },
+    {
+      "type": "color",
+      "id": "circle_color",
+      "label": "Icon circle colour",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "badge_color",
+      "label": "Step number colour",
+      "default": "#ED0056"
+    },
+    {
+      "type": "color",
+      "id": "line_color",
+      "label": "Dashed line colour",
+      "default": "#9FD9C3"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 24,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Title size on mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "min": 30,
+      "max": 90,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size on desktop",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding on mobile",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding on mobile",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding on desktop",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding on desktop",
+      "default": 96
+    },
+    {
+      "type": "header",
+      "content": "Background & edges"
+    },
+    {
+      "type": "select",
+      "id": "bg_style",
+      "label": "Background image",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "leaves",
+          "label": "Sunny leaves (built-in)"
+        },
+        {
+          "value": "scene",
+          "label": "Lemonade scene (built-in)"
+        },
+        {
+          "value": "custom",
+          "label": "Custom image"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Custom background image"
+    },
+    {
+      "type": "range",
+      "id": "bg_opacity",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Background image opacity",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "bg_position",
+      "label": "Background image position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "bg_fixed",
+      "label": "Fixed background while scrolling",
+      "info": "Parallax effect: the image stays still and the page scrolls over it.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "wave_top",
+      "label": "Wavy top edge",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "wave_bottom",
+      "label": "Wavy bottom edge",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "wave_color",
+      "label": "Top wave colour",
+      "info": "Match the background of the section above.",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "color",
+      "id": "wave_bottom_color",
+      "label": "Bottom wave colour",
+      "info": "Match the background of the section below.",
+      "default": "#FFFDF7"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "scoop",
+              "label": "Scoop"
+            },
+            {
+              "value": "drop",
+              "label": "Water drop"
+            },
+            {
+              "value": "glass",
+              "label": "Glass"
+            },
+            {
+              "value": "smile",
+              "label": "Smile"
+            },
+            {
+              "value": "sun",
+              "label": "Sun"
+            },
+            {
+              "value": "heart",
+              "label": "Heart"
+            },
+            {
+              "value": "sparkle",
+              "label": "Sparkle"
+            }
+          ],
+          "default": "scoop"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Custom icon (optional)",
+          "info": "Upload a colourful PNG or SVG icon to replace the built-in one."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Scoop"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli how it works",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": {
+            "icon": "scoop",
+            "title": "Scoop",
+            "text": "Add one serving of tolli to your bottle or glass."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "icon": "drop",
+            "title": "Add water",
+            "text": "Top up with cold water, add ice if you like, and stir or shake."
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "icon": "glass",
+            "title": "Sip & feel good",
+            "text": "Light, fruity and refreshing — enjoy it any time of day."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

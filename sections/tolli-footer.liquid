@@ -1,0 +1,456 @@
+{%- liquid
+  assign tagline_html = section.settings.tagline | escape | replace: '[', '<span class="tolli-footer__underline">' | replace: ']', '</span>'
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .tolli-footer {
+    --footer-band-bg: {{ section.settings.band_background }};
+    --footer-wave-light: {{ section.settings.wave_light_color }};
+    --footer-bg: {{ section.settings.footer_background }};
+    --footer-text: {{ section.settings.footer_text }};
+    --footer-accent: {{ section.settings.accent_color }};
+    --footer-tagline-color: {{ section.settings.tagline_color }};
+    --footer-tagline-m: {{ section.settings.tagline_size_mobile }}px;
+    --footer-tagline-d: {{ section.settings.tagline_size_desktop }}px;
+    --footer-wave-h-m: {{ section.settings.wave_height_mobile }}px;
+    --footer-wave-h-d: {{ section.settings.wave_height_desktop }}px;
+    --tolli-logo-color: {{ section.settings.footer_text }};
+    --tolli-logo-size: {{ section.settings.logo_size_mobile }}px;
+    --tolli-tagline-size: 1.3rem;
+  }
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .tolli-footer {
+      --tolli-logo-size: {{ section.settings.logo_size_desktop }}px;
+      --tolli-tagline-size: 1.6rem;
+    }
+  }
+{%- endstyle -%}
+
+<style>
+  .tolli-footer {
+    background: var(--footer-band-bg);
+  }
+  .tolli-footer__band {
+    position: relative;
+    padding-top: 1.6rem;
+    text-align: center;
+  }
+  .tolli-footer__tagline {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: flex-start;
+    margin: 0;
+    font-family: var(--tolli-font-script);
+    font-size: var(--footer-tagline-m);
+    line-height: 1.15;
+    color: var(--footer-tagline-color);
+    transform: rotate(-3deg);
+  }
+  .tolli-footer__underline {
+    position: relative;
+    display: inline-block;
+  }
+  .tolli-footer__underline::after {
+    content: '';
+    position: absolute;
+    left: 4%;
+    right: -2%;
+    bottom: -0.1em;
+    height: 0.16em;
+    border-radius: 50%;
+    border-bottom: 0.09em solid var(--footer-accent);
+  }
+  .tolli-footer__tagline .tolli-burst {
+    width: 0.65em;
+    height: 0.65em;
+    margin-left: 0.08em;
+    margin-top: -0.2em;
+    color: var(--footer-accent);
+  }
+  .tolli-footer__wave {
+    display: block;
+    width: 100%;
+    height: var(--footer-wave-h-m);
+    margin-top: calc(var(--footer-wave-h-m) * -0.25);
+  }
+  .tolli-footer__main {
+    background: var(--footer-bg);
+    color: var(--footer-text);
+    margin-top: -1px;
+    padding: 0.4rem 0 2rem;
+  }
+  .tolli-footer__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.6rem 2.4rem;
+  }
+  .tolli-footer__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: inherit;
+    text-decoration: none;
+  }
+  .tolli-footer__leaf {
+    width: calc(var(--tolli-logo-size) * 0.75);
+    height: calc(var(--tolli-logo-size) * 1);
+    color: var(--footer-accent);
+    flex: none;
+  }
+  .tolli-footer .tolli-logo {
+    align-items: flex-start;
+  }
+  .tolli-footer .tolli-logo__tagline {
+    font-weight: 400;
+  }
+  .tolli-footer__nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tolli-footer__nav li {
+    display: flex;
+    align-items: center;
+  }
+  .tolli-footer__nav li + li::before {
+    content: '';
+    width: 1px;
+    height: 2.4rem;
+    background: currentColor;
+    opacity: 0.7;
+  }
+  .tolli-footer__nav a {
+    display: inline-block;
+    padding: 0.6rem 1.4rem;
+    font-size: 1.5rem;
+    color: var(--footer-text);
+    text-decoration: none;
+  }
+  .tolli-footer__nav li:last-child a {
+    padding-right: 0;
+  }
+  .tolli-footer__nav a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+  .tolli-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-top: 2rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    font-size: 1.3rem;
+    opacity: 0.85;
+  }
+  .tolli-footer__bottom a {
+    color: inherit;
+  }
+  .tolli-footer__payments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tolli-footer__payments svg {
+    display: block;
+    height: 2.2rem;
+    width: auto;
+  }
+
+  @media screen and (max-width: 749px) {
+    .tolli-footer__row {
+      gap: 1.2rem;
+    }
+    .tolli-footer__nav a {
+      padding: 0.6rem clamp(0.6rem, 2.6vw, 1.4rem);
+      font-size: clamp(1.3rem, 3.5vw, 1.5rem);
+    }
+    .tolli-footer .tolli-logo__tagline {
+      font-size: clamp(1.05rem, 2.9vw, 1.3rem);
+    }
+  }
+  @media screen and (min-width: 750px) {
+    .tolli-footer__band {
+      padding-top: 3.2rem;
+    }
+    .tolli-footer__tagline {
+      font-size: var(--footer-tagline-d);
+    }
+    .tolli-footer__wave {
+      height: var(--footer-wave-h-d);
+      margin-top: calc(var(--footer-wave-h-d) * -0.25);
+    }
+    .tolli-footer__main {
+      padding: 1.2rem 0 3.2rem;
+    }
+    .tolli-footer__nav a {
+      font-size: 1.8rem;
+      padding: 0.6rem 2.4rem;
+    }
+  }
+</style>
+
+<footer class="tolli-section tolli-footer">
+  {%- if section.settings.tagline != blank -%}
+    <div class="tolli-footer__band">
+      <p class="tolli-footer__tagline">
+        <span>{{ tagline_html }}</span>
+        {%- if section.settings.show_burst -%}
+          <span class="tolli-burst" aria-hidden="true">{% render 'tolli-icon', icon: 'burst-small' %}</span>
+        {%- endif -%}
+      </p>
+    </div>
+  {%- endif -%}
+
+  <svg class="tolli-footer__wave" viewBox="0 0 1440 140" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path style="fill: var(--footer-wave-light);" d="M0 38C180 8 360 0 560 22s400 62 620 56c120-3 200-18 260-34V140H0Z"/>
+    <path style="fill: var(--footer-bg);" d="M0 92c210-34 430-40 660-18 240 23 470 34 780-22v88H0Z"/>
+  </svg>
+
+  <div class="tolli-footer__main">
+    <div class="tolli-container">
+      <div class="tolli-footer__row">
+        <a class="tolli-footer__brand" href="{{ routes.root_url }}">
+          {%- if section.settings.show_leaf -%}
+            {% render 'tolli-icon', icon: 'leaf', class: 'tolli-footer__leaf' %}
+          {%- endif -%}
+          {%- if section.settings.logo_image != blank -%}
+            {{ section.settings.logo_image | image_url: width: 500 | image_tag: widths: '200, 300, 400, 500', sizes: '220px', style: 'height: auto; max-width: 220px;', alt: shop.name }}
+          {%- else -%}
+            {%- render 'tolli-logo', tagline: section.settings.logo_tagline -%}
+          {%- endif -%}
+        </a>
+
+        {%- if section.settings.menu != blank and section.settings.menu.links.size > 0 -%}
+          <nav class="tolli-footer__nav" aria-label="{{ section.settings.menu.title | escape }}">
+            <ul role="list">
+              {%- for link in section.settings.menu.links -%}
+                <li>
+                  <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.show_copyright or section.settings.show_payment -%}
+        <div class="tolli-footer__bottom">
+          {%- if section.settings.show_copyright -%}
+            <p class="tolli-footer__copyright" style="margin: 0;">
+              &copy; {{ 'now' | date: '%Y' }} {{ shop.name | link_to: routes.root_url }}
+              {%- if section.settings.copyright_text != blank %} · {{ section.settings.copyright_text | escape }}{% endif -%}
+            </p>
+          {%- endif -%}
+          {%- if section.settings.show_payment and shop.enabled_payment_types.size > 0 -%}
+            <ul class="tolli-footer__payments" role="list">
+              {%- for type in shop.enabled_payment_types -%}
+                <li>{{ type | payment_type_svg_tag }}</li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Tolli footer",
+  "tag": "div",
+  "class": "tolli-footer-section",
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Tagline band"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "info": "Wrap words in [brackets] to underline them. Leave empty to hide the band.",
+      "default": "Mix. Sip. [Feel good.]"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_burst",
+      "label": "Show accent strokes after tagline",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "tagline_size_mobile",
+      "min": 18,
+      "max": 56,
+      "step": 1,
+      "unit": "px",
+      "label": "Tagline size on mobile",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "tagline_size_desktop",
+      "min": 24,
+      "max": 90,
+      "step": 2,
+      "unit": "px",
+      "label": "Tagline size on desktop",
+      "default": 52
+    },
+    {
+      "type": "color",
+      "id": "tagline_color",
+      "label": "Tagline colour",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "band_background",
+      "label": "Band background",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "color",
+      "id": "wave_light_color",
+      "label": "Light wave colour",
+      "default": "#D9F0E6"
+    },
+    {
+      "type": "range",
+      "id": "wave_height_mobile",
+      "min": 20,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Wave height on mobile",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "wave_height_desktop",
+      "min": 30,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "label": "Wave height on desktop",
+      "default": 110
+    },
+    {
+      "type": "header",
+      "content": "Brand"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image (optional)",
+      "info": "Leave empty to use the Tolli wordmark in white."
+    },
+    {
+      "type": "text",
+      "id": "logo_tagline",
+      "label": "Wordmark tagline",
+      "default": "Hydration & Clear Protein"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_leaf",
+      "label": "Show leaf icon",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "logo_size_mobile",
+      "min": 20,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Wordmark size on mobile",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "logo_size_desktop",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Wordmark size on desktop",
+      "default": 44
+    },
+    {
+      "type": "header",
+      "content": "Links"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "info": "E.g. Shop, Our story, FAQ.",
+      "default": "footer"
+    },
+    {
+      "type": "header",
+      "content": "Colours"
+    },
+    {
+      "type": "color",
+      "id": "footer_background",
+      "label": "Footer background",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "footer_text",
+      "label": "Footer text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent (leaf, underline, strokes)",
+      "default": "#FFDC32"
+    },
+    {
+      "type": "header",
+      "content": "Bottom bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_copyright",
+      "label": "Show copyright",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Extra copyright text"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment",
+      "label": "Show payment icons",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli footer"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,1097 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "tolli_hero": {
+      "type": "tolli-hero",
+      "blocks": {
+        "point_zero_sugar": {
+          "type": "point",
+          "settings": {
+            "text": "Zero sugar"
+          }
+        },
+        "point_light_fruity": {
+          "type": "point",
+          "settings": {
+            "text": "Light & fruity"
+          }
+        }
+      },
+      "block_order": [
+        "point_zero_sugar",
+        "point_light_fruity"
+      ],
+      "settings": {
+        "heading": "Your [feel-good]|daily sip.",
+        "heading_tag": "h1",
+        "heading_size_mobile": 38,
+        "heading_size_desktop": 72,
+        "keep_break_desktop": false,
+        "show_bursts": true,
+        "subheading": "Refreshing hydration & clear protein.",
+        "subheading_size_mobile": 16,
+        "subheading_size_desktop": 24,
+        "text_color": "#003e55",
+        "highlight_color": "#ed0056",
+        "burst_color": "#ed0056",
+        "desktop_layout": "background",
+        "bg_height": "screen",
+        "bg_copy_width": 46,
+        "bg_text_fade": 0,
+        "image_side": "right",
+        "eyebrow": "Launch prices now live",
+        "split_background": "linear-gradient(160deg, rgba(228, 245, 252, 1), rgba(255, 253, 247, 1) 52%, rgba(253, 236, 241, 1) 100%)",
+        "card_radius": 32,
+        "shape_color": "#cfefe2",
+        "image": "shopify://shop_images/Tropical_Strawberry_Lemonade_Product_Scene_1_1.png",
+        "mobile_image_width": 125,
+        "mobile_product_zone": 47,
+        "desktop_height": 100,
+        "desktop_min_height": 560,
+        "desktop_focal_x": 50,
+        "desktop_focal_y": 70,
+        "overlay_opacity": 0,
+        "stage_background": "linear-gradient(90deg, rgba(248, 233, 219, 1), rgba(241, 246, 246, 1) 50%, rgba(227, 240, 230, 1) 100%)",
+        "show_sticker": true,
+        "sticker_text": "Just|add water.",
+        "sticker_bg": "#ffdc32",
+        "sticker_color": "#003e55",
+        "sticker_size_mobile": 16,
+        "sticker_size_desktop": 26,
+        "sticker_x_mobile": 86,
+        "sticker_y_mobile": 74,
+        "sticker_x_desktop": 92,
+        "sticker_y_desktop": 74,
+        "sticker_rotation": -10,
+        "show_sun": false,
+        "sun_color": "#ffdc32",
+        "sun_size_mobile": 56,
+        "sun_size_desktop": 120,
+        "sun_x": 88,
+        "sun_y": 30,
+        "button_label": "Shop tolli",
+        "button_link": "shopify://collections/all",
+        "button_bg": "#003e55",
+        "button_text": "#ffffff",
+        "cta_max_width": 520,
+        "cta_overlap": 8,
+        "points_color": "#6e7e86",
+        "section_background": "#fffdf7",
+        "padding_bottom_mobile": 8,
+        "padding_bottom_desktop": 0,
+        "animate": true
+      }
+    },
+    "tolli_marquee": {
+      "type": "tolli-marquee",
+      "blocks": {
+        "item_1": {
+          "type": "item",
+          "settings": {
+            "text": "Zero sugar"
+          }
+        },
+        "item_2": {
+          "type": "item",
+          "settings": {
+            "text": "5 electrolytes + 3 vitamins"
+          }
+        },
+        "item_3": {
+          "type": "item",
+          "settings": {
+            "text": "22g clear protein"
+          }
+        },
+        "item_4": {
+          "type": "item",
+          "settings": {
+            "text": "Plant based & vegan"
+          }
+        },
+        "item_5": {
+          "type": "item",
+          "settings": {
+            "text": "Just add water"
+          }
+        },
+        "item_6": {
+          "type": "item",
+          "settings": {
+            "text": "Light & fruity"
+          }
+        }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3",
+        "item_4",
+        "item_5",
+        "item_6"
+      ],
+      "settings": {
+        "separator": "sun",
+        "speed": 66,
+        "reverse": false,
+        "tilt": -2,
+        "uppercase": false,
+        "text_size_mobile": 20,
+        "text_size_desktop": 30,
+        "band_color": "#003e55",
+        "text_color": "#ffffff",
+        "icon_color": "#ED0056",
+        "background": "#fffdf7",
+        "transparent_bg": true,
+        "overlap_desktop": 28,
+        "padding_top_mobile": 16,
+        "padding_bottom_mobile": 16,
+        "padding_top_desktop": 0,
+        "padding_bottom_desktop": 0
+      }
+    },
+    "tolli_cards": {
+      "type": "tolli-product-cards",
+      "blocks": {
+        "card_hydration": {
+          "type": "card",
+          "settings": {
+            "product": "tolli-hydration-strawberry-lemonade",
+            "placeholder": "hydration",
+            "blend_image": false,
+            "card_bg": "#e8f7f1",
+            "eyebrow": "Daily Hydration",
+            "title": "Strawberry Lemonade",
+            "details": "5 electrolytes + 3 vitamins\n15 servings",
+            "price_label": "Launch price",
+            "price_override": "",
+            "servings": 15,
+            "per_serving_override": "",
+            "button_label": "Shop hydration",
+            "button_action": "link",
+            "button_link": ""
+          }
+        },
+        "card_protein": {
+          "type": "card",
+          "settings": {
+            "product": "tolli-clear-protein-raspberry-lemonade",
+            "placeholder": "protein",
+            "blend_image": false,
+            "card_bg": "#fdecf1",
+            "eyebrow": "Clear Protein",
+            "title": "Raspberry Lemonade",
+            "details": "22g protein • 10 servings",
+            "price_label": "Launch price",
+            "price_override": "",
+            "servings": 10,
+            "per_serving_override": "",
+            "button_label": "Shop clear protein",
+            "button_action": "link",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "card_hydration",
+        "card_protein"
+      ],
+      "settings": {
+        "heading": "Pick your [sip.]",
+        "show_burst": true,
+        "heading_size_mobile": 42,
+        "heading_size_desktop": 64,
+        "columns_desktop": 2,
+        "gap": 24,
+        "card_radius": 20,
+        "price_prefix": "S$",
+        "per_serving_format": "[price] per serving",
+        "show_compare": true,
+        "background": "#fffdf7",
+        "text_color": "#003e55",
+        "highlight_color": "#ed0056",
+        "price_color": "#ed0056",
+        "button_bg": "#003e55",
+        "button_text": "#ffffff",
+        "padding_top_mobile": 24,
+        "padding_bottom_mobile": 56,
+        "padding_top_desktop": 64,
+        "padding_bottom_desktop": 88,
+        "bg_style": "leaves",
+        "bg_opacity": 100,
+        "bg_position": "top",
+        "bg_fixed": false,
+        "wave_top": false,
+        "wave_bottom": false,
+        "wave_color": "#fffdf7",
+        "wave_bottom_color": "#fffdf7"
+      }
+    },
+    "tolli_benefits": {
+      "type": "tolli-benefits",
+      "blocks": {
+        "benefit_1": {
+          "type": "benefit",
+          "settings": {
+            "icon": "zero-sugar",
+            "color": "#ffdc32",
+            "stat": "0g",
+            "title": "Zero sugar",
+            "text": "All the flavour, none of the sugar."
+          }
+        },
+        "benefit_2": {
+          "type": "benefit",
+          "settings": {
+            "icon": "drop",
+            "color": "#e4f5fc",
+            "stat": "5+3",
+            "title": "Electrolytes & vitamins",
+            "text": "5 electrolytes and 3 vitamins in every hydration serving."
+          }
+        },
+        "benefit_3": {
+          "type": "benefit",
+          "settings": {
+            "icon": "protein",
+            "color": "#fdecf1",
+            "stat": "22g",
+            "title": "Clear protein",
+            "text": "Refreshing protein water. Light and fruity, never milky."
+          }
+        },
+        "benefit_4": {
+          "type": "benefit",
+          "settings": {
+            "icon": "plant",
+            "color": "#e8f7f1",
+            "stat": "Vegan",
+            "title": "Plant based",
+            "text": "Both ranges are plant based and vegan."
+          }
+        }
+      },
+      "block_order": [
+        "benefit_1",
+        "benefit_2",
+        "benefit_3",
+        "benefit_4"
+      ],
+      "settings": {
+        "eyebrow": "Why tolli",
+        "title": "Good for you.|[Great to sip.]",
+        "show_burst": true,
+        "text": "Everything you want from a daily drink, nothing you don't. Light, fruity and made to fit your day.",
+        "columns_desktop": 4,
+        "button_label": "Find your flavour",
+        "button_link": "",
+        "button_bg": "#ffdc32",
+        "button_text": "#003e55",
+        "background": "#003e55",
+        "text_color": "#ffffff",
+        "highlight_color": "#ffdc32",
+        "title_size_mobile": 36,
+        "title_size_desktop": 56,
+        "padding_top_mobile": 72,
+        "padding_bottom_mobile": 72,
+        "padding_top_desktop": 112,
+        "padding_bottom_desktop": 112,
+        "bg_style": "none",
+        "bg_opacity": 100,
+        "bg_position": "center",
+        "bg_fixed": false,
+        "wave_top": true,
+        "wave_bottom": false,
+        "wave_color": "#fffdf7",
+        "wave_bottom_color": "#fffdf7"
+      }
+    },
+    "tolli_bundle": {
+      "type": "tolli-bundle",
+      "settings": {
+        "heading": "Better [together.]",
+        "show_burst": true,
+        "text": "One of each. Your feel-good duo.",
+        "heading_size_mobile": 30,
+        "heading_size_desktop": 44,
+        "mobile_image_ratio": "16 / 9",
+        "focal_x": 44,
+        "image_width_desktop": 40,
+        "desktop_height": 300,
+        "products": [
+          "tolli-hydration-strawberry-lemonade",
+          "tolli-clear-protein-raspberry-lemonade"
+        ],
+        "price_label": "Launch price",
+        "price_override": "",
+        "price_prefix": "S$",
+        "button_label": "Shop the duo",
+        "button_action": "add_all",
+        "button_link": "",
+        "max_width": 1400,
+        "card_radius": 24,
+        "background": "#fffdf7",
+        "card_bg": "#c9eefd",
+        "text_color": "#003e55",
+        "highlight_color": "#ed0056",
+        "burst_color": "#ffdc32",
+        "price_color": "#ed0056",
+        "button_bg": "#003e55",
+        "button_text": "#ffffff",
+        "padding_top_mobile": 88,
+        "padding_bottom_mobile": 88,
+        "padding_top_desktop": 160,
+        "padding_bottom_desktop": 160,
+        "bg_style": "custom",
+        "bg_image": "shopify://shop_images/Minimal_Mint_Wave_with_Leafy_Branch.png",
+        "bg_opacity": 100,
+        "bg_position": "center",
+        "bg_fixed": true,
+        "wave_top": true,
+        "wave_bottom": true,
+        "wave_color": "#003e55",
+        "wave_bottom_color": "#e8f7f1"
+      }
+    },
+    "tolli_steps": {
+      "type": "tolli-steps",
+      "blocks": {
+        "step_1": {
+          "type": "step",
+          "settings": {
+            "icon": "scoop",
+            "title": "Scoop",
+            "text": "Add one serving of tolli to your bottle or glass."
+          }
+        },
+        "step_2": {
+          "type": "step",
+          "settings": {
+            "icon": "drop",
+            "title": "Add water",
+            "text": "Top up with cold water, add ice if you like, then stir or shake."
+          }
+        },
+        "step_3": {
+          "type": "step",
+          "settings": {
+            "icon": "glass",
+            "title": "Sip & feel good",
+            "text": "Light, fruity and refreshing. Enjoy it any time of day."
+          }
+        }
+      },
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3"
+      ],
+      "settings": {
+        "eyebrow": "How it works",
+        "title": "As easy as [1, 2, sip.]",
+        "show_burst": true,
+        "text": "No shaker, no fuss. Make it at home, at your desk or after the gym.",
+        "button_label": "Start sipping",
+        "button_link": "",
+        "button_bg": "#003e55",
+        "button_text": "#ffffff",
+        "background": "#e8f7f1",
+        "text_color": "#003e55",
+        "highlight_color": "#ed0056",
+        "circle_color": "#ffffff",
+        "badge_color": "#ed0056",
+        "line_color": "#9fd9c3",
+        "title_size_mobile": 36,
+        "title_size_desktop": 56,
+        "padding_top_mobile": 64,
+        "padding_bottom_mobile": 64,
+        "padding_top_desktop": 104,
+        "padding_bottom_desktop": 104,
+        "bg_style": "none",
+        "bg_opacity": 100,
+        "bg_position": "center",
+        "bg_fixed": false,
+        "wave_top": false,
+        "wave_bottom": false,
+        "wave_color": "#fffdf7",
+        "wave_bottom_color": "#fffdf7"
+      }
+    },
+    "tolli_reviews": {
+      "type": "tolli-reviews",
+      "blocks": {
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "Review headline",
+            "quote": "Replace this with a real customer review. Short, specific quotes about taste and how tolli fits into their day work best.",
+            "name": "Customer name",
+            "detail": "Strawberry Lemonade",
+            "avatar_color": "#ffdc32"
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "Review headline",
+            "quote": "Replace this with a real customer review. Short, specific quotes about taste and how tolli fits into their day work best.",
+            "name": "Customer name",
+            "detail": "Raspberry Lemonade clear protein",
+            "avatar_color": "#e4f5fc"
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "Review headline",
+            "quote": "Replace this with a real customer review. Short, specific quotes about taste and how tolli fits into their day work best.",
+            "name": "Customer name",
+            "detail": "The duo",
+            "avatar_color": "#e8f7f1"
+          }
+        }
+      },
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3"
+      ],
+      "settings": {
+        "eyebrow": "Reviews",
+        "title": "Sippers [say it best.]",
+        "show_burst": true,
+        "text": "",
+        "summary": "",
+        "columns_desktop": "3",
+        "background": "#fdecf1",
+        "card_bg": "#ffffff",
+        "star_color": "#ffc400",
+        "text_color": "#003e55",
+        "highlight_color": "#ed0056",
+        "title_size_mobile": 36,
+        "title_size_desktop": 56,
+        "padding_top_mobile": 64,
+        "padding_bottom_mobile": 64,
+        "padding_top_desktop": 104,
+        "padding_bottom_desktop": 104,
+        "bg_style": "none",
+        "bg_opacity": 100,
+        "bg_position": "center",
+        "bg_fixed": false,
+        "wave_top": true,
+        "wave_bottom": true,
+        "wave_color": "#e8f7f1",
+        "wave_bottom_color": "#fffdf7"
+      }
+    },
+    "tolli_banner": {
+      "type": "tolli-image-banner",
+      "settings": {
+        "heading": "Make hydration|a [daily habit.]",
+        "show_burst": true,
+        "text": "Clean ingredients. Great taste.\nA healthier, happier you.",
+        "button_label": "Shop all products",
+        "button_link": "",
+        "heading_size_mobile": 32,
+        "heading_size_desktop": 48,
+        "mobile_image_ratio": "16 / 9",
+        "focal_x": 75,
+        "focal_y": 50,
+        "fade_opacity": 0,
+        "fade_color": "#e8f7f1",
+        "show_sun": true,
+        "copy_width": 48,
+        "desktop_height": 340,
+        "card_radius": 24,
+        "card_background": "linear-gradient(100deg, rgba(232, 247, 241, 1), rgba(228, 245, 252, 1) 60%, rgba(253, 236, 241, 1) 100%)",
+        "background": "#fffdf7",
+        "text_color": "#003e55",
+        "highlight_color": "#ed0056",
+        "burst_color": "#ffdc32",
+        "button_bg": "#003e55",
+        "button_text": "#ffffff",
+        "padding_top_mobile": 48,
+        "padding_bottom_mobile": 0,
+        "padding_top_desktop": 72,
+        "padding_bottom_desktop": 0,
+        "bg_style": "none",
+        "bg_opacity": 100,
+        "bg_position": "center",
+        "bg_fixed": false,
+        "wave_top": false,
+        "wave_bottom": false,
+        "wave_color": "#fffdf7",
+        "wave_bottom_color": "#fffdf7"
+      }
+    },
+    "tolli_faq": {
+      "type": "tolli-faq",
+      "blocks": {
+        "question_1": {
+          "type": "question",
+          "settings": {
+            "question": "What's the difference between Hydration and Clear Protein?",
+            "answer": "<p><strong>tolli Hydration</strong> (Strawberry Lemonade) is an electrolyte drink mix with 5 electrolytes, 3 vitamins and zero sugar, 15 servings per pack.</p><p><strong>tolli Clear Protein</strong> (Raspberry Lemonade) is a refreshing protein water with 22g protein per serving, zero sugar and vitamin C, 10 servings per pack.</p>"
+          }
+        },
+        "question_2": {
+          "type": "question",
+          "settings": {
+            "question": "How do I make it?",
+            "answer": "<p>Add one serving to cold water and stir or shake. Check the pack for the recommended amount of water per serving.</p>"
+          }
+        },
+        "question_3": {
+          "type": "question",
+          "settings": {
+            "question": "When should I drink tolli?",
+            "answer": "<p>Hydration is made for everyday refreshment: busy workdays, hot days or after exercise. Clear Protein is a light way to add protein, for example after a workout or between meals.</p>"
+          }
+        },
+        "question_4": {
+          "type": "question",
+          "settings": {
+            "question": "Is tolli vegan?",
+            "answer": "<p>Yes. Both tolli Hydration and tolli Clear Protein are plant based and vegan.</p>"
+          }
+        },
+        "question_5": {
+          "type": "question",
+          "settings": {
+            "question": "Does tolli contain sugar?",
+            "answer": "<p>No. Both ranges are zero sugar.</p>"
+          }
+        },
+        "question_6": {
+          "type": "question",
+          "settings": {
+            "question": "Where do you deliver and how long does it take?",
+            "answer": "<p>Add your delivery areas, times and costs here.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "question_1",
+        "question_2",
+        "question_3",
+        "question_4",
+        "question_5",
+        "question_6"
+      ],
+      "settings": {
+        "eyebrow": "FAQ",
+        "title": "Got questions?|[We've got answers.]",
+        "show_burst": false,
+        "text": "Everything you need to know about tolli hydration and clear protein.",
+        "open_first": true,
+        "output_schema": true,
+        "contact_title": "Still curious?",
+        "contact_text": "Our team is happy to help with anything else.",
+        "button_label": "Contact us",
+        "button_link": "",
+        "contact_bg": "#ffdc32",
+        "button_bg": "#003e55",
+        "button_text": "#ffffff",
+        "background": "#fffdf7",
+        "item_bg": "#ffffff",
+        "item_open_bg": "#e8f7f1",
+        "text_color": "#003e55",
+        "highlight_color": "#ed0056",
+        "title_size_mobile": 36,
+        "title_size_desktop": 52,
+        "padding_top_mobile": 48,
+        "padding_bottom_mobile": 48,
+        "padding_top_desktop": 80,
+        "padding_bottom_desktop": 72,
+        "bg_style": "leaves",
+        "bg_opacity": 100,
+        "bg_position": "bottom",
+        "bg_fixed": false,
+        "wave_top": false,
+        "wave_bottom": false,
+        "wave_color": "#fffdf7",
+        "wave_bottom_color": "#fffdf7"
+      }
+    },
+    "tolli_newsletter": {
+      "type": "tolli-newsletter",
+      "settings": {
+        "eyebrow": "Stay in the loop",
+        "title": "Join the [tolli club.]",
+        "show_burst": true,
+        "text": "Be first to hear about new flavours, launch offers and good-vibe drops.",
+        "placeholder": "Your email address",
+        "button_label": "Join",
+        "note": "No spam, just good sips. Unsubscribe any time.",
+        "success_message": "You're in! Thanks for joining the tolli club.",
+        "card_bg": "#003e55",
+        "card_text": "#ffffff",
+        "accent_color": "#ffdc32",
+        "button_bg": "#ed0056",
+        "button_text": "#ffffff",
+        "background": "#fffdf7",
+        "text_color": "#ffffff",
+        "highlight_color": "#ffdc32",
+        "title_size_mobile": 34,
+        "title_size_desktop": 52,
+        "padding_top_mobile": 16,
+        "padding_bottom_mobile": 40,
+        "padding_top_desktop": 24,
+        "padding_bottom_desktop": 72,
+        "bg_style": "none",
+        "bg_opacity": 100,
+        "bg_position": "center",
+        "bg_fixed": false,
+        "wave_top": false,
+        "wave_bottom": false,
+        "wave_color": "#fffdf7",
+        "wave_bottom_color": "#fffdf7"
+      }
+    },
+    "cfca4268-6358-426c-98ab-d292aeef11e5": {
+      "type": "slideshow",
+      "blocks": {
+        "template--21507361505575__cfca4268-6358-426c-98ab-d292aeef11e5-slide-1": {
+          "type": "slide",
+          "settings": {
+            "image_overlay_opacity": 0,
+            "heading": "Image slide",
+            "title_highlight_color": "#6d388b",
+            "heading_size": "h1",
+            "subheading": "Tell your brand's story through images",
+            "button_label": "Button label",
+            "link": "",
+            "button_style_secondary": false,
+            "atc_button_label": "",
+            "atc_product": "",
+            "atc_skip_cart": false,
+            "box_align": "middle-center",
+            "show_text_box": true,
+            "text_alignment": "center",
+            "color_scheme": "background-1",
+            "transparent_container_color": "white",
+            "text_alignment_mobile": "center",
+            "custom_colors_background": "#ffffff",
+            "custom_gradient_background": "",
+            "custom_colors_text": "#2e2a39",
+            "custom_colors_solid_button_background": "#dd1d1d",
+            "custom_colors_solid_button_text": "#ffffff",
+            "custom_colors_outline_button": "#dd1d1d"
+          }
+        },
+        "template--21507361505575__cfca4268-6358-426c-98ab-d292aeef11e5-slide-2": {
+          "type": "slide",
+          "settings": {
+            "image_overlay_opacity": 0,
+            "heading": "Image slide",
+            "title_highlight_color": "#6d388b",
+            "heading_size": "h1",
+            "subheading": "Tell your brand's story through images",
+            "button_label": "Button label",
+            "link": "",
+            "button_style_secondary": false,
+            "atc_button_label": "",
+            "atc_product": "",
+            "atc_skip_cart": false,
+            "box_align": "middle-center",
+            "show_text_box": true,
+            "text_alignment": "center",
+            "color_scheme": "background-1",
+            "transparent_container_color": "white",
+            "text_alignment_mobile": "center",
+            "custom_colors_background": "#ffffff",
+            "custom_gradient_background": "",
+            "custom_colors_text": "#2e2a39",
+            "custom_colors_solid_button_background": "#dd1d1d",
+            "custom_colors_solid_button_text": "#ffffff",
+            "custom_colors_outline_button": "#dd1d1d"
+          }
+        }
+      },
+      "block_order": [
+        "template--21507361505575__cfca4268-6358-426c-98ab-d292aeef11e5-slide-1",
+        "template--21507361505575__cfca4268-6358-426c-98ab-d292aeef11e5-slide-2"
+      ],
+      "disabled": true,
+      "settings": {
+        "visibility": "always-display",
+        "layout": "full_bleed",
+        "slide_height": "medium",
+        "slider_visual": "dots",
+        "desktop_pagination_position": "over",
+        "auto_rotate": false,
+        "change_slides_speed": 5,
+        "show_text_below": true,
+        "mobile_pagination_position": "under",
+        "accessibility_info": "Slideshow about our brand"
+      }
+    },
+    "d2d3417b-e92f-428c-b221-5bceffb552be": {
+      "type": "comparison-table",
+      "blocks": {
+        "row_frqit4": {
+          "type": "row",
+          "settings": {
+            "benefit": "<strong>Benefit</strong>",
+            "us": true,
+            "others": false,
+            "others_2": false,
+            "others_3": false
+          }
+        },
+        "row_a9Qa8J": {
+          "type": "row",
+          "settings": {
+            "benefit": "<strong>Benefit</strong>",
+            "us": true,
+            "others": false,
+            "others_2": false,
+            "others_3": false
+          }
+        },
+        "row_NAEbjV": {
+          "type": "row",
+          "settings": {
+            "benefit": "<strong>Benefit</strong>",
+            "us": true,
+            "others": false,
+            "others_2": false,
+            "others_3": false
+          }
+        }
+      },
+      "block_order": [
+        "row_frqit4",
+        "row_a9Qa8J",
+        "row_NAEbjV"
+      ],
+      "disabled": true,
+      "settings": {
+        "display_id": false,
+        "visibility": "always-display",
+        "title": "Comparison table",
+        "title_highlight_color": "#6d388b",
+        "heading_size": "h1",
+        "text": "<p>Talk about how and why is your brand better than the others.</p>",
+        "button_label": "",
+        "link": "",
+        "button_style_secondary": false,
+        "atc_button_label": "",
+        "atc_product": "",
+        "atc_skip_cart": false,
+        "desktop_alignment": "center",
+        "mobile_alignment": "center",
+        "color_scheme": "background-1",
+        "layout": "table_second",
+        "style": "centered",
+        "corner_radius": 20,
+        "number_of_competitors": 1,
+        "us_label": "[shop_name]",
+        "us_label_size": 18,
+        "logo_width": 90,
+        "mobile_logo_width": 60,
+        "others_label": "Others",
+        "others_label_size": 18,
+        "others_logo_width": 90,
+        "others_mobile_logo_width": 60,
+        "others_2_label": "Competitor 2",
+        "others_2_label_size": 18,
+        "others_2_logo_width": 90,
+        "others_2_mobile_logo_width": 60,
+        "others_3_label": "Competitor 3",
+        "others_3_label_size": 18,
+        "others_3_logo_width": 90,
+        "others_3_mobile_logo_width": 60,
+        "checkmark_style": "regular",
+        "checkmark_color": "#ffffff",
+        "checkmark_bg_color": "#53af01",
+        "x_style": "regular",
+        "x_color": "#121212",
+        "x_bg_color": "#dbdbdb",
+        "opposite_icon_colors": "original",
+        "highlighted_color_scheme": "accent-1",
+        "highlighted_separator_opacity": 0,
+        "highlighted_overlay_opacity": 0,
+        "other_cells_color_scheme": "background-1",
+        "regular_separator_opacity": 10,
+        "regular_overlay_opacity": 0,
+        "minimalistic_border_opacity": 16,
+        "padding_top": 36,
+        "padding_bottom": 36,
+        "custom_colors_background": "#ffffff",
+        "custom_gradient_background": "",
+        "custom_colors_text": "#2e2a39",
+        "custom_colors_solid_button_background": "#dd1d1d",
+        "custom_colors_solid_button_text": "#ffffff",
+        "custom_colors_outline_button": "#dd1d1d",
+        "custom_colors_highlighted_background": "#2e2a39",
+        "custom_colors_highlighted_text": "#ffffff",
+        "custom_colors_others_background": "#ffffff",
+        "custom_colors_others_text": "#2e2a39"
+      }
+    },
+    "6aa09428-a417-429d-9159-a4e8afd49590": {
+      "type": "icon-bar",
+      "blocks": {
+        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-1": {
+          "type": "column",
+          "settings": {
+            "icon": "check_circle",
+            "filled_icon": false,
+            "title": "Icon",
+            "text": "<p>Pair text with an icon to focus on your chosen product, collection, or blog post<p>"
+          }
+        },
+        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-2": {
+          "type": "column",
+          "settings": {
+            "icon": "check_circle",
+            "filled_icon": false,
+            "title": "Icon",
+            "text": "<p>Pair text with an icon to focus on your chosen product, collection, or blog post<p>"
+          }
+        },
+        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-3": {
+          "type": "column",
+          "settings": {
+            "icon": "check_circle",
+            "filled_icon": false,
+            "title": "Icon",
+            "text": "<p>Pair text with an icon to focus on your chosen product, collection, or blog post<p>"
+          }
+        },
+        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-4": {
+          "type": "column",
+          "settings": {
+            "icon": "check_circle",
+            "filled_icon": false,
+            "title": "Icon",
+            "text": "<p>Pair text with an icon to focus on your chosen product, collection, or blog post<p>"
+          }
+        }
+      },
+      "block_order": [
+        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-1",
+        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-2",
+        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-3",
+        "template--21507361505575__6aa09428-a417-429d-9159-a4e8afd49590-column-4"
+      ],
+      "disabled": true,
+      "settings": {
+        "display_id": false,
+        "visibility": "always-display",
+        "title": "Icon bar",
+        "title_highlight_color": "#6d388b",
+        "heading_size": "h1",
+        "text": "",
+        "color_scheme": "background-1",
+        "icon_layout": "vertical",
+        "icon_size": "medium",
+        "icon_color": "accent-1",
+        "cards_color_scheme": "background-1",
+        "type": "slide",
+        "autoplay": false,
+        "autoplay_speed": 5,
+        "arrows_color_scheme": "inverse",
+        "transparent_arrows": true,
+        "dots_color_scheme": "inverse",
+        "desktop_full_page": false,
+        "columns_desktop": 4,
+        "slider_desktop": false,
+        "per_move_desktop": 1,
+        "desktop_spacing": 40,
+        "desktop_side_padding": 0,
+        "desktop_padding_calc": true,
+        "desktop_adaptive_height": false,
+        "desktop_dots_position": "under",
+        "desktop_arrows_position": "sides",
+        "columns_mobile": "1",
+        "slider_mobile": true,
+        "enable_mobile_preview": false,
+        "mobile_adaptive_height": false,
+        "mobile_dots_position": "under",
+        "mobile_arrows_position": "under",
+        "padding_top": 36,
+        "padding_bottom": 36,
+        "custom_colors_background": "#ffffff",
+        "custom_gradient_background": "",
+        "custom_colors_text": "#2e2a39",
+        "custom_cards_colors_background": "#f3f3f3",
+        "custom_cards_gradient_background": "",
+        "custom_cards_colors_text": "#2e2a39"
+      }
+    },
+    "0f1fc9e4-bc4c-4052-9747-62d1f8472caa": {
+      "type": "results",
+      "blocks": {
+        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-1": {
+          "type": "row",
+          "settings": {
+            "percentage": 90,
+            "row_text": "<p>Noticed that this product has significantly improved their life.</p>"
+          }
+        },
+        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-2": {
+          "type": "row",
+          "settings": {
+            "percentage": 90,
+            "row_text": "<p>Noticed that this product has significantly improved their life.</p>"
+          }
+        },
+        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-3": {
+          "type": "row",
+          "settings": {
+            "percentage": 90,
+            "row_text": "<p>Noticed that this product has significantly improved their life.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-1",
+        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-2",
+        "template--21507361505575__0f1fc9e4-bc4c-4052-9747-62d1f8472caa-row-3"
+      ],
+      "disabled": true,
+      "settings": {
+        "display_id": false,
+        "visibility": "always-display",
+        "title": "Results",
+        "title_highlight_color": "#6d388b",
+        "heading_size": "h1",
+        "text": "<p>Talk about results of your customers and how your product improved their life.</p>",
+        "video_muted_autoplay": true,
+        "color_scheme": "background-1",
+        "layout": "results_second",
+        "results_headline": "Results heading",
+        "results_title_highlight_color": "#6d388b",
+        "results_headline_size": "h2",
+        "results_text": "",
+        "results_headline_alignment": "left",
+        "caption": "<p>Caption about the results and/or link for their proof.</p>",
+        "button_label": "",
+        "link": "",
+        "button_style_secondary": false,
+        "atc_button_label": "",
+        "atc_product": "",
+        "atc_skip_cart": false,
+        "padding_top": 36,
+        "padding_bottom": 36,
+        "custom_colors_background": "#ffffff",
+        "custom_gradient_background": "",
+        "custom_colors_text": "#2e2a39",
+        "custom_colors_accent": "#dd1d1d",
+        "custom_colors_solid_button_background": "#dd1d1d",
+        "custom_colors_solid_button_text": "#ffffff",
+        "custom_colors_outline_button": "#dd1d1d"
+      }
+    },
+    "contact_form_WHP8G7": {
+      "type": "contact-form",
+      "blocks": {
+        "field_row_fNxBGi": {
+          "type": "field_row",
+          "settings": {
+            "input_1_enabled": true,
+            "input_1_type": "name",
+            "input_1_required": false,
+            "input_1_error_message": "This field is required",
+            "input_1_custom_name": "Custom input name",
+            "input_2_enabled": true,
+            "input_2_type": "email",
+            "input_2_required": false,
+            "input_2_error_message": "This field is required",
+            "input_2_custom_name": "Custom input name"
+          }
+        },
+        "field_row_f84rat": {
+          "type": "field_row",
+          "settings": {
+            "input_1_enabled": true,
+            "input_1_type": "phone",
+            "input_1_required": false,
+            "input_1_error_message": "This field is required",
+            "input_1_custom_name": "Custom input name",
+            "input_2_enabled": false,
+            "input_2_type": "custom",
+            "input_2_required": false,
+            "input_2_error_message": "This field is required",
+            "input_2_custom_name": "Custom input name"
+          }
+        },
+        "textarea_NbxXax": {
+          "type": "textarea",
+          "settings": {
+            "input_type": "comment",
+            "input_required": false,
+            "input_error_message": "This field is required",
+            "input_custom_name": "Custom name"
+          }
+        }
+      },
+      "block_order": [
+        "field_row_fNxBGi",
+        "field_row_f84rat",
+        "textarea_NbxXax"
+      ],
+      "disabled": true,
+      "settings": {
+        "display_id": false,
+        "visibility": "always-display",
+        "title": "Contact form",
+        "title_highlight_color": "#6d388b",
+        "heading_size": "h1",
+        "button_full_width": true,
+        "color_scheme": "background-1",
+        "success_icon": "check_circle",
+        "success_icon_filled": false,
+        "success_text_color": "#28c100",
+        "success_bg_color": "#f2ffed",
+        "success_border_radius": 8,
+        "success_border_width": 1,
+        "success_border_color": "#28c100",
+        "errors_icon": "error",
+        "errors_icon_filled": false,
+        "errors_text_color": "#ff0000",
+        "errors_bg_color": "#fff5f5",
+        "errors_border_radius": 8,
+        "errors_border_width": 1,
+        "errors_border_color": "#ff0000",
+        "padding_top": 36,
+        "padding_bottom": 36,
+        "custom_colors_background": "#ffffff",
+        "custom_gradient_background": "",
+        "custom_colors_text": "#2e2a39",
+        "custom_colors_solid_button_background": "#dd1d1d",
+        "custom_colors_solid_button_text": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "tolli_hero",
+    "tolli_marquee",
+    "tolli_cards",
+    "tolli_benefits",
+    "tolli_bundle",
+    "tolli_steps",
+    "tolli_reviews",
+    "tolli_banner",
+    "tolli_faq",
+    "tolli_newsletter",
+    "cfca4268-6358-426c-98ab-d292aeef11e5",
+    "d2d3417b-e92f-428c-b221-5bceffb552be",
+    "6aa09428-a417-429d-9159-a4e8afd49590",
+    "0f1fc9e4-bc4c-4052-9747-62d1f8472caa",
+    "contact_form_WHP8G7"
+  ]
+}

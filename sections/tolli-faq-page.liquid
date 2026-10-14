@@ -1,0 +1,1269 @@
+{%- comment -%}
+  Tolli FAQ Page Section
+  Matches the official Tolli brand identity and design layout:
+  - Sunny hero with hand-drawn sun doodle, iced glass scene, and vibrant typography
+  - Categorized FAQ accordions: 🍓 The drinks, 🥤 Mix & sip, 🚚 Orders & delivery
+  - "Still curious?" contact banner
+  - "Pick your sip." two-range product cards
+{%- endcomment -%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .tolli-faq-page {
+    --faq-bg: {{ section.settings.background | default: '#FFFDF7' }};
+    --faq-navy: var(--tolli-navy, #003E55);
+    --faq-pink: var(--tolli-pink, #ED0056);
+    --faq-mint: var(--tolli-mint, #E8F7F1);
+    --faq-blush: var(--tolli-blush, #FDECF1);
+    --faq-yellow: var(--tolli-yellow, #FFDC32);
+    --faq-radius: 1.6rem;
+    background-color: var(--faq-bg);
+    color: var(--faq-navy);
+    padding-top: {{ section.settings.padding_top_mobile | default: 24 }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile | default: 48 }}px;
+    overflow: hidden;
+  }
+
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .tolli-faq-page {
+      padding-top: {{ section.settings.padding_top_desktop | default: 48 }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop | default: 80 }}px;
+    }
+  }
+
+  /* ---------- HERO SECTION ---------- */
+  .tolli-faq-hero {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 1.6rem;
+    margin-bottom: 3.2rem;
+    position: relative;
+  }
+
+  .tolli-faq-hero__content {
+    min-width: 0;
+  }
+
+  .tolli-faq-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 0 0.8rem;
+    font-family: var(--tolli-font-body);
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faq-pink);
+  }
+
+  .tolli-faq-hero__slashes {
+    width: 1.4rem;
+    height: 1.4rem;
+    stroke: var(--faq-pink);
+    stroke-width: 3.5;
+    stroke-linecap: round;
+  }
+
+  .tolli-faq-hero__title {
+    font-family: var(--tolli-font-display);
+    font-size: clamp(3rem, 7.8vw, 6.2rem);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    color: var(--faq-navy);
+    margin: 0 0 1rem;
+  }
+
+  .tolli-faq-hero__title .tolli-hl {
+    color: var(--faq-pink);
+    display: inline-block;
+    position: relative;
+  }
+
+  .tolli-faq-hero__title .tolli-burst {
+    width: 0.55em;
+    height: 0.55em;
+    margin-left: 0.06em;
+    margin-top: -0.1em;
+    vertical-align: top;
+    color: var(--faq-pink);
+  }
+
+  .tolli-faq-hero__subtitle {
+    margin: 0;
+    font-family: var(--tolli-font-body);
+    font-size: clamp(1.5rem, 3.8vw, 2.2rem);
+    font-weight: 600;
+    color: var(--faq-navy);
+    opacity: 0.88;
+    line-height: 1.35;
+  }
+
+  /* Hero Visual (Iced Lemonade glass, sun doodle, strawberry) */
+  .tolli-faq-hero__visual {
+    position: relative;
+    width: 13rem;
+    height: 14rem;
+    flex-shrink: 0;
+  }
+
+  .tolli-faq-hero__scene {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 2rem;
+    overflow: hidden;
+  }
+
+  .tolli-faq-hero__scene img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 84% 28%;
+    display: block;
+  }
+
+  .tolli-faq-hero__sun-doodle {
+    position: absolute;
+    top: -0.8rem;
+    left: -0.8rem;
+    width: 4.4rem;
+    height: 4.4rem;
+    z-index: 3;
+    pointer-events: none;
+    filter: drop-shadow(0 2px 4px rgba(255, 220, 50, 0.4));
+  }
+
+  /* Desktop Quick Jump Navigation */
+  .tolli-faq-nav {
+    display: none;
+    margin-top: 2rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .tolli-faq-nav__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.8rem 1.6rem;
+    border-radius: 99rem;
+    background: #ffffff;
+    border: 1.5px solid rgba(0, 62, 85, 0.12);
+    font-family: var(--tolli-font-body);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--faq-navy);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .tolli-faq-nav__btn:hover {
+    border-color: var(--faq-pink);
+    color: var(--faq-pink);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 62, 85, 0.08);
+  }
+
+  @media screen and (min-width: 750px) {
+    .tolli-faq-hero {
+      grid-template-columns: 1fr 28rem;
+      gap: 3.2rem;
+      margin-bottom: 4.8rem;
+    }
+    .tolli-faq-hero__visual {
+      width: 28rem;
+      height: 24rem;
+    }
+    .tolli-faq-hero__scene {
+      border-radius: 2.8rem;
+      box-shadow: 0 1.2rem 3.2rem rgba(0, 62, 85, 0.1);
+    }
+    .tolli-faq-hero__sun-doodle {
+      width: 6.4rem;
+      height: 6.4rem;
+      top: -1.6rem;
+      left: -1.6rem;
+    }
+    .tolli-faq-nav {
+      display: flex;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .tolli-faq-hero {
+      grid-template-columns: 1fr 34rem;
+      gap: 5.6rem;
+      margin-bottom: 5.6rem;
+    }
+    .tolli-faq-hero__visual {
+      width: 34rem;
+      height: 28rem;
+    }
+  }
+
+  /* ---------- CATEGORIZED FAQ ACCORDIONS ---------- */
+  .tolli-faq-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 3.6rem;
+    max-width: 90rem;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .tolli-faq-group {
+    position: relative;
+    scroll-margin-top: 10rem;
+  }
+
+  .tolli-faq-group__header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0 0 1.6rem;
+  }
+
+  .tolli-faq-group__title {
+    font-family: var(--tolli-font-display);
+    font-size: clamp(2.4rem, 6.2vw, 3.4rem);
+    letter-spacing: -0.01em;
+    color: var(--faq-navy);
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .tolli-faq-group__icon {
+    font-size: 1.05em;
+    line-height: 1;
+    display: inline-block;
+  }
+
+  .tolli-faq-group__burst {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.2rem;
+    width: 2rem;
+    height: 1.8rem;
+  }
+
+  .tolli-faq-group__burst svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Botanical leafy vine on Mix & Sip */
+  .tolli-faq-leaf-decor {
+    position: absolute;
+    right: -2rem;
+    top: 0;
+    width: 7rem;
+    height: 12rem;
+    pointer-events: none;
+    opacity: 0.85;
+    z-index: 1;
+  }
+
+  @media screen and (min-width: 990px) {
+    .tolli-faq-leaf-decor {
+      right: -8rem;
+      top: -2rem;
+      width: 11rem;
+      height: 18rem;
+    }
+  }
+
+  /* Accordion Item Styling */
+  .tolli-faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .tolli-faq-item {
+    border-radius: var(--faq-radius);
+    background: #ffffff;
+    border: 1px solid rgba(0, 62, 85, 0.09);
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 2px 6px rgba(0, 62, 85, 0.02);
+  }
+
+  .tolli-faq-item:hover {
+    border-color: rgba(0, 62, 85, 0.18);
+    box-shadow: 0 4px 14px rgba(0, 62, 85, 0.05);
+  }
+
+  .tolli-faq-item[open] {
+    border-color: rgba(237, 0, 86, 0.22);
+    box-shadow: 0 6px 18px rgba(237, 0, 86, 0.06);
+    background: #ffffff;
+  }
+
+  .tolli-faq-item__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.6rem;
+    padding: 1.6rem 1.8rem;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tolli-faq-item__q::-webkit-details-marker {
+    display: none;
+  }
+
+  .tolli-faq-item__q:focus-visible {
+    outline: 2px solid var(--faq-pink);
+    outline-offset: 2px;
+    border-radius: var(--faq-radius);
+  }
+
+  .tolli-faq-item__question-text {
+    font-family: var(--tolli-font-body);
+    font-size: clamp(1.55rem, 3.7vw, 1.8rem);
+    font-weight: 800;
+    line-height: 1.3;
+    color: var(--faq-navy);
+    transition: color 0.2s ease;
+  }
+
+  .tolli-faq-item[open] .tolli-faq-item__question-text {
+    color: var(--faq-pink);
+  }
+
+  .tolli-faq-item__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 50%;
+    color: var(--faq-navy);
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.2s ease;
+  }
+
+  .tolli-faq-item__toggle svg {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+
+  .tolli-faq-item[open] .tolli-faq-item__toggle {
+    transform: rotate(180deg);
+    color: var(--faq-pink);
+  }
+
+  .tolli-faq-item__a {
+    padding: 0 1.8rem 1.8rem;
+    font-family: var(--tolli-font-body);
+    font-size: clamp(1.45rem, 3.4vw, 1.65rem);
+    font-weight: 400;
+    line-height: 1.58;
+    color: var(--faq-navy);
+    opacity: 0.92;
+  }
+
+  .tolli-faq-item__a p {
+    margin: 0 0 0.8rem;
+  }
+  .tolli-faq-item__a p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* ---------- STILL CURIOUS? CONTACT BANNER ---------- */
+  .tolli-faq-contact-card {
+    max-width: 90rem;
+    margin: 4.8rem auto 0;
+    padding: 2rem 2.2rem;
+    border-radius: 2.4rem;
+    background: var(--faq-blush);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.6rem;
+  }
+
+  .tolli-faq-contact-card__info {
+    min-width: 0;
+  }
+
+  .tolli-faq-contact-card__title {
+    font-family: var(--tolli-font-display);
+    font-size: clamp(2.4rem, 6.2vw, 3.6rem);
+    line-height: 1.05;
+    color: var(--faq-navy);
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .tolli-faq-contact-card__burst {
+    width: 1.6rem;
+    height: 1.6rem;
+    stroke: var(--faq-pink);
+    stroke-width: 3.5;
+    stroke-linecap: round;
+  }
+
+  .tolli-faq-contact-card__text {
+    margin: 0.4rem 0 0;
+    font-family: var(--tolli-font-body);
+    font-size: clamp(1.4rem, 3.4vw, 1.8rem);
+    font-weight: 600;
+    color: var(--faq-navy);
+    opacity: 0.9;
+  }
+
+  .tolli-faq-contact-card .tolli-btn {
+    width: auto;
+    white-space: nowrap;
+    padding: 0.8rem 2.2rem;
+    font-size: clamp(1.4rem, 3.5vw, 1.7rem);
+    min-height: 4.2rem;
+    border-radius: 99rem;
+    box-shadow: 0 4px 14px rgba(0, 62, 85, 0.18);
+  }
+
+  @media screen and (min-width: 750px) {
+    .tolli-faq-contact-card {
+      margin-top: 6.4rem;
+      padding: 3rem 4rem;
+      border-radius: 2.8rem;
+    }
+    .tolli-faq-contact-card .tolli-btn {
+      min-height: 4.8rem;
+      padding: 1rem 3.2rem;
+      font-size: 1.8rem;
+    }
+  }
+
+  /* ---------- PICK YOUR SIP PRODUCT SECTION ---------- */
+  .tolli-faq-products {
+    margin-top: 5.6rem;
+    text-align: center;
+  }
+
+  .tolli-faq-products__heading {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-family: var(--tolli-font-display);
+    font-size: clamp(3.2rem, 8vw, 5.2rem);
+    color: var(--faq-navy);
+    margin: 0 0 2.4rem;
+    line-height: 1;
+  }
+
+  .tolli-faq-products__heading .tolli-hl {
+    color: var(--faq-pink);
+  }
+
+  .tolli-faq-products__heading .tolli-burst {
+    width: 0.6em;
+    height: 0.6em;
+    margin-top: -0.1em;
+    color: var(--faq-pink);
+  }
+
+  .tolli-faq-products__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.8rem;
+    max-width: 90rem;
+    margin: 0 auto;
+  }
+
+  @media screen and (min-width: 990px) {
+    .tolli-faq-products {
+      margin-top: 7.2rem;
+    }
+    .tolli-faq-products__heading {
+      margin-bottom: 3.6rem;
+    }
+    .tolli-faq-products__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 2.4rem;
+      max-width: 104rem;
+    }
+  }
+
+  .tolli-faq-card {
+    display: grid;
+    grid-template-columns: 46% 54%;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.4rem 1.6rem 1.4rem 1.2rem;
+    border-radius: 2rem;
+    text-align: left;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .tolli-faq-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1.2rem 2.8rem rgba(0, 62, 85, 0.08);
+  }
+
+  .tolli-faq-card--hydration {
+    background: var(--faq-mint);
+  }
+
+  .tolli-faq-card--protein {
+    background: var(--faq-blush);
+  }
+
+  .tolli-faq-card__media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 16rem;
+  }
+
+  .tolli-faq-card__media img {
+    width: 100%;
+    max-width: 18rem;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 14px rgba(0, 40, 60, 0.14));
+    transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .tolli-faq-card:hover .tolli-faq-card__media img {
+    transform: translateY(-4px) rotate(-1.5deg);
+  }
+
+  .tolli-faq-card__body {
+    min-width: 0;
+  }
+
+  .tolli-faq-card__eyebrow {
+    font-family: var(--tolli-font-body);
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--faq-navy);
+    margin: 0 0 0.2rem;
+    line-height: 1.2;
+  }
+
+  .tolli-faq-card__title {
+    font-family: var(--tolli-font-display);
+    font-size: clamp(2rem, 5.2vw, 2.7rem);
+    line-height: 1.05;
+    color: var(--faq-navy);
+    margin: 0 0 0.6rem;
+  }
+
+  .tolli-faq-card__specs {
+    font-family: var(--tolli-font-body);
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--faq-navy);
+    opacity: 0.9;
+    line-height: 1.35;
+    margin: 0 0 1.2rem;
+  }
+
+  .tolli-faq-card .tolli-btn {
+    width: 100%;
+    min-height: 4.2rem;
+    padding: 0.7rem 1.4rem;
+    font-size: clamp(1.3rem, 3.6vw, 1.55rem);
+    border-radius: 99rem;
+    white-space: nowrap;
+  }
+
+  @media screen and (min-width: 750px) {
+    .tolli-faq-card {
+      padding: 2.2rem 2.6rem 2.2rem 2rem;
+      border-radius: 2.4rem;
+      gap: 2rem;
+    }
+    .tolli-faq-card__media {
+      min-height: 20rem;
+    }
+    .tolli-faq-card__media img {
+      max-width: 22rem;
+    }
+    .tolli-faq-card__eyebrow {
+      font-size: 1.6rem;
+    }
+    .tolli-faq-card__title {
+      font-size: 2.8rem;
+    }
+    .tolli-faq-card__specs {
+      font-size: 1.5rem;
+      margin-bottom: 1.6rem;
+    }
+    .tolli-faq-card .tolli-btn {
+      min-height: 4.8rem;
+      font-size: 1.65rem;
+    }
+  }
+{%- endstyle -%}
+
+<div class="tolli-section tolli-faq-page">
+  <div class="tolli-container">
+    
+    <!-- 1. FAQ HERO SECTION -->
+    <div class="tolli-faq-hero">
+      <div class="tolli-faq-hero__content">
+        <div class="tolli-faq-hero__eyebrow">
+          <svg class="tolli-faq-hero__slashes" viewBox="0 0 20 18" fill="none" stroke="currentColor">
+            <line x1="5" y1="16" x2="11" y2="2"/>
+            <line x1="11" y1="16" x2="17" y2="2"/>
+          </svg>
+          <span>{{ section.settings.eyebrow | default: 'HERE TO HELP' }}</span>
+        </div>
+
+        <h1 class="tolli-faq-hero__title">
+          <span>{{ section.settings.title_line_1 | default: 'Good questions.' }}</span><br>
+          <span class="tolli-hl">
+            {{ section.settings.title_line_2 | default: 'Fresh answers.' }}
+            <span class="tolli-burst" aria-hidden="true">{% render 'tolli-icon', icon: 'burst' %}</span>
+          </span>
+        </h1>
+
+        <p class="tolli-faq-hero__subtitle">{{ section.settings.subtitle | default: 'Get to know your feel-good sips.' }}</p>
+
+        <!-- Desktop Quick Nav Pills -->
+        <nav class="tolli-faq-nav" aria-label="FAQ Categories">
+          <a class="tolli-faq-nav__btn" href="#faq-drinks"><span>🍓</span> The drinks</a>
+          <a class="tolli-faq-nav__btn" href="#faq-mix"><span>🥤</span> Mix &amp; sip</a>
+          <a class="tolli-faq-nav__btn" href="#faq-orders"><span>🚚</span> Orders &amp; delivery</a>
+        </nav>
+      </div>
+
+      <!-- Hero Visual: Strawberry Lemonade Glass + Yellow Sun Doodle -->
+      <div class="tolli-faq-hero__visual" aria-hidden="true">
+        <!-- Sun Doodle -->
+        <svg class="tolli-faq-hero__sun-doodle" viewBox="0 0 100 100" fill="none" stroke="#FFDC32" stroke-width="6.5" stroke-linecap="round">
+          <circle cx="50" cy="50" r="18"/>
+          <path d="M50 10v12M50 78v12M10 50h12M78 50h12M22 22l9 9M69 69l9 9M22 78l9-9M69 31l9-9"/>
+        </svg>
+
+        <!-- Scene Image with soft masked corners -->
+        <div class="tolli-faq-hero__scene">
+          {%- if section.settings.hero_image != blank -%}
+            {{ section.settings.hero_image | image_url: width: 800 | image_tag: loading: 'eager', alt: 'Tolli refreshingly iced drinks' }}
+          {%- else -%}
+            <img src="{{ 'tolli-hero.jpg' | asset_url }}" width="800" height="600" alt="Tolli refreshingly iced drinks" loading="eager">
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. CATEGORIZED FAQ ACCORDION -->
+    <div class="tolli-faq-groups">
+
+      <!-- CATEGORY 1: The drinks -->
+      <section id="faq-drinks" class="tolli-faq-group">
+        <header class="tolli-faq-group__header">
+          <h2 class="tolli-faq-group__title">
+            <span class="tolli-faq-group__icon">🍓</span>
+            <span>{{ section.settings.cat_1_title | default: 'The drinks' }}</span>
+          </h2>
+          <!-- Yellow Doodle Bursts -->
+          <span class="tolli-faq-group__burst" aria-hidden="true">
+            <svg viewBox="0 0 20 18" fill="none" stroke="#FFDC32" stroke-width="3.2" stroke-linecap="round">
+              <path d="M4 14 L14 4"/>
+              <path d="M10 16 L18 8"/>
+            </svg>
+          </span>
+        </header>
+
+        <div class="tolli-faq-list">
+          {%- for block in section.blocks -%}
+            {%- if block.settings.category == 'drinks' -%}
+              <details class="tolli-faq-item"{% if block.settings.open_by_default %} open{% endif %} {{ block.shopify_attributes }}>
+                <summary class="tolli-faq-item__q">
+                  <span class="tolli-faq-item__question-text">{{ block.settings.question | escape }}</span>
+                  <span class="tolli-faq-item__toggle" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                  </span>
+                </summary>
+                <div class="tolli-faq-item__a">
+                  {{ block.settings.answer }}
+                </div>
+              </details>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </section>
+
+      <!-- CATEGORY 2: Mix & sip -->
+      <section id="faq-mix" class="tolli-faq-group">
+        <!-- Decorative Green Leaves on Right Edge -->
+        <svg class="tolli-faq-leaf-decor" viewBox="0 0 110 180" fill="none" aria-hidden="true">
+          <path d="M100 0 C70 40, 50 90, 70 180" stroke="#75CE9E" stroke-width="3" stroke-linecap="round"/>
+          <path d="M78 40 C50 35, 30 50, 45 75 C60 70, 70 55, 78 40 Z" fill="#6FD3A0" opacity="0.9"/>
+          <path d="M68 90 C35 90, 20 110, 38 135 C55 128, 62 110, 68 90 Z" fill="#58C58E" opacity="0.85"/>
+          <path d="M72 140 C50 145, 38 160, 52 178 C68 170, 70 155, 72 140 Z" fill="#8EDFB7" opacity="0.9"/>
+        </svg>
+
+        <header class="tolli-faq-group__header">
+          <h2 class="tolli-faq-group__title">
+            <span class="tolli-faq-group__icon">🥤</span>
+            <span>{{ section.settings.cat_2_title | default: 'Mix & sip' }}</span>
+          </h2>
+          <!-- Yellow Doodle Bursts -->
+          <span class="tolli-faq-group__burst" aria-hidden="true">
+            <svg viewBox="0 0 20 18" fill="none" stroke="#FFDC32" stroke-width="3.2" stroke-linecap="round">
+              <path d="M4 14 L14 4"/>
+              <path d="M10 16 L18 8"/>
+            </svg>
+          </span>
+        </header>
+
+        <div class="tolli-faq-list">
+          {%- for block in section.blocks -%}
+            {%- if block.settings.category == 'mix' -%}
+              <details class="tolli-faq-item"{% if block.settings.open_by_default %} open{% endif %} {{ block.shopify_attributes }}>
+                <summary class="tolli-faq-item__q">
+                  <span class="tolli-faq-item__question-text">{{ block.settings.question | escape }}</span>
+                  <span class="tolli-faq-item__toggle" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                  </span>
+                </summary>
+                <div class="tolli-faq-item__a">
+                  {{ block.settings.answer }}
+                </div>
+              </details>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </section>
+
+      <!-- CATEGORY 3: Orders & delivery -->
+      <section id="faq-orders" class="tolli-faq-group">
+        <header class="tolli-faq-group__header">
+          <h2 class="tolli-faq-group__title">
+            <span class="tolli-faq-group__icon">🚚</span>
+            <span>{{ section.settings.cat_3_title | default: 'Orders & delivery' }}</span>
+          </h2>
+          <!-- Pink Burst -->
+          <span class="tolli-faq-group__burst" aria-hidden="true">
+            <svg viewBox="0 0 20 18" fill="none" stroke="#ED0056" stroke-width="3.2" stroke-linecap="round">
+              <line x1="5" y1="16" x2="11" y2="2"/>
+              <line x1="11" y1="16" x2="17" y2="2"/>
+            </svg>
+          </span>
+        </header>
+
+        <div class="tolli-faq-list">
+          {%- for block in section.blocks -%}
+            {%- if block.settings.category == 'orders' -%}
+              <details class="tolli-faq-item"{% if block.settings.open_by_default %} open{% endif %} {{ block.shopify_attributes }}>
+                <summary class="tolli-faq-item__q">
+                  <span class="tolli-faq-item__question-text">{{ block.settings.question | escape }}</span>
+                  <span class="tolli-faq-item__toggle" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                  </span>
+                </summary>
+                <div class="tolli-faq-item__a">
+                  {{ block.settings.answer }}
+                </div>
+              </details>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 3. STILL CURIOUS? CONTACT BANNER -->
+    <div class="tolli-faq-contact-card">
+      <div class="tolli-faq-contact-card__info">
+        <h3 class="tolli-faq-contact-card__title">
+          <span>{{ section.settings.contact_title | default: 'Still curious?' }}</span>
+          <svg class="tolli-faq-contact-card__burst" viewBox="0 0 20 18" fill="none" stroke="currentColor">
+            <line x1="5" y1="16" x2="11" y2="2"/>
+            <line x1="11" y1="16" x2="17" y2="2"/>
+          </svg>
+        </h3>
+        <p class="tolli-faq-contact-card__text">{{ section.settings.contact_text | default: "We're here to help." }}</p>
+      </div>
+
+      <a class="tolli-btn" href="{{ section.settings.contact_button_link | default: '/pages/contact' }}">
+        <span>{{ section.settings.contact_button_label | default: 'Contact us' }}</span>
+        {% render 'tolli-icon', icon: 'arrow', class: 'tolli-btn__arrow' %}
+      </a>
+    </div>
+
+    <!-- 4. PICK YOUR SIP PRODUCT CARDS -->
+    {%- if section.settings.show_product_cards -%}
+      <div class="tolli-faq-products">
+        <h2 class="tolli-faq-products__heading">
+          <span>Pick your <span class="tolli-hl">sip.</span></span>
+          <span class="tolli-burst" aria-hidden="true">{% render 'tolli-icon', icon: 'burst' %}</span>
+        </h2>
+
+        <div class="tolli-faq-products__grid">
+          
+          <!-- Card 1: Daily Hydration Strawberry Lemonade -->
+          <article class="tolli-faq-card tolli-faq-card--hydration">
+            <div class="tolli-faq-card__media">
+              {%- if section.settings.card_1_image != blank -%}
+                {{ section.settings.card_1_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: 'tolli Daily Hydration Strawberry Lemonade' }}
+              {%- else -%}
+                <img src="{{ 'tolli-pouch-hydration.png' | asset_url }}" width="374" height="522" alt="tolli Daily Hydration Strawberry Lemonade" loading="lazy">
+              {%- endif -%}
+            </div>
+            <div class="tolli-faq-card__body">
+              <p class="tolli-faq-card__eyebrow">{{ section.settings.card_1_eyebrow | default: 'Daily Hydration' }}</p>
+              <h3 class="tolli-faq-card__title">{{ section.settings.card_1_title | default: 'Strawberry Lemonade' }}</h3>
+              <p class="tolli-faq-card__specs">{{ section.settings.card_1_specs | default: '5 electrolytes + 3 vitamins<br>15 servings' | replace: '\n', '<br>' }}</p>
+              <a class="tolli-btn" href="{{ section.settings.card_1_link | default: '/products/tolli-hydration-strawberry-lemonade' }}">
+                <span>{{ section.settings.card_1_btn | default: 'Shop hydration' }}</span>
+                {% render 'tolli-icon', icon: 'arrow', class: 'tolli-btn__arrow' %}
+              </a>
+            </div>
+          </article>
+
+          <!-- Card 2: Clear Protein Raspberry Lemonade -->
+          <article class="tolli-faq-card tolli-faq-card--protein">
+            <div class="tolli-faq-card__media">
+              {%- if section.settings.card_2_image != blank -%}
+                {{ section.settings.card_2_image | image_url: width: 600 | image_tag: loading: 'lazy', alt: 'tolli Clear Protein Raspberry Lemonade' }}
+              {%- else -%}
+                <img src="{{ 'tolli-pouch-protein.png' | asset_url }}" width="293" height="366" alt="tolli Clear Protein Raspberry Lemonade" loading="lazy">
+              {%- endif -%}
+            </div>
+            <div class="tolli-faq-card__body">
+              <p class="tolli-faq-card__eyebrow">{{ section.settings.card_2_eyebrow | default: 'Clear Protein' }}</p>
+              <h3 class="tolli-faq-card__title">{{ section.settings.card_2_title | default: 'Raspberry Lemonade' }}</h3>
+              <p class="tolli-faq-card__specs">{{ section.settings.card_2_specs | default: '22g protein<br>10 servings' | replace: '\n', '<br>' }}</p>
+              <a class="tolli-btn" href="{{ section.settings.card_2_link | default: '/products/tolli-clear-protein-raspberry-lemonade' }}">
+                <span>{{ section.settings.card_2_btn | default: 'Shop clear protein' }}</span>
+                {% render 'tolli-icon', icon: 'arrow', class: 'tolli-btn__arrow' %}
+              </a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+<!-- Structured Data for FAQPage -->
+{%- if section.blocks.size > 0 -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {%- assign is_first_item = true -%}
+        {%- for block in section.blocks -%}
+          {%- if block.settings.question != blank and block.settings.answer != blank -%}
+            {%- unless is_first_item %},{% endunless -%}
+            {
+              "@type": "Question",
+              "name": {{ block.settings.question | json }},
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": {{ block.settings.answer | strip_html | json }}
+              }
+            }
+            {%- assign is_first_item = false -%}
+          {%- endif -%}
+        {%- endfor -%}
+      ]
+    }
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Tolli FAQ Page",
+  "tag": "section",
+  "class": "tolli-faq-page-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero settings"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "HERE TO HELP"
+    },
+    {
+      "type": "text",
+      "id": "title_line_1",
+      "label": "Title Line 1",
+      "default": "Good questions."
+    },
+    {
+      "type": "text",
+      "id": "title_line_2",
+      "label": "Title Line 2 (Highlighted)",
+      "default": "Fresh answers."
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Get to know your feel-good sips."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero Scene Image (Optional override)"
+    },
+    {
+      "type": "header",
+      "content": "Category Headings"
+    },
+    {
+      "type": "text",
+      "id": "cat_1_title",
+      "label": "Category 1 Title",
+      "default": "The drinks"
+    },
+    {
+      "type": "text",
+      "id": "cat_2_title",
+      "label": "Category 2 Title",
+      "default": "Mix & sip"
+    },
+    {
+      "type": "text",
+      "id": "cat_3_title",
+      "label": "Category 3 Title",
+      "default": "Orders & delivery"
+    },
+    {
+      "type": "header",
+      "content": "Still Curious? Contact Card"
+    },
+    {
+      "type": "text",
+      "id": "contact_title",
+      "label": "Contact Title",
+      "default": "Still curious?"
+    },
+    {
+      "type": "text",
+      "id": "contact_text",
+      "label": "Contact Text",
+      "default": "We're here to help."
+    },
+    {
+      "type": "text",
+      "id": "contact_button_label",
+      "label": "Button Label",
+      "default": "Contact us"
+    },
+    {
+      "type": "url",
+      "id": "contact_button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Pick your sip Products"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_cards",
+      "label": "Show 'Pick your sip' product cards",
+      "default": true
+    },
+    {
+      "type": "paragraph",
+      "content": "--- Card 1: Daily Hydration ---"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_1_image",
+      "label": "Card 1 Image"
+    },
+    {
+      "type": "text",
+      "id": "card_1_eyebrow",
+      "label": "Card 1 Eyebrow",
+      "default": "Daily Hydration"
+    },
+    {
+      "type": "text",
+      "id": "card_1_title",
+      "label": "Card 1 Title",
+      "default": "Strawberry Lemonade"
+    },
+    {
+      "type": "textarea",
+      "id": "card_1_specs",
+      "label": "Card 1 Specs",
+      "default": "5 electrolytes + 3 vitamins\n15 servings"
+    },
+    {
+      "type": "text",
+      "id": "card_1_btn",
+      "label": "Card 1 Button Label",
+      "default": "Shop hydration"
+    },
+    {
+      "type": "url",
+      "id": "card_1_link",
+      "label": "Card 1 Button Link"
+    },
+    {
+      "type": "paragraph",
+      "content": "--- Card 2: Clear Protein ---"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_2_image",
+      "label": "Card 2 Image"
+    },
+    {
+      "type": "text",
+      "id": "card_2_eyebrow",
+      "label": "Card 2 Eyebrow",
+      "default": "Clear Protein"
+    },
+    {
+      "type": "text",
+      "id": "card_2_title",
+      "label": "Card 2 Title",
+      "default": "Raspberry Lemonade"
+    },
+    {
+      "type": "textarea",
+      "id": "card_2_specs",
+      "label": "Card 2 Specs",
+      "default": "22g protein\n10 servings"
+    },
+    {
+      "type": "text",
+      "id": "card_2_btn",
+      "label": "Card 2 Button Label",
+      "default": "Shop clear protein"
+    },
+    {
+      "type": "url",
+      "id": "card_2_link",
+      "label": "Card 2 Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Colors and Spacing"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background Color",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding mobile",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding mobile",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding desktop",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding desktop",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "FAQ Question",
+      "settings": [
+        {
+          "type": "select",
+          "id": "category",
+          "label": "Category",
+          "options": [
+            {
+              "value": "drinks",
+              "label": "🍓 The drinks"
+            },
+            {
+              "value": "mix",
+              "label": "🥤 Mix & sip"
+            },
+            {
+              "value": "orders",
+              "label": "🚚 Orders & delivery"
+            }
+          ],
+          "default": "drinks"
+        },
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Question title"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Answer content</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_by_default",
+          "label": "Open by default",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli FAQ Page",
+      "blocks": [
+        {
+          "type": "question",
+          "settings": {
+            "category": "drinks",
+            "question": "What is tolli Daily Hydration?",
+            "answer": "<p>A strawberry lemonade drink mix with 5 electrolytes and 3 vitamins.</p>",
+            "open_by_default": true
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "category": "drinks",
+            "question": "What is tolli Clear Protein?",
+            "answer": "<p>Refreshing raspberry lemonade protein water with 22g protein per serving.</p>",
+            "open_by_default": true
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "category": "drinks",
+            "question": "Are both drinks zero sugar?",
+            "answer": "<p>Yes! Both tolli Daily Hydration and tolli Clear Protein are completely zero sugar, giving you all the vibrant, refreshing flavour without the sugar crash.</p>",
+            "open_by_default": false
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "category": "drinks",
+            "question": "How does vitamin C support immunity?",
+            "answer": "<p>Vitamin C is a powerful antioxidant that supports normal immune function, helps protect cells against oxidative stress, and aids in daily energy metabolism.</p>",
+            "open_by_default": false
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "category": "drinks",
+            "question": "Are the drinks vegan?",
+            "answer": "<p>Yes. Both tolli Daily Hydration and tolli Clear Protein are 100% plant-based and vegan.</p>",
+            "open_by_default": false
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "category": "drinks",
+            "question": "How many servings are in each pouch?",
+            "answer": "<p>tolli Daily Hydration contains 15 servings per pouch (S$1.66 per serving), while tolli Clear Protein contains 10 servings per pouch (S$2.49 per serving).</p>",
+            "open_by_default": false
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "category": "mix",
+            "question": "How do I make it?",
+            "answer": "<p>Mix a serving with cold water. Follow the directions on your pouch.</p>",
+            "open_by_default": true
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "category": "mix",
+            "question": "How much water should I use?",
+            "answer": "<p>We recommend mixing one serving with 350ml to 500ml of cold water. Adjust to your personal taste: less water for a stronger, fruit-forward taste, or more water for a lighter, extra-refreshing sip. Add ice if you like!</p>",
+            "open_by_default": false
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "category": "mix",
+            "question": "When can I enjoy tolli?",
+            "answer": "<p>Daily Hydration is perfect throughout the day: during busy work hours, hot sunny afternoons, or after a workout. Clear Protein is ideal post-exercise or as a refreshing, light protein boost between meals.</p>",
+            "open_by_default": false
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "category": "orders",
+            "question": "Where do you deliver?",
+            "answer": "<p>Delivery options are shown at checkout.</p>",
+            "open_by_default": true
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "category": "orders",
+            "question": "How can I get help with my order?",
+            "answer": "<p>Our team is always happy to help! Reach out through our Contact Us page or email us anytime at hello@drinktolli.com.</p>",
+            "open_by_default": false
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

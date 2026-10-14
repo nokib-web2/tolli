@@ -1,0 +1,27 @@
+{%- comment -%}
+  Shared section heading: eyebrow badge, display title and intro text.
+  Reads section.settings.eyebrow / title / text / show_burst.
+  Params: section, align ('center' | 'left'), class
+{%- endcomment -%}
+{%- liquid
+  assign head_title = section.settings.title | escape | replace: '[', '<span class="tolli-hl">' | replace: ']', '</span>' | replace: '|', ' <br>'
+  assign head_align = align | default: 'center'
+-%}
+{%- if section.settings.eyebrow != blank or section.settings.title != blank or section.settings.text != blank -%}
+  <div class="tolli-head tolli-head--{{ head_align }} {{ class }}">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="tolli-head__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    {%- endif -%}
+    {%- if section.settings.title != blank -%}
+      <h2 class="tolli-display tolli-head__title">
+        {{- head_title -}}
+        {%- if section.settings.show_burst -%}
+          <span class="tolli-burst" aria-hidden="true">{% render 'tolli-icon', icon: 'burst-small' %}</span>
+        {%- endif -%}
+      </h2>
+    {%- endif -%}
+    {%- if section.settings.text != blank -%}
+      <p class="tolli-head__text">{{ section.settings.text | escape | newline_to_br }}</p>
+    {%- endif -%}
+  </div>
+{%- endif -%}

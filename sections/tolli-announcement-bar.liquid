@@ -1,0 +1,216 @@
+{%- style -%}
+  #shopify-section-{{ section.id }} .tolli-announce {
+    background: {{ section.settings.background }};
+    color: {{ section.settings.text_color }};
+    padding: {{ section.settings.padding_mobile }}px 1.6rem;
+    font-size: {{ section.settings.text_size_mobile }}px;
+    letter-spacing: {{ section.settings.letter_spacing | divided_by: 100.0 }}em;
+  }
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .tolli-announce {
+      padding: {{ section.settings.padding_desktop }}px 3.2rem;
+      font-size: {{ section.settings.text_size_desktop }}px;
+    }
+  }
+{%- endstyle -%}
+
+<style>
+  .tolli-announce {
+    position: relative;
+    font-family: var(--tolli-font-body);
+    font-weight: 800;
+    line-height: 1.25;
+    text-align: center;
+  }
+  .tolli-announce--uppercase {
+    text-transform: uppercase;
+  }
+  .tolli-announce__track {
+    display: grid;
+    max-width: 120rem;
+    margin: 0 auto;
+  }
+  .tolli-announce__item {
+    grid-area: 1 / 1;
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+  .tolli-announce__item.is-active {
+    opacity: 1;
+    visibility: visible;
+  }
+  .tolli-announce__item a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .tolli-announce__item a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+</style>
+
+<div class="tolli-announce{% if section.settings.uppercase %} tolli-announce--uppercase{% endif %}" role="region" aria-label="{{ 'sections.header.announcement' | t }}">
+  <div class="tolli-announce__track" data-tolli-announce data-speed="{{ section.settings.autoplay_speed }}">
+    {%- for block in section.blocks -%}
+      <p class="tolli-announce__item{% if forloop.first %} is-active{% endif %}" {{ block.shopify_attributes }}>
+        {%- if block.settings.link != blank -%}
+          <a href="{{ block.settings.link }}">{{ block.settings.text | escape }}</a>
+        {%- else -%}
+          {{ block.settings.text | escape }}
+        {%- endif -%}
+      </p>
+    {%- endfor -%}
+  </div>
+</div>
+
+<script>
+  (function () {
+    var bar = document.getElementById('shopify-section-{{ section.id }}');
+    if (!bar) return;
+    var setHeight = function () {
+      document.documentElement.style.setProperty('--tolli-announce-h', bar.offsetHeight + 'px');
+    };
+    setHeight();
+    if ('ResizeObserver' in window) new ResizeObserver(setHeight).observe(bar);
+  })();
+</script>
+
+{%- if section.blocks.size > 1 -%}
+  <script>
+    (function () {
+      var track = document.querySelector('#shopify-section-{{ section.id }} [data-tolli-announce]');
+      if (!track) return;
+      var items = track.querySelectorAll('.tolli-announce__item');
+      var index = 0;
+      var speed = (parseInt(track.dataset.speed, 10) || 4) * 1000;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      setInterval(function () {
+        items[index].classList.remove('is-active');
+        index = (index + 1) % items.length;
+        items[index].classList.add('is-active');
+      }, speed);
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Tolli announcement bar",
+  "class": "tolli-announcement-section",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text colour",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "checkbox",
+      "id": "uppercase",
+      "label": "Uppercase text",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "label": "Letter spacing",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "text_size_mobile",
+      "min": 10,
+      "max": 22,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size on mobile",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "text_size_desktop",
+      "min": 10,
+      "max": 26,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size on desktop",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "padding_mobile",
+      "min": 2,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Vertical padding on mobile",
+      "default": 7
+    },
+    {
+      "type": "range",
+      "id": "padding_desktop",
+      "min": 2,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Vertical padding on desktop",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Rotate messages every",
+      "info": "Only applies when there is more than one message.",
+      "default": 4
+    }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Good sips. Good vibes."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli announcement bar",
+      "blocks": [
+        {
+          "type": "message"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

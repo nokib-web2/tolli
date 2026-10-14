@@ -1,0 +1,558 @@
+{% render 'tolli-section-style', section: section %}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .tolli-reviews {
+    --rev-card: {{ section.settings.card_bg }};
+    --rev-star: {{ section.settings.star_color }};
+    --rev-cols: {{ section.settings.columns_desktop }};
+  }
+{%- endstyle -%}
+
+<style>
+  .tolli-reviews__summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: -1.2rem 0 2.8rem;
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+  .tolli-reviews__stars {
+    display: inline-flex;
+    gap: 0.2rem;
+    color: var(--rev-star);
+  }
+  .tolli-reviews__stars svg {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+  .tolli-reviews__stars .is-empty {
+    opacity: 0.25;
+  }
+  .tolli-reviews__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 84%;
+    gap: 1.2rem;
+    margin: 0 calc(-1 * var(--tolli-gutter));
+    padding: 0.4rem var(--tolli-gutter) 1.6rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 var(--tolli-gutter);
+    scrollbar-width: none;
+    list-style: none;
+  }
+  .tolli-reviews__track::-webkit-scrollbar {
+    display: none;
+  }
+  .tolli-review {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding: 2.4rem 2rem 2rem;
+    border-radius: 1.4rem;
+    background: var(--rev-card);
+    box-shadow: 0 1.6rem 3.2rem -2rem rgba(0, 62, 85, 0.3);
+    scroll-snap-align: start;
+  }
+  .tolli-review::before {
+    content: '\201C';
+    position: absolute;
+    top: 0.4rem;
+    right: 1.8rem;
+    font-family: var(--tolli-font-display);
+    font-size: 8rem;
+    line-height: 1;
+    color: var(--tolli-head-hl);
+    opacity: 0.18;
+  }
+  .tolli-review__title {
+    margin: 0;
+    font-family: var(--tolli-font-display);
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1.15;
+  }
+  .tolli-review__title {
+    color: inherit;
+  }
+  .tolli-review__quote {
+    flex: 1;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-style: normal;
+    color: inherit;
+    font-size: 1.5rem;
+    line-height: 1.5;
+  }
+  .tolli-review__author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 1.2rem;
+    border-top: 1px dashed rgba(0, 62, 85, 0.15);
+  }
+  .tolli-review__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: var(--avatar-bg);
+    font-family: var(--tolli-font-display);
+    font-size: 1.8rem;
+    color: var(--tolli-navy);
+  }
+  .tolli-review__name {
+    display: block;
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+  .tolli-review__detail {
+    display: block;
+    font-size: 1.3rem;
+    opacity: 0.7;
+  }
+  .tolli-reviews__hint {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 0.4rem;
+  }
+  .tolli-reviews__hint span {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 99rem;
+    background: currentColor;
+    opacity: 0.2;
+    transition: width 0.3s ease, opacity 0.3s ease;
+  }
+  .tolli-reviews__hint span.is-active {
+    width: 2.4rem;
+    opacity: 0.6;
+  }
+
+  @media screen and (min-width: 750px) {
+    .tolli-reviews__track {
+      grid-auto-columns: 46%;
+      gap: 2rem;
+    }
+    .tolli-review {
+      padding: 3.2rem 2.8rem 2.8rem;
+    }
+    .tolli-review__title {
+      font-size: 2.4rem;
+    }
+    .tolli-review__quote {
+      font-size: 1.7rem;
+    }
+  }
+  @media screen and (min-width: 990px) {
+    .tolli-reviews__track {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(var(--rev-cols), minmax(0, 1fr));
+      margin: 0;
+      padding: 0.4rem 0 0;
+      overflow: visible;
+    }
+    .tolli-reviews__hint {
+      display: none;
+    }
+    .tolli-review:nth-child(3n + 2) {
+      transform: translateY(2.4rem);
+    }
+  }
+</style>
+
+<div class="tolli-section tolli-has-decor tolli-reviews">
+  {% render 'tolli-section-decor', section: section %}
+  <div class="tolli-container">
+    {% render 'tolli-section-head', section: section %}
+
+    {%- if section.settings.summary != blank -%}
+      <p class="tolli-reviews__summary">
+        <span class="tolli-reviews__stars" aria-hidden="true">
+          {%- for i in (1..5) -%}{% render 'tolli-icon', icon: 'star' %}{%- endfor -%}
+        </span>
+        <span>{{ section.settings.summary | escape }}</span>
+      </p>
+    {%- endif -%}
+
+    <ul class="tolli-reviews__track" role="list">
+      {%- for block in section.blocks -%}
+        {%- assign initial = block.settings.name | strip | slice: 0 | upcase -%}
+        <li class="tolli-review" {{ block.shopify_attributes }}>
+          <span class="tolli-reviews__stars" role="img" aria-label="{{ block.settings.rating }} out of 5 stars">
+            {%- for i in (1..5) -%}
+              <span{% if i > block.settings.rating %} class="is-empty"{% endif %}>{% render 'tolli-icon', icon: 'star' %}</span>
+            {%- endfor -%}
+          </span>
+          {%- if block.settings.title != blank -%}
+            <h3 class="tolli-review__title">{{ block.settings.title | escape }}</h3>
+          {%- endif -%}
+          <blockquote class="tolli-review__quote">{{ block.settings.quote | escape }}</blockquote>
+          <div class="tolli-review__author">
+            <span class="tolli-review__avatar" style="--avatar-bg: {{ block.settings.avatar_color }};" aria-hidden="true">{{ initial }}</span>
+            <span>
+              <span class="tolli-review__name">{{ block.settings.name | escape }}</span>
+              {%- if block.settings.detail != blank -%}
+                <span class="tolli-review__detail">{{ block.settings.detail | escape }}</span>
+              {%- endif -%}
+            </span>
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+    {%- if section.blocks.size > 1 -%}
+      <div class="tolli-reviews__hint" aria-hidden="true">
+        {%- for block in section.blocks -%}<span{% if forloop.first %} class="is-active"{% endif %}></span>{%- endfor -%}
+      </div>
+      <script>
+        (function () {
+          var root = document.getElementById('shopify-section-{{ section.id }}');
+          var track = root && root.querySelector('.tolli-reviews__track');
+          var dots = root ? root.querySelectorAll('.tolli-reviews__hint span') : [];
+          if (!track || !dots.length) return;
+          track.addEventListener('scroll', function () {
+            var card = track.children[0];
+            if (!card) return;
+            var index = Math.round(track.scrollLeft / (card.offsetWidth + 12));
+            dots.forEach(function (dot, i) { dot.classList.toggle('is-active', i === Math.min(index, dots.length - 1)); });
+          }, { passive: true });
+        })();
+      </script>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Tolli reviews",
+  "tag": "div",
+  "class": "tolli-reviews-section",
+  "max_blocks": 9,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Only publish genuine customer reviews. Replace the placeholder text before going live."
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Reviews"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "info": "Wrap words in [brackets] to highlight them. Use | for a line break.",
+      "default": "Sippers [say it best.]"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_burst",
+      "label": "Show accent strokes after title",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Intro text"
+    },
+    {
+      "type": "text",
+      "id": "summary",
+      "label": "Rating summary",
+      "info": "E.g. \"Rated 4.9/5 by 120 customers\". Only use real figures. Leave empty to hide."
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "options": [
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "header",
+      "content": "Colours & spacing"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#FDECF1"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star colour",
+      "default": "#FFC400"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text colour",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight colour",
+      "default": "#ED0056"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 24,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Title size on mobile",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "min": 30,
+      "max": 90,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size on desktop",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding on mobile",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding on mobile",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding on desktop",
+      "default": 96
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding on desktop",
+      "default": 120
+    },
+    {
+      "type": "header",
+      "content": "Background & edges"
+    },
+    {
+      "type": "select",
+      "id": "bg_style",
+      "label": "Background image",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "leaves",
+          "label": "Sunny leaves (built-in)"
+        },
+        {
+          "value": "scene",
+          "label": "Lemonade scene (built-in)"
+        },
+        {
+          "value": "custom",
+          "label": "Custom image"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Custom background image"
+    },
+    {
+      "type": "range",
+      "id": "bg_opacity",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Background image opacity",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "bg_position",
+      "label": "Background image position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "bg_fixed",
+      "label": "Fixed background while scrolling",
+      "info": "Parallax effect: the image stays still and the page scrolls over it.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "wave_top",
+      "label": "Wavy top edge",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "wave_bottom",
+      "label": "Wavy bottom edge",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "wave_color",
+      "label": "Top wave colour",
+      "info": "Match the background of the section above.",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "color",
+      "id": "wave_bottom_color",
+      "label": "Bottom wave colour",
+      "info": "Match the background of the section below.",
+      "default": "#FFFDF7"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "range",
+          "id": "rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "label": "Stars",
+          "default": 5
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Headline",
+          "default": "Review headline"
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Review",
+          "default": "Replace this with a real customer review. Short, specific quotes about taste and how tolli fits into their day work best."
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Customer name",
+          "default": "Customer name"
+        },
+        {
+          "type": "text",
+          "id": "detail",
+          "label": "Detail",
+          "info": "E.g. product or \"Verified buyer\".",
+          "default": "Strawberry Lemonade"
+        },
+        {
+          "type": "color",
+          "id": "avatar_color",
+          "label": "Avatar colour",
+          "default": "#FFDC32"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli reviews",
+      "blocks": [
+        {
+          "type": "review"
+        },
+        {
+          "type": "review",
+          "settings": {
+            "detail": "Raspberry Lemonade clear protein",
+            "avatar_color": "#E4F5FC"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "detail": "The duo",
+            "avatar_color": "#E8F7F1"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

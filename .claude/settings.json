@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -I -)",
+      "Bash(python -I \"C:/Users/Nokib/AppData/Local/Temp/claude/c--pixelora-tolli/8a8049c6-e2dd-48a2-9269-fcaf2f9c4ebd/scratchpad/schemacheck.py\" \"C:/pixelora/tolli\")",
+      "Bash(python -I C:/Users/Nokib/AppData/Local/Temp/claude/c--pixelora-tolli/8a8049c6-e2dd-48a2-9269-fcaf2f9c4ebd/scratchpad/schemacheck.py C:/pixelora/tolli)",
+      "Bash(python -I - render-product.js)",
+      "Bash(node render-product.js C:/pixelora/tolli C:/Users/Nokib/AppData/Local/Temp/claude/c--pixelora-tolli/8a8049c6-e2dd-48a2-9269-fcaf2f9c4ebd/scratchpad/render/product.html)",
+      "Bash(python -I -c ' *)"
+    ]
+  }
+}

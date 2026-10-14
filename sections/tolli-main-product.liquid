@@ -1,0 +1,1843 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign mf = product.metafields.tolli
+  assign prefix = section.settings.price_prefix
+  assign product_form_id = 'product-form-' | append: section.id
+
+  assign title_parts = product.title | split: '—'
+  assign parsed_name = title_parts.first | remove_first: 'tolli ' | strip
+  assign parsed_flavour = ''
+  if title_parts.size > 1
+    assign parsed_flavour = title_parts.last | strip
+  endif
+
+  assign headline = mf.headline.value | default: parsed_name | default: product.title
+  assign flavour = mf.flavour.value | default: parsed_flavour
+
+  assign servings = mf.servings.value | default: 0 | plus: 0
+  assign per_serving_cents = 0
+  if servings > 0
+    assign per_serving_cents = current_variant.price | divided_by: servings
+  endif
+
+  assign first_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media
+
+  assign atc_label = 'Add to bag'
+  for b in section.blocks
+    if b.type == 'buy_buttons' and b.settings.button_label != blank
+      assign atc_label = b.settings.button_label
+    endif
+  endfor
+-%}
+{%- comment -%} Fallbacks are parsed from titles like "tolli Daily Hydration — Strawberry Lemonade" {%- endcomment -%}
+
+{%- capture tolli_burst_left -%}<span class="tolli-burst tolli-burst--left" aria-hidden="true">{% render 'tolli-icon', icon: 'burst' %}</span>{%- endcapture -%}
+{%- capture tolli_burst_right -%}<span class="tolli-burst tolli-burst--right tolli-burst--mirror" aria-hidden="true">{% render 'tolli-icon', icon: 'burst' %}</span>{%- endcapture -%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .tolli-pdp {
+    --pdp-text: {{ section.settings.text_color }};
+    --pdp-accent: {{ section.settings.accent_color }};
+    --pdp-ratio: {{ section.settings.mobile_media_ratio }};
+    --pdp-title-m: {{ section.settings.title_size_mobile }}px;
+    --pdp-title-d: {{ section.settings.title_size_desktop }}px;
+    --tolli-btn-bg: {{ section.settings.button_bg }};
+    --tolli-btn-color: {{ section.settings.button_text }};
+    background: {{ section.settings.background }};
+    color: var(--pdp-text);
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+  }
+  @media screen and (min-width: 990px) {
+    #shopify-section-{{ section.id }} .tolli-pdp {
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+  }
+{%- endstyle -%}
+
+<style>
+  .tolli-pdp__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* ---------- Gallery ---------- */
+  .tolli-pdp__media {
+    position: relative;
+    margin: 0 calc(-1 * var(--tolli-gutter));
+    background: var(--pdp-media-bg, transparent);
+  }
+  /* Mobile & tablet: start the photo below the transparent header so the logo never covers the product */
+  .tolli-pdp--media-below .tolli-pdp__media {
+    padding-top: var(--tolli-header-offset, 0px);
+  }
+  .tolli-pdp--media-below .tolli-pdp__fade {
+    display: none;
+  }
+  .tolli-pdp__stage {
+    position: relative;
+    overflow: hidden;
+  }
+  .tolli-pdp__track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tolli-pdp__track::-webkit-scrollbar {
+    display: none;
+  }
+  .tolli-pdp__slide {
+    flex: 0 0 100%;
+    aspect-ratio: var(--pdp-ratio);
+    scroll-snap-align: center;
+    background: var(--tolli-sky);
+  }
+  .tolli-pdp__slide img,
+  .tolli-pdp__slide video,
+  .tolli-pdp__slide iframe,
+  .tolli-pdp__slide model-viewer {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+  }
+  .tolli-pdp__placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--tolli-mint);
+  }
+  .tolli-pdp__fade {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 30%;
+    background: linear-gradient(to bottom, rgba(255, 253, 247, var(--pdp-top-fade, 0.55)), rgba(255, 253, 247, 0));
+    pointer-events: none;
+  }
+  .tolli-pdp__wave {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 3.2rem;
+    color: var(--pdp-wave, var(--tolli-cream));
+    pointer-events: none;
+  }
+  .tolli-pdp__wave path {
+    fill: currentColor;
+  }
+  .tolli-pdp__dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 3.6rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+  .tolli-pdp__dot {
+    width: 0.8rem;
+    height: 0.8rem;
+    padding: 0;
+    border: 0;
+    border-radius: 99rem;
+    background: rgba(0, 62, 85, 0.3);
+    cursor: pointer;
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+  .tolli-pdp__dot.is-active {
+    width: 2.4rem;
+    background: var(--tolli-navy);
+  }
+  .tolli-pdp__thumbs {
+    display: none;
+  }
+
+  /* ---------- Info column ---------- */
+  .tolli-pdp__info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    padding-top: 0.8rem;
+  }
+  .tolli-pdp__block--title {
+    text-align: center;
+  }
+  .tolli-pdp__title {
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    max-width: calc(100% - 1.6em);
+    font-size: min(var(--pdp-title-m), 8.2vw);
+    line-height: 0.98;
+    color: var(--pdp-text);
+  }
+  .tolli-pdp__title .tolli-burst {
+    position: absolute;
+    top: 0.08em;
+    width: 0.6em;
+    height: 0.6em;
+    color: var(--pdp-accent);
+  }
+  .tolli-pdp__title .tolli-burst--left {
+    right: 100%;
+    margin-right: 0.12em;
+  }
+  .tolli-pdp__title .tolli-burst--right {
+    left: 100%;
+    margin-left: 0.12em;
+  }
+  .tolli-pdp__flavour {
+    margin: 0.4rem 0 0;
+    font-family: var(--tolli-font-display);
+    font-size: min(calc(var(--pdp-title-m) * 0.72), 7.4vw);
+    line-height: 1.05;
+    color: var(--pdp-accent);
+  }
+  .tolli-pdp__tagline {
+    margin: 0.6rem 0 0;
+    font-size: 1.9rem;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  .tolli-pdp__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0.6rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 1.6rem;
+    font-weight: 600;
+    opacity: 0.9;
+  }
+  .tolli-pdp__meta li + li::before {
+    content: '';
+    display: inline-block;
+    width: 0.32em;
+    height: 0.32em;
+    margin: 0 0.8em;
+    border-radius: 50%;
+    background: currentColor;
+    vertical-align: middle;
+  }
+
+  .tolli-pdp__chips {
+    display: grid;
+    grid-template-columns: repeat(var(--chip-count, 3), minmax(0, 1fr));
+    gap: 0.8rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tolli-pdp__chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 4.8rem;
+    padding: 0.8rem 0.4rem;
+    border-radius: 1.2rem;
+    background: var(--chip-bg, var(--tolli-blush));
+    font-size: clamp(1.2rem, 3.3vw, 1.4rem);
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: center;
+  }
+  .tolli-pdp__chip svg,
+  .tolli-pdp__chip img {
+    flex: none;
+    width: 2.2rem;
+    height: 2.2rem;
+    object-fit: contain;
+  }
+
+  @media screen and (min-width: 360px) and (max-width: 479px) {
+    .tolli-pdp__chip {
+      gap: 0.4rem;
+      white-space: nowrap;
+      letter-spacing: -0.01em;
+    }
+    .tolli-pdp__chip svg,
+    .tolli-pdp__chip img {
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+  }
+  .tolli-pdp__price-card {
+    padding: 1.8rem 1.6rem;
+    border-radius: 1.4rem;
+    background: var(--price-bg, var(--tolli-mint));
+    text-align: center;
+  }
+  .tolli-pdp__eyebrow {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--pdp-accent);
+  }
+  .tolli-pdp__compare {
+    margin: 0.4rem 0 0;
+    font-size: 1.6rem;
+    opacity: 0.7;
+  }
+  .tolli-pdp__price {
+    margin: 0.2rem 0 0;
+    font-size: clamp(4rem, 13vw, 6.4rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--pdp-accent);
+  }
+  .tolli-pdp__per {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0.8rem 0 0;
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: var(--pdp-accent);
+  }
+  .tolli-pdp__per svg {
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+  .tolli-pdp__unit-note {
+    margin: 0.4rem 0 0;
+    font-size: 1.3rem;
+    opacity: 0.7;
+  }
+
+  .tolli-pdp__variant {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .tolli-pdp__variant label {
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+  .tolli-pdp__variant select {
+    min-height: 4.8rem;
+    padding: 0 1.4rem;
+    border: 2px solid rgba(0, 62, 85, 0.2);
+    border-radius: 1.2rem;
+    background: #fff;
+    color: var(--pdp-text);
+    font-family: var(--tolli-font-body);
+    font-size: 1.6rem;
+  }
+
+  .tolli-pdp__buy-row {
+    display: grid;
+    grid-template-columns: minmax(11rem, 0.42fr) minmax(0, 1fr);
+    gap: 1rem;
+  }
+  .tolli-pdp__buy-row--no-qty {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tolli-pdp__qty {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 5.6rem;
+    padding: 0 0.4rem;
+    border: 2px solid rgba(0, 62, 85, 0.25);
+    border-radius: 1.2rem;
+    background: #fff;
+  }
+  .tolli-pdp__qty button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.4rem;
+    height: 4.4rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--pdp-text);
+    cursor: pointer;
+  }
+  .tolli-pdp__qty button:hover {
+    background: rgba(0, 62, 85, 0.06);
+  }
+  .tolli-pdp__qty button svg {
+    width: 2rem;
+    height: 2rem;
+  }
+  .tolli-pdp__qty input {
+    width: 3.6rem;
+    border: 0;
+    background: transparent;
+    color: var(--pdp-text);
+    font-family: var(--tolli-font-body);
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    -moz-appearance: textfield;
+  }
+  .tolli-pdp__qty input::-webkit-outer-spin-button,
+  .tolli-pdp__qty input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .tolli-pdp .product-form__submit.tolli-btn {
+    position: relative;
+    min-height: 5.6rem;
+    border-radius: 1.2rem;
+    font-size: clamp(1.6rem, 4.6vw, 2rem);
+    gap: 0.5em;
+  }
+  .tolli-pdp .product-form__submit[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .tolli-pdp .product-form__submit .loading-overlay__spinner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tolli-pdp .product-form__submit .loading-overlay__spinner.hidden {
+    display: none;
+  }
+  .tolli-pdp .product-form__submit .spinner {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+  .tolli-pdp .product-form__submit.loading > span {
+    visibility: hidden;
+  }
+  .tolli-pdp .product-form__error-message-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    color: var(--tolli-pink);
+  }
+  .tolli-pdp .product-form__error-message-wrapper[hidden] {
+    display: none;
+  }
+  .tolli-pdp .product-form__error-message-wrapper svg {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+  .tolli-pdp__dynamic-checkout {
+    margin-top: 1rem;
+  }
+  .tolli-pdp__assurance {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 1.4rem;
+    line-height: 1.5;
+  }
+  .tolli-pdp__assurance p {
+    margin: 0;
+  }
+  .tolli-pdp__secure {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 600;
+  }
+  .tolli-pdp__secure svg {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+  .tolli-pdp__shipping-note {
+    opacity: 0.7;
+  }
+
+  .tolli-pdp__tab {
+    border: 1px solid rgba(0, 62, 85, 0.15);
+    border-radius: 1.2rem;
+    background: #fff;
+  }
+  .tolli-pdp__tab + .tolli-pdp__tab {
+    margin-top: -0.6rem;
+  }
+  .tolli-pdp__tab summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+    min-height: 5.4rem;
+    padding: 1rem 1.6rem 1rem 2rem;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--tolli-font-body);
+    font-size: 1.8rem;
+    font-weight: 800;
+  }
+  .tolli-pdp__tab summary::-webkit-details-marker {
+    display: none;
+  }
+  .tolli-pdp__tab summary svg {
+    flex: none;
+    width: 2.2rem;
+    height: 2.2rem;
+    transition: transform 0.3s ease;
+  }
+  .tolli-pdp__tab[open] summary svg {
+    transform: rotate(45deg);
+  }
+  .tolli-pdp__tab-content {
+    padding: 0 2rem 2rem;
+    font-size: 1.5rem;
+    line-height: 1.6;
+  }
+  .tolli-pdp__tab-content > :first-child,
+  .tolli-pdp__text > :first-child {
+    margin-top: 0;
+  }
+  .tolli-pdp__tab-content > :last-child,
+  .tolli-pdp__text > :last-child {
+    margin-bottom: 0;
+  }
+  .tolli-pdp__tab-content h3,
+  .tolli-pdp__text h3 {
+    font-family: var(--tolli-font-display);
+    font-weight: 400;
+    font-size: 2rem;
+    color: inherit;
+  }
+  .tolli-pdp__tab-content a,
+  .tolli-pdp__text a {
+    color: inherit;
+  }
+  .tolli-pdp__text {
+    font-size: 1.6rem;
+    line-height: 1.6;
+  }
+
+  /* ---------- Sticky add-to-bag bar ---------- */
+  .tolli-sticky-atc {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    padding: 1rem var(--tolli-gutter) calc(1rem + env(safe-area-inset-bottom));
+    background: #fff;
+    color: var(--tolli-navy);
+    box-shadow: 0 -0.6rem 2.4rem rgba(0, 62, 85, 0.14);
+    transform: translateY(110%);
+    transition: transform 0.35s ease;
+    --tolli-btn-bg: var(--sticky-btn-bg, var(--tolli-navy));
+    --tolli-btn-color: var(--sticky-btn-text, #fff);
+  }
+  .tolli-sticky-atc.is-visible {
+    transform: none;
+  }
+  .tolli-sticky-atc__inner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1.2rem;
+    max-width: var(--page-width, 140rem);
+    margin: 0 auto;
+  }
+  .tolli-sticky-atc__thumb {
+    width: 5.2rem;
+    height: 5.2rem;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: var(--tolli-mint);
+  }
+  .tolli-sticky-atc__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .tolli-sticky-atc__name {
+    margin: 0;
+    font-family: var(--tolli-font-display);
+    font-size: 1.6rem;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tolli-sticky-atc__flavour {
+    margin: 0.1rem 0 0;
+    font-size: 1.3rem;
+    opacity: 0.7;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tolli-sticky-atc__price {
+    display: none;
+    text-align: right;
+  }
+  .tolli-sticky-atc__price strong {
+    display: block;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--tolli-pink);
+    line-height: 1;
+  }
+  .tolli-sticky-atc__price span {
+    font-size: 1.2rem;
+    color: var(--tolli-pink);
+  }
+  .tolli-sticky-atc .tolli-btn {
+    width: auto;
+    min-height: 4.6rem;
+    padding: 0.8rem 2rem;
+    border-radius: 1.2rem;
+    font-size: 1.6rem;
+    white-space: nowrap;
+  }
+  @media screen and (min-width: 420px) {
+    .tolli-sticky-atc__inner {
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
+    }
+    .tolli-sticky-atc__price {
+      display: block;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tolli-sticky-atc {
+      transition: none;
+    }
+  }
+
+  /* ---------- Tablet ---------- */
+  @media screen and (min-width: 750px) {
+    .tolli-pdp__wave {
+      height: 5.6rem;
+    }
+    .tolli-pdp__info {
+      gap: 1.8rem;
+      max-width: 64rem;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .tolli-pdp__title {
+      font-size: min(var(--pdp-title-m), 7vw);
+    }
+    .tolli-pdp__flavour {
+      font-size: calc(var(--pdp-title-m) * 0.72);
+    }
+    .tolli-pdp__chip {
+      font-size: 1.6rem;
+    }
+  }
+
+  /* ---------- Desktop: sticky gallery + info column ---------- */
+  @media screen and (min-width: 990px) {
+    .tolli-pdp__grid {
+      grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+      gap: clamp(4rem, 5vw, 8rem);
+      align-items: start;
+      padding-top: calc(var(--tolli-header-offset, 0px) + 3.2rem);
+    }
+    .tolli-pdp__media,
+    .tolli-pdp--media-below .tolli-pdp__media {
+      position: sticky;
+      top: calc(var(--header-height, 9rem) + 2rem);
+      margin: 0;
+      padding-top: 0;
+      background: transparent;
+    }
+    .tolli-pdp__stage {
+      border-radius: 2rem;
+      box-shadow: 0 3rem 6rem -3rem rgba(0, 62, 85, 0.35);
+    }
+    .tolli-pdp__slide {
+      aspect-ratio: var(--pdp-ratio-d, 1);
+    }
+    .tolli-pdp__fade,
+    .tolli-pdp__wave {
+      display: none;
+    }
+    .tolli-pdp__dots {
+      bottom: 1.6rem;
+    }
+    .tolli-pdp__thumbs {
+      display: flex;
+      gap: 1rem;
+      margin: 1.6rem 0 0;
+      padding: 0;
+      list-style: none;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tolli-pdp__thumb {
+      flex: none;
+      width: 8.4rem;
+      height: 8.4rem;
+      padding: 0;
+      border: 3px solid transparent;
+      border-radius: 1.2rem;
+      overflow: hidden;
+      background: var(--tolli-mint);
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+    }
+    .tolli-pdp__thumb.is-active {
+      border-color: var(--pdp-accent);
+    }
+    .tolli-pdp__thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .tolli-pdp__info {
+      max-width: none;
+      margin: 0;
+      gap: 2rem;
+    }
+    .tolli-pdp--desktop-left .tolli-pdp__block--title {
+      text-align: left;
+    }
+    .tolli-pdp--desktop-left .tolli-pdp__meta {
+      justify-content: flex-start;
+    }
+    .tolli-pdp--desktop-left .tolli-pdp__title .tolli-burst--left {
+      display: none;
+    }
+    .tolli-pdp__title {
+      max-width: calc(100% - 0.8em);
+      font-size: min(var(--pdp-title-d), 3vw, 4.4rem);
+    }
+    .tolli-pdp__flavour {
+      font-size: calc(var(--pdp-title-d) * 0.62);
+    }
+    .tolli-pdp__tagline {
+      font-size: 2.2rem;
+    }
+    .tolli-pdp__price {
+      font-size: 6.4rem;
+    }
+  }
+</style>
+
+<section
+  class="tolli-section tolli-has-decor tolli-pdp{% if section.settings.desktop_align == 'left' %} tolli-pdp--desktop-left{% endif %}{% if section.settings.mobile_media_position == 'below' %} tolli-pdp--media-below{% endif %}"
+  data-section="{{ section.id }}"
+  style="--pdp-ratio-d: {{ section.settings.desktop_media_ratio }}; --pdp-top-fade: {{ section.settings.top_fade | divided_by: 100.0 }}; --pdp-media-bg: {{ section.settings.media_bg }};"
+>
+  {% render 'tolli-section-decor', section: section %}
+
+  <div class="tolli-container">
+    <div class="tolli-pdp__grid">
+      {%- comment -%} ---------- Gallery ---------- {%- endcomment -%}
+      <div class="tolli-pdp__media" data-tolli-gallery>
+        <div class="tolli-pdp__stage">
+          <ul class="tolli-pdp__track" role="list" data-gallery-track>
+            {%- if product.media.size > 0 -%}
+              {%- for media in product.media -%}
+                <li class="tolli-pdp__slide" data-media-id="{{ media.id }}">
+                  {%- case media.media_type -%}
+                    {%- when 'image' -%}
+                      {%- liquid
+                        assign loading = 'lazy'
+                        if forloop.first
+                          assign loading = 'eager'
+                        endif
+                        assign media_alt = media.alt | default: product.title | escape
+                      -%}
+                      {{ media | image_url: width: 1800 | image_tag: widths: '450, 650, 900, 1200, 1500, 1800', sizes: '(min-width: 990px) 55vw, 100vw', loading: loading, alt: media_alt }}
+                    {%- when 'video' -%}
+                      {{ media | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true }}
+                    {%- when 'external_video' -%}
+                      {{ media | external_video_tag }}
+                    {%- else -%}
+                      {{ media | media_tag }}
+                  {%- endcase -%}
+                </li>
+              {%- endfor -%}
+            {%- else -%}
+              <li class="tolli-pdp__slide">{{ 'product-1' | placeholder_svg_tag: 'tolli-pdp__placeholder' }}</li>
+            {%- endif -%}
+          </ul>
+
+          {%- if section.settings.top_fade > 0 -%}
+            <div class="tolli-pdp__fade" aria-hidden="true"></div>
+          {%- endif -%}
+
+          {%- if product.media.size > 1 -%}
+            <div class="tolli-pdp__dots" role="tablist" aria-label="Product images">
+              {%- for media in product.media -%}
+                <button type="button" class="tolli-pdp__dot{% if forloop.first %} is-active{% endif %}" data-gallery-go="{{ forloop.index0 }}" aria-label="Show image {{ forloop.index }}"></button>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+
+          <svg class="tolli-pdp__wave" style="--pdp-wave: {{ section.settings.background }};" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 60h1440V30c-200 20-420 22-640 6S420 4 240 10C140 13 60 20 0 28Z"/></svg>
+        </div>
+
+        {%- if product.media.size > 1 -%}
+          <ul class="tolli-pdp__thumbs" role="list">
+            {%- for media in product.media -%}
+              <li>
+                <button type="button" class="tolli-pdp__thumb{% if forloop.first %} is-active{% endif %}" data-gallery-go="{{ forloop.index0 }}" aria-label="Show image {{ forloop.index }}">
+                  {{ media.preview_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: '' }}
+                </button>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} ---------- Info blocks ---------- {%- endcomment -%}
+      <div class="tolli-pdp__info">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when '@app' -%}
+              {% render block %}
+
+            {%- when 'title' -%}
+              {%- liquid
+                assign b_headline = block.settings.heading | default: headline
+                assign b_flavour = block.settings.flavour | default: flavour
+                assign b_tagline = block.settings.tagline | default: mf.tagline.value
+                assign b_meta = block.settings.meta_line
+                if b_meta == blank and mf.highlights.value != blank
+                  assign b_meta = mf.highlights.value | join: '|'
+                endif
+                if b_meta == blank and servings > 0
+                  assign b_meta = servings | append: ' servings'
+                endif
+                assign meta_items = b_meta | split: '|'
+              -%}
+              <div class="tolli-pdp__block tolli-pdp__block--title" {{ block.shopify_attributes }}>
+                <h1 class="tolli-display tolli-pdp__title">
+                  {%- if block.settings.show_bursts -%}{{ tolli_burst_left }}{%- endif -%}
+                  {{- b_headline | escape -}}
+                  {%- if block.settings.show_bursts -%}{{ tolli_burst_right }}{%- endif -%}
+                </h1>
+                {%- if b_flavour != blank -%}
+                  <p class="tolli-pdp__flavour">{{ b_flavour | escape }}</p>
+                {%- endif -%}
+                {%- if b_tagline != blank -%}
+                  <p class="tolli-pdp__tagline">{{ b_tagline | escape }}</p>
+                {%- endif -%}
+                {%- if b_meta != blank -%}
+                  <ul class="tolli-pdp__meta" role="list">
+                    {%- for item in meta_items -%}
+                      {%- assign item_clean = item | strip -%}
+                      {%- if item_clean != blank -%}<li>{{ item_clean | escape }}</li>{%- endif -%}
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </div>
+
+            {%- when 'chips' -%}
+              {%- liquid
+                assign chip_text = ''
+                for i in (1..4)
+                  assign key = 'chip_' | append: i
+                  assign t = block.settings[key] | strip
+                  if t != blank
+                    assign chip_text = chip_text | append: t | append: '|'
+                  endif
+                endfor
+                if chip_text == blank and mf.features.value != blank
+                  assign chip_text = mf.features.value | join: '|'
+                endif
+                assign chips = chip_text | split: '|'
+              -%}
+              {%- if chips.size > 0 -%}
+                <ul class="tolli-pdp__chips" role="list" style="--chip-count: {{ chips.size | at_most: 4 }}; --chip-bg: {{ block.settings.chip_bg }};" {{ block.shopify_attributes }}>
+                  {%- for chip in chips -%}
+                    {%- liquid
+                      assign c = chip | downcase
+                      assign icon = 'sparkle'
+                      if c contains 'electrolyte' or c contains 'hydrat'
+                        assign icon = 'drop'
+                      elsif c contains 'vitamin c' or c contains 'immun'
+                        assign icon = 'shield'
+                      elsif c contains 'protein'
+                        assign icon = 'protein'
+                      elsif c contains 'sugar'
+                        assign icon = 'zero-sugar'
+                      elsif c contains 'vegan' or c contains 'plant'
+                        assign icon = 'plant'
+                      elsif c contains 'fruit' or c contains 'light' or c contains 'taste'
+                        assign icon = 'smile'
+                      elsif c contains 'serving'
+                        assign icon = 'scoop'
+                      elsif c contains 'heart' or c contains 'love'
+                        assign icon = 'heart'
+                      endif
+                    -%}
+                    <li class="tolli-pdp__chip">{% render 'tolli-icon', icon: icon %}<span>{{ chip | strip | escape }}</span></li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+
+            {%- when 'price' -%}
+              {%- liquid
+                assign b_servings = block.settings.servings | default: servings | plus: 0
+                assign b_per = 0
+                if b_servings > 0
+                  assign b_per = current_variant.price | divided_by: b_servings
+                endif
+                assign b_eyebrow = block.settings.eyebrow | default: mf.launch_label.value
+              -%}
+              <div class="tolli-pdp__price-card" style="--price-bg: {{ block.settings.card_bg }};" data-servings="{{ b_servings }}" {{ block.shopify_attributes }}>
+                {%- if b_eyebrow != blank -%}
+                  <p class="tolli-pdp__eyebrow">{{ b_eyebrow | escape }}</p>
+                {%- endif -%}
+                <p class="tolli-pdp__compare" data-tolli-compare{% unless current_variant.compare_at_price > current_variant.price %} hidden{% endunless %}>
+                  {{ block.settings.compare_label | escape }}
+                  <s data-tolli-compare-amount>{%- render 'tolli-money', cents: current_variant.compare_at_price, prefix: prefix -%}</s>
+                </p>
+                <p class="tolli-pdp__price" data-tolli-price>{%- render 'tolli-money', cents: current_variant.price, prefix: prefix -%}</p>
+                {%- if b_per > 0 and block.settings.show_per_serving -%}
+                  <p class="tolli-pdp__per">
+                    {% render 'tolli-icon', icon: 'glass' %}
+                    <span data-tolli-per>{%- render 'tolli-money', cents: b_per, prefix: prefix -%}</span>
+                    <span>{{ block.settings.per_serving_label | escape }}</span>
+                  </p>
+                {%- endif -%}
+                {%- if current_variant.unit_price_measurement -%}
+                  <p class="tolli-pdp__unit-note">
+                    {{ current_variant.unit_price | money }}/{%- if current_variant.unit_price_measurement.reference_value != 1 -%}{{ current_variant.unit_price_measurement.reference_value }}{%- endif -%}{{ current_variant.unit_price_measurement.reference_unit }}
+                  </p>
+                {%- endif -%}
+              </div>
+
+            {%- when 'buy_buttons' -%}
+              <div class="tolli-pdp__block tolli-pdp__block--buy" {{ block.shopify_attributes }} data-tolli-buy>
+                <product-form
+                  id="ProductForm-{{ section.id }}"
+                  class="product-form main-product-form"
+                  data-section="{{ section.id }}"
+                  data-options="{{ product.options | join: ',' }}"
+                  data-main="true"
+                >
+                  <div class="product-form__error-message-wrapper" role="alert" hidden>
+                    {% render 'icon-error' %}
+                    <span class="product-form__error-message"></span>
+                  </div>
+
+                  {%- form 'product', product, id: product_form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+                    <div class="hidden product-form__variants" id="product-form-{{ section.id }}__variants" data-values=""></div>
+
+                    {%- if product.has_only_default_variant -%}
+                      <input type="hidden" name="id" value="{{ current_variant.id }}" class="product-variant-id" data-tolli-variant-input>
+                    {%- else -%}
+                      <div class="tolli-pdp__variant" style="margin-bottom: 1.2rem;">
+                        <label for="TolliVariant-{{ section.id }}">{{ product.options | join: ' / ' }}</label>
+                        <select id="TolliVariant-{{ section.id }}" name="id" class="product-variant-id" data-tolli-variant-input>
+                          {%- for variant in product.variants -%}
+                            <option value="{{ variant.id }}"{% if variant == current_variant %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>
+                              {{ variant.title | escape }}{% unless variant.available %} – {{ 'products.product.sold_out' | t }}{% endunless %}
+                            </option>
+                          {%- endfor -%}
+                        </select>
+                      </div>
+                    {%- endif -%}
+
+                    <div class="tolli-pdp__buy-row{% unless block.settings.show_quantity %} tolli-pdp__buy-row--no-qty{% endunless %}">
+                      {%- if block.settings.show_quantity -%}
+                        <div class="tolli-pdp__qty">
+                          <button type="button" data-tolli-qty="-1" aria-label="Decrease quantity">{% render 'tolli-icon', icon: 'minus' %}</button>
+                          <input type="number" name="quantity" value="1" min="1" max="99" aria-label="Quantity" data-tolli-qty-input>
+                          <button type="button" data-tolli-qty="1" aria-label="Increase quantity">{% render 'tolli-icon', icon: 'plus' %}</button>
+                        </div>
+                      {%- endif -%}
+                      <button
+                        id="ProductSubmitButton-{{ section.id }}"
+                        type="submit"
+                        name="add"
+                        class="tolli-btn atc-button product-form__submit main-product-atc"
+                        {% unless current_variant.available %}disabled data-unavailable="true"{% endunless %}
+                        data-required-fields="0"
+                        data-valid-fields="0"
+                        data-tolli-atc
+                      >
+                        <span class="main-atc__label button__label">
+                          <span class="main-atc__label__text" data-tolli-atc-label>
+                            {%- if current_variant.available -%}{{ block.settings.button_label | escape }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+                          </span>
+                          {%- if block.settings.show_price_in_button -%}
+                            <span data-tolli-atc-price{% unless current_variant.available %} hidden{% endunless %}> • {% render 'tolli-money', cents: current_variant.price, prefix: prefix %}</span>
+                          {%- endif -%}
+                        </span>
+                        <div class="loading-overlay__spinner hidden">
+                          <svg aria-hidden="true" focusable="false" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg"><circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle></svg>
+                        </div>
+                      </button>
+                    </div>
+
+                    {%- if block.settings.show_dynamic_checkout -%}
+                      <div class="tolli-pdp__dynamic-checkout">{{ form | payment_button }}</div>
+                    {%- endif -%}
+                  {%- endform -%}
+                </product-form>
+
+                {%- if block.settings.secure_text != blank or block.settings.shipping_text != blank -%}
+                  <div class="tolli-pdp__assurance">
+                    {%- if block.settings.secure_text != blank -%}
+                      <p class="tolli-pdp__secure">{% render 'tolli-icon', icon: 'lock' %}{{ block.settings.secure_text | escape }}</p>
+                    {%- endif -%}
+                    {%- if block.settings.shipping_text != blank -%}
+                      <p class="tolli-pdp__shipping-note">{{ block.settings.shipping_text | escape }}</p>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+              </div>
+
+            {%- when 'collapsible_tab' -%}
+              {%- liquid
+                assign tab_content = block.settings.content
+                if tab_content == blank and block.settings.metafield_key != blank
+                  assign mf_parts = block.settings.metafield_key | strip | split: '.'
+                  if mf_parts.size == 2
+                    assign mf_value = product.metafields[mf_parts[0]][mf_parts[1]]
+                    if mf_value != blank
+                      assign tab_content = mf_value | metafield_tag
+                    endif
+                  endif
+                endif
+                if tab_content == blank and block.settings.page != blank
+                  assign tab_content = block.settings.page.content
+                endif
+              -%}
+              {%- if tab_content != blank or block.settings.show_when_empty -%}
+                <details class="tolli-pdp__tab" {{ block.shopify_attributes }}{% if block.settings.open %} open{% endif %}>
+                  <summary>
+                    <span>{{ block.settings.heading | escape }}</span>
+                    {% render 'tolli-icon', icon: 'plus' %}
+                  </summary>
+                  <div class="tolli-pdp__tab-content">{{ tab_content }}</div>
+                </details>
+              {%- endif -%}
+
+            {%- when 'description' -%}
+              {%- if product.description != blank -%}
+                {%- if block.settings.collapsible -%}
+                  <details class="tolli-pdp__tab" {{ block.shopify_attributes }}{% if block.settings.open %} open{% endif %}>
+                    <summary>
+                      <span>{{ block.settings.heading | escape }}</span>
+                      {% render 'tolli-icon', icon: 'plus' %}
+                    </summary>
+                    <div class="tolli-pdp__tab-content">{{ product.description }}</div>
+                  </details>
+                {%- else -%}
+                  <div class="tolli-pdp__text" {{ block.shopify_attributes }}>{{ product.description }}</div>
+                {%- endif -%}
+              {%- endif -%}
+
+            {%- when 'text' -%}
+              {%- if block.settings.text != blank -%}
+                <div class="tolli-pdp__text" style="text-align: {{ block.settings.alignment }};" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+              {%- endif -%}
+
+            {%- when 'custom_liquid' -%}
+              <div {{ block.shopify_attributes }}>{{ block.settings.custom_liquid }}</div>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- if section.settings.enable_sticky -%}
+  <div class="tolli-sticky-atc" id="TolliStickyAtc-{{ section.id }}" style="--sticky-btn-bg: {{ section.settings.button_bg }}; --sticky-btn-text: {{ section.settings.button_text }};" aria-hidden="true">
+    <div class="tolli-sticky-atc__inner">
+      <div class="tolli-sticky-atc__thumb">
+        {%- if first_media != blank -%}
+          {{ first_media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}
+        {%- endif -%}
+      </div>
+      <div style="min-width: 0;">
+        <p class="tolli-sticky-atc__name">{{ headline | escape }}</p>
+        {%- if flavour != blank -%}<p class="tolli-sticky-atc__flavour">{{ flavour | escape }}</p>{%- endif -%}
+      </div>
+      <div class="tolli-sticky-atc__price">
+        <strong data-tolli-price>{%- render 'tolli-money', cents: current_variant.price, prefix: prefix -%}</strong>
+        {%- if per_serving_cents > 0 -%}
+          <span><span data-tolli-per>{%- render 'tolli-money', cents: per_serving_cents, prefix: prefix -%}</span> per serving</span>
+        {%- endif -%}
+      </div>
+      <button type="submit" form="{{ product_form_id }}" class="tolli-btn" tabindex="-1" data-tolli-sticky-btn{% unless current_variant.available %} disabled{% endunless %}>
+        {{ section.settings.sticky_button_label | escape }}
+      </button>
+    </div>
+  </div>
+{%- endif -%}
+
+<script type="application/json" id="TolliVariants-{{ section.id }}">
+  {{ product.variants | json }}
+</script>
+
+<script>
+  (function () {
+    var sectionId = {{ section.id | json }};
+    var root = document.getElementById('shopify-section-' + sectionId);
+    if (!root) return;
+    var prefix = {{ prefix | json }};
+    var moneyFormat = {{ shop.money_format | json }};
+    var variants = [];
+    try { variants = JSON.parse(document.getElementById('TolliVariants-' + sectionId).textContent); } catch (e) {}
+
+    function formatMoney(cents) {
+      var amount = (cents / 100).toFixed(2);
+      if (prefix) return prefix + amount;
+      return moneyFormat
+        .replace(/\{\{\s*amount_with_comma_separator\s*\}\}/, amount.replace('.', ','))
+        .replace(/\{\{\s*amount_no_decimals\s*\}\}/, Math.round(cents / 100))
+        .replace(/\{\{\s*amount\s*\}\}/, amount);
+    }
+
+    /* ---- Gallery ---- */
+    var track = root.querySelector('[data-gallery-track]');
+    var goButtons = root.querySelectorAll('[data-gallery-go]');
+    function setActive(index) {
+      goButtons.forEach(function (btn) {
+        btn.classList.toggle('is-active', Number(btn.dataset.galleryGo) === index);
+      });
+    }
+    if (track) {
+      goButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var index = Number(btn.dataset.galleryGo);
+          track.scrollTo({ left: track.clientWidth * index, behavior: 'smooth' });
+          setActive(index);
+        });
+      });
+      var ticking = false;
+      track.addEventListener('scroll', function () {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function () {
+          setActive(Math.round(track.scrollLeft / track.clientWidth));
+          ticking = false;
+        });
+      }, { passive: true });
+    }
+
+    /* ---- Quantity, price and variants ---- */
+    var qtyInput = root.querySelector('[data-tolli-qty-input]');
+    var variantInput = root.querySelector('[data-tolli-variant-input]');
+    function currentVariant() {
+      var id = variantInput ? Number(variantInput.value) : null;
+      return variants.find(function (v) { return v.id === id; }) || variants[0];
+    }
+    function refresh() {
+      var v = currentVariant();
+      if (!v) return;
+      var qty = qtyInput ? Math.max(1, parseInt(qtyInput.value, 10) || 1) : 1;
+      document.querySelectorAll('#shopify-section-' + sectionId + ' [data-tolli-price]').forEach(function (el) { el.textContent = formatMoney(v.price); });
+      root.querySelectorAll('[data-tolli-atc-price]').forEach(function (el) {
+        el.textContent = ' • ' + formatMoney(v.price * qty);
+        el.hidden = !v.available;
+      });
+      var compare = root.querySelector('[data-tolli-compare]');
+      if (compare) {
+        compare.hidden = !(v.compare_at_price > v.price);
+        var amount = compare.querySelector('[data-tolli-compare-amount]');
+        if (amount && v.compare_at_price) amount.textContent = formatMoney(v.compare_at_price);
+      }
+      var card = root.querySelector('.tolli-pdp__price-card');
+      var servings = card ? Number(card.dataset.servings) : 0;
+      if (servings > 0) {
+        root.querySelectorAll('[data-tolli-per]').forEach(function (el) { el.textContent = formatMoney(Math.floor(v.price / servings)); });
+      }
+      var atc = root.querySelector('[data-tolli-atc]');
+      var sticky = root.querySelector('[data-tolli-sticky-btn]');
+      [atc, sticky].forEach(function (btn) { if (btn) btn.disabled = !v.available; });
+      var label = root.querySelector('[data-tolli-atc-label]');
+      if (label) label.textContent = v.available ? {{ atc_label | json }} : {{ 'products.product.sold_out' | t | json }};
+    }
+    root.querySelectorAll('[data-tolli-qty]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (!qtyInput) return;
+        var next = (parseInt(qtyInput.value, 10) || 1) + Number(btn.dataset.tolliQty);
+        qtyInput.value = Math.min(99, Math.max(1, next));
+        refresh();
+      });
+    });
+    if (qtyInput) qtyInput.addEventListener('change', refresh);
+    if (variantInput && variantInput.tagName === 'SELECT') {
+      variantInput.addEventListener('change', function () {
+        refresh();
+        var url = new URL(window.location.href);
+        url.searchParams.set('variant', variantInput.value);
+        window.history.replaceState({}, '', url.toString());
+      });
+    }
+
+    /* ---- Sticky add-to-bag bar ---- */
+    var stickyBar = root.querySelector('.tolli-sticky-atc');
+    var buyBlock = root.querySelector('[data-tolli-buy]');
+    if (stickyBar && buyBlock && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        var entry = entries[0];
+        var show = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+        stickyBar.classList.toggle('is-visible', show);
+        stickyBar.setAttribute('aria-hidden', show ? 'false' : 'true');
+        var btn = stickyBar.querySelector('[data-tolli-sticky-btn]');
+        if (btn) btn.tabIndex = show ? 0 : -1;
+      }).observe(buyBlock);
+    }
+  })();
+</script>
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "url": {{ request.origin | append: product.url | json }},
+    {%- if product.featured_image -%}
+      "image": [{{ product.featured_image | image_url: width: 1920 | prepend: 'https:' | json }}],
+    {%- endif -%}
+    "description": {{ product.description | strip_html | json }},
+    {%- if current_variant.sku != blank -%}
+      "sku": {{ current_variant.sku | json }},
+    {%- endif -%}
+    "brand": { "@type": "Brand", "name": {{ product.vendor | json }} },
+    "offers": [
+      {%- for variant in product.variants -%}
+        {
+          "@type": "Offer",
+          {%- if variant.sku != blank -%}"sku": {{ variant.sku | json }},{%- endif -%}
+          "availability": "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+          "price": {{ variant.price | divided_by: 100.00 | json }},
+          "priceCurrency": {{ cart.currency.iso_code | json }},
+          "url": {{ request.origin | append: variant.url | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Tolli product page",
+  "tag": "div",
+  "class": "tolli-main-product-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Blocks read product metafields in the \"tolli\" namespace automatically (headline, flavour, tagline, highlights, features, servings, launch_label). Any text setting can also be connected to a metafield or metaobject with the dynamic source button."
+    },
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "select",
+      "id": "mobile_media_position",
+      "label": "Image position on mobile",
+      "options": [
+        {
+          "value": "below",
+          "label": "Below the header"
+        },
+        {
+          "value": "behind",
+          "label": "Behind the transparent header"
+        }
+      ],
+      "default": "below",
+      "info": "Use \"Behind\" only for photos with empty space at the top."
+    },
+    {
+      "type": "color",
+      "id": "media_bg",
+      "label": "Background behind the header",
+      "info": "Match your product photo's background so it looks seamless.",
+      "default": "#E8F7F1"
+    },
+    {
+      "type": "select",
+      "id": "mobile_media_ratio",
+      "label": "Image shape on mobile & tablet",
+      "options": [
+        {
+          "value": "16 / 10",
+          "label": "Landscape 16:10"
+        },
+        {
+          "value": "4 / 3",
+          "label": "Landscape 4:3"
+        },
+        {
+          "value": "1 / 1",
+          "label": "Square"
+        },
+        {
+          "value": "4 / 5",
+          "label": "Portrait 4:5"
+        }
+      ],
+      "default": "1 / 1"
+    },
+    {
+      "type": "select",
+      "id": "desktop_media_ratio",
+      "label": "Image shape on desktop",
+      "options": [
+        {
+          "value": "4 / 3",
+          "label": "Landscape 4:3"
+        },
+        {
+          "value": "1 / 1",
+          "label": "Square"
+        },
+        {
+          "value": "4 / 5",
+          "label": "Portrait 4:5"
+        }
+      ],
+      "default": "1 / 1"
+    },
+    {
+      "type": "range",
+      "id": "top_fade",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Top fade (when image is behind header)",
+      "info": "Keeps the transparent header readable over the image.",
+      "default": 50
+    },
+    {
+      "type": "header",
+      "content": "Layout & colours"
+    },
+    {
+      "type": "select",
+      "id": "desktop_align",
+      "label": "Title alignment on desktop",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 26,
+      "max": 64,
+      "step": 1,
+      "unit": "px",
+      "label": "Title size on mobile",
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "min": 36,
+      "max": 96,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size on desktop",
+      "info": "Automatically scales down so the headline fits on one line.",
+      "default": 50
+    },
+    {
+      "type": "text",
+      "id": "price_prefix",
+      "label": "Currency prefix",
+      "info": "E.g. S$. Leave empty to use the store's money format.",
+      "default": "S$"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text colour",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent colour (flavour, price)",
+      "default": "#ED0056"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Button background",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Sticky add-to-bag bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sticky",
+      "label": "Show sticky bar after scrolling past the button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sticky_button_label",
+      "label": "Sticky button label",
+      "default": "Add to bag"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding on mobile",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding on desktop",
+      "default": 64
+    },
+    {
+      "type": "header",
+      "content": "Background & edges"
+    },
+    {
+      "type": "select",
+      "id": "bg_style",
+      "label": "Background image",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "leaves",
+          "label": "Sunny leaves (built-in)"
+        },
+        {
+          "value": "scene",
+          "label": "Lemonade scene (built-in)"
+        },
+        {
+          "value": "custom",
+          "label": "Custom image"
+        }
+      ],
+      "default": "leaves"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Custom background image"
+    },
+    {
+      "type": "range",
+      "id": "bg_opacity",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Background image opacity",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "bg_position",
+      "label": "Background image position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "bg_fixed",
+      "label": "Fixed background while scrolling",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "wave_top",
+      "label": "Wavy top edge",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "wave_bottom",
+      "label": "Wavy bottom edge",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "wave_color",
+      "label": "Top wave colour",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "color",
+      "id": "wave_bottom_color",
+      "label": "Bottom wave colour",
+      "default": "#FFFDF7"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "title",
+      "name": "Title & flavour",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Empty fields use the metafields tolli.headline, tolli.flavour, tolli.tagline and tolli.highlights, then the product title."
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Headline",
+          "info": "E.g. Hydration + Immunity."
+        },
+        {
+          "type": "text",
+          "id": "flavour",
+          "label": "Flavour line",
+          "info": "E.g. Strawberry Lemonade."
+        },
+        {
+          "type": "text",
+          "id": "tagline",
+          "label": "Tagline",
+          "info": "E.g. Your daily fruity refresh."
+        },
+        {
+          "type": "text",
+          "id": "meta_line",
+          "label": "Small details",
+          "info": "Separate items with | e.g. 15 servings | Zero sugar."
+        },
+        {
+          "type": "checkbox",
+          "id": "show_bursts",
+          "label": "Show accent strokes",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "chips",
+      "name": "Feature chips",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Empty chips use the list metafield tolli.features. Icons are picked from the text (electrolytes, vitamin C, protein, sugar, vegan, fruity…)."
+        },
+        {
+          "type": "text",
+          "id": "chip_1",
+          "label": "Chip 1"
+        },
+        {
+          "type": "text",
+          "id": "chip_2",
+          "label": "Chip 2"
+        },
+        {
+          "type": "text",
+          "id": "chip_3",
+          "label": "Chip 3"
+        },
+        {
+          "type": "text",
+          "id": "chip_4",
+          "label": "Chip 4"
+        },
+        {
+          "type": "color",
+          "id": "chip_bg",
+          "label": "Chip background",
+          "default": "#FDECF1"
+        }
+      ]
+    },
+    {
+      "type": "price",
+      "name": "Price card",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Label above price",
+          "info": "Falls back to the metafield tolli.launch_label.",
+          "default": "Founder's launch special"
+        },
+        {
+          "type": "text",
+          "id": "compare_label",
+          "label": "Compare-at price label",
+          "default": "Regular price"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_per_serving",
+          "label": "Show price per serving",
+          "default": true
+        },
+        {
+          "type": "number",
+          "id": "servings",
+          "label": "Servings per pack",
+          "info": "Leave empty to use the metafield tolli.servings."
+        },
+        {
+          "type": "text",
+          "id": "per_serving_label",
+          "label": "Per-serving label",
+          "default": "per serving"
+        },
+        {
+          "type": "color",
+          "id": "card_bg",
+          "label": "Card background",
+          "default": "#E8F7F1"
+        }
+      ]
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_quantity",
+          "label": "Show quantity selector",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Add to bag"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_price_in_button",
+          "label": "Show price in button",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_dynamic_checkout",
+          "label": "Show express checkout buttons",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "secure_text",
+          "label": "Secure checkout text",
+          "default": "Secure checkout"
+        },
+        {
+          "type": "text",
+          "id": "shipping_text",
+          "label": "Shipping note",
+          "default": "Shipping calculated at checkout"
+        }
+      ]
+    },
+    {
+      "type": "collapsible_tab",
+      "name": "Collapsible tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "What's inside"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "info": "Connect a rich text metafield here, or use the metafield key below."
+        },
+        {
+          "type": "text",
+          "id": "metafield_key",
+          "label": "Metafield key",
+          "info": "namespace.key, e.g. tolli.whats_inside. Used when Content is empty."
+        },
+        {
+          "type": "page",
+          "id": "page",
+          "label": "Page content",
+          "info": "Used when Content and the metafield are empty (good for delivery & returns)."
+        },
+        {
+          "type": "checkbox",
+          "id": "open",
+          "label": "Open by default",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "show_when_empty",
+          "label": "Show even when empty",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "Product description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "collapsible",
+          "label": "Show as collapsible tab",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Tab heading",
+          "default": "About this product"
+        },
+        {
+          "type": "checkbox",
+          "id": "open",
+          "label": "Open by default",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Add a note about this product.</p>"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            }
+          ],
+          "default": "center"
+        }
+      ]
+    },
+    {
+      "type": "custom_liquid",
+      "name": "Custom Liquid",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "custom_liquid",
+          "label": "Custom Liquid"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli product page",
+      "blocks": [
+        {
+          "type": "title"
+        },
+        {
+          "type": "chips"
+        },
+        {
+          "type": "price"
+        },
+        {
+          "type": "buy_buttons"
+        },
+        {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "What's inside",
+            "metafield_key": "tolli.whats_inside"
+          }
+        },
+        {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "How to enjoy",
+            "metafield_key": "tolli.how_to_enjoy"
+          }
+        },
+        {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Delivery & returns",
+            "metafield_key": "tolli.delivery"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

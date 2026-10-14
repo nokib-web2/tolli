@@ -1,0 +1,645 @@
+{%- liquid
+  assign heading_html = section.settings.heading | escape | replace: '[', '<span class="tolli-hl">' | replace: ']', '</span>' | replace: '|', ' <br>'
+  assign has_image = false
+  if section.settings.image != blank
+    assign has_image = true
+  endif
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .tolli-banner {
+    --banner-text: {{ section.settings.text_color }};
+    --banner-hl: {{ section.settings.highlight_color }};
+    --banner-burst: {{ section.settings.burst_color }};
+    --banner-radius: {{ section.settings.card_radius }}px;
+    --banner-h-m: {{ section.settings.heading_size_mobile }}px;
+    --banner-h-d: {{ section.settings.heading_size_desktop }}px;
+    --banner-copy-w: {{ section.settings.copy_width }}%;
+    --banner-min-h: {{ section.settings.desktop_height }}px;
+    --banner-focal: {{ section.settings.focal_x }}% {{ section.settings.focal_y }}%;
+    --banner-ratio-m: {{ section.settings.mobile_image_ratio }};
+    --banner-fade: {{ section.settings.fade_opacity | divided_by: 100.0 }};
+    --banner-fade-rgb: {{ section.settings.fade_color.red }}, {{ section.settings.fade_color.green }}, {{ section.settings.fade_color.blue }};
+    --tolli-btn-bg: {{ section.settings.button_bg }};
+    --tolli-btn-color: {{ section.settings.button_text }};
+    background: {{ section.settings.background }};
+    padding-top: {{ section.settings.padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+  }
+  #shopify-section-{{ section.id }} .tolli-banner__card {
+    background: {{ section.settings.card_background }};
+  }
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .tolli-banner {
+      padding-top: {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+  }
+{%- endstyle -%}
+
+<style>
+  .tolli-banner__card {
+    position: relative;
+    isolation: isolate;
+    border-radius: var(--banner-radius);
+    overflow: hidden;
+    color: var(--banner-text);
+  }
+  .tolli-banner__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'media' 'copy';
+  }
+
+  /* Visual */
+  .tolli-banner__media {
+    grid-area: media;
+    position: relative;
+  }
+  .tolli-banner--has-image .tolli-banner__media {
+    aspect-ratio: var(--banner-ratio-m);
+    overflow: hidden;
+  }
+  .tolli-banner__media > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--banner-focal);
+  }
+  .tolli-banner__media .tolli-banner__img--mobile ~ img {
+    display: none;
+  }
+
+  /* Fallback composition: the two pouch cut-outs */
+  .tolli-banner__pouches {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 2.4rem 1.6rem 0;
+    min-height: 20rem;
+  }
+  .tolli-banner__pouch {
+    display: block;
+    height: auto;
+    filter: drop-shadow(0 1.4rem 1.6rem rgba(0, 40, 60, 0.18));
+  }
+  .tolli-banner__pouch--a {
+    width: 42%;
+    max-width: 19rem;
+    transform: rotate(-5deg) translateY(0.6rem);
+    margin-right: -3%;
+    z-index: 1;
+  }
+  .tolli-banner__pouch--b {
+    width: 34%;
+    max-width: 15.5rem;
+    transform: rotate(5deg);
+  }
+  .tolli-banner__sun {
+    position: absolute;
+    top: 1.2rem;
+    right: 8%;
+    width: 5.6rem;
+    height: 5.6rem;
+    color: var(--banner-burst);
+    opacity: 0.9;
+  }
+  .tolli-banner__sun svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Copy */
+  .tolli-banner__copy {
+    grid-area: copy;
+    position: relative;
+    z-index: 2;
+    padding: 2rem 1.8rem 2.4rem;
+  }
+  .tolli-banner__heading {
+    font-size: min(var(--banner-h-m), 8vw);
+    line-height: 1;
+    color: var(--banner-text);
+  }
+  .tolli-banner__heading .tolli-hl {
+    color: var(--banner-hl);
+  }
+  .tolli-banner__heading .tolli-burst {
+    width: 0.6em;
+    height: 0.6em;
+    margin-left: 0.04em;
+    margin-top: -0.1em;
+    vertical-align: top;
+    color: var(--banner-hl);
+  }
+  .tolli-banner__text {
+    margin: 0.8rem 0 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .tolli-banner__action {
+    margin-top: 1.6rem;
+  }
+  .tolli-banner .tolli-btn {
+    width: auto;
+    min-height: 4.4rem;
+    padding: 0.8rem 2.4rem;
+    border-radius: 1.2rem;
+    font-size: 1.6rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .tolli-banner__copy {
+      padding: 2.8rem 3.2rem 3.2rem;
+    }
+    .tolli-banner__heading {
+      font-size: var(--banner-h-d);
+    }
+    .tolli-banner__text {
+      font-size: 1.8rem;
+    }
+    .tolli-banner .tolli-btn {
+      min-height: 5rem;
+      font-size: 1.7rem;
+    }
+  }
+
+  /* Desktop: copy left, visual right */
+  @media screen and (min-width: 990px) {
+    .tolli-banner__inner {
+      grid-template-columns: minmax(0, var(--banner-copy-w)) minmax(0, 1fr);
+      grid-template-areas: 'copy media';
+      align-items: center;
+      min-height: var(--banner-min-h);
+    }
+    .tolli-banner__copy {
+      padding: 4rem 0 4rem clamp(3.2rem, 4vw, 6.4rem);
+    }
+    .tolli-banner__text {
+      max-width: 44rem;
+    }
+
+    /* With an image: it becomes the card background */
+    .tolli-banner--has-image .tolli-banner__media {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      aspect-ratio: auto;
+    }
+    .tolli-banner--has-image .tolli-banner__media .tolli-banner__img--mobile {
+      display: none;
+    }
+    .tolli-banner--has-image .tolli-banner__media .tolli-banner__img--mobile ~ img {
+      display: block;
+    }
+    .tolli-banner--has-image .tolli-banner__media::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(var(--banner-fade-rgb), var(--banner-fade)) 0%, rgba(var(--banner-fade-rgb), calc(var(--banner-fade) * 0.6)) 35%, rgba(var(--banner-fade-rgb), 0) 60%);
+      pointer-events: none;
+    }
+
+    /* Without an image: pouches sit in the right column */
+    .tolli-banner__pouches {
+      align-self: stretch;
+      align-items: center;
+      padding: 3.2rem 3.2rem 2.4rem;
+    }
+    .tolli-banner__pouch--a {
+      max-width: 22rem;
+    }
+    .tolli-banner__pouch--b {
+      max-width: 18rem;
+    }
+    .tolli-banner__sun {
+      top: 2.4rem;
+      width: 7.2rem;
+      height: 7.2rem;
+    }
+  }
+</style>
+
+<section class="tolli-section tolli-has-decor tolli-banner{% if has_image %} tolli-banner--has-image{% endif %}">
+  {% render 'tolli-section-decor', section: section %}
+  <div class="tolli-container">
+    <div class="tolli-banner__card">
+      <div class="tolli-banner__inner">
+        <div class="tolli-banner__media">
+          {%- if has_image -%}
+            {%- if section.settings.mobile_image != blank -%}
+              {{ section.settings.mobile_image | image_url: width: 1200 | image_tag: class: 'tolli-banner__img--mobile', widths: '400, 600, 800, 1000, 1200', sizes: '(min-width: 990px) 1px, 100vw', loading: 'lazy', alt: '' }}
+            {%- endif -%}
+            {{ section.settings.image | image_url: width: 2800 | image_tag: widths: '600, 900, 1200, 1600, 2000, 2400, 2800', sizes: '(min-width: 1400px) 1300px, 100vw', loading: 'lazy', alt: section.settings.image.alt }}
+          {%- else -%}
+            <div class="tolli-banner__pouches">
+              {%- if section.settings.show_sun -%}
+                <span class="tolli-banner__sun" aria-hidden="true">{% render 'tolli-icon', icon: 'sun' %}</span>
+              {%- endif -%}
+              <img class="tolli-banner__pouch tolli-banner__pouch--a" src="{{ 'tolli-pouch-hydration.png' | asset_url }}" width="374" height="522" loading="lazy" alt="Tolli Strawberry Lemonade hydration pouch">
+              <img class="tolli-banner__pouch tolli-banner__pouch--b" src="{{ 'tolli-pouch-protein.png' | asset_url }}" width="293" height="366" loading="lazy" alt="Tolli Raspberry Lemonade clear protein pouch">
+            </div>
+          {%- endif -%}
+        </div>
+
+        <div class="tolli-banner__copy">
+          {%- if section.settings.heading != blank -%}
+            <h2 class="tolli-display tolli-banner__heading">
+              {{ heading_html }}
+              {%- if section.settings.show_burst -%}
+                <span class="tolli-burst" aria-hidden="true">{% render 'tolli-icon', icon: 'burst-small' %}</span>
+              {%- endif -%}
+            </h2>
+          {%- endif -%}
+          {%- if section.settings.text != blank -%}
+            <p class="tolli-banner__text">{{ section.settings.text | escape | newline_to_br }}</p>
+          {%- endif -%}
+          {%- if section.settings.button_label != blank -%}
+            <div class="tolli-banner__action">
+              <a class="tolli-btn" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
+                <span>{{ section.settings.button_label | escape }}</span>
+                {% render 'tolli-icon', icon: 'arrow', class: 'tolli-btn__arrow' %}
+              </a>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Tolli image banner",
+  "tag": "div",
+  "class": "tolli-image-banner-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Wrap words in [brackets] to highlight them. Use | for a line break.",
+      "default": "Make hydration|a [daily habit.]"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_burst",
+      "label": "Show accent strokes after heading",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Clean ingredients. Great taste.\nA healthier, happier you."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop all products"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "info": "Defaults to all products."
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "min": 20,
+      "max": 56,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading size on mobile",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "min": 26,
+      "max": 90,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading size on desktop",
+      "default": 48
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "paragraph",
+      "content": "Desktop: the image fills the card and the copy sits on the left, so keep the left side of the image empty. Mobile: the image shows as a banner above the copy. When empty, the two pouches are shown."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "2800 × 800px (7:2) recommended, products in the right half."
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image (optional)"
+    },
+    {
+      "type": "select",
+      "id": "mobile_image_ratio",
+      "label": "Mobile image shape",
+      "options": [
+        {
+          "value": "16 / 9",
+          "label": "Landscape 16:9"
+        },
+        {
+          "value": "4 / 3",
+          "label": "Landscape 4:3"
+        },
+        {
+          "value": "1 / 1",
+          "label": "Square"
+        }
+      ],
+      "default": "16 / 9"
+    },
+    {
+      "type": "range",
+      "id": "focal_x",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Focal point – horizontal",
+      "info": "Keeps the products in view when the image is cropped.",
+      "default": 75
+    },
+    {
+      "type": "range",
+      "id": "focal_y",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Focal point – vertical",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "fade_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Soft fade behind copy (desktop)",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "fade_color",
+      "label": "Fade colour",
+      "default": "#E8F7F1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sun",
+      "label": "Show sun when no image is set",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "copy_width",
+      "min": 30,
+      "max": 70,
+      "step": 1,
+      "unit": "%",
+      "label": "Copy width on desktop",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "min": 200,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "label": "Banner height on desktop",
+      "default": 340
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Card corner radius",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Colours"
+    },
+    {
+      "type": "color_background",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "linear-gradient(100deg, #E8F7F1 0%, #E4F5FC 60%, #FDECF1 100%)"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Section background",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text colour",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "highlight_color",
+      "label": "Highlight colour",
+      "default": "#ED0056"
+    },
+    {
+      "type": "color",
+      "id": "burst_color",
+      "label": "Sun colour",
+      "default": "#FFDC32"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Button background",
+      "default": "#003E55"
+    },
+    {
+      "type": "color",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Top padding on mobile",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom padding on mobile",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 140,
+      "step": 2,
+      "unit": "px",
+      "label": "Top padding on desktop",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 140,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom padding on desktop",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Background & edges"
+    },
+    {
+      "type": "select",
+      "id": "bg_style",
+      "label": "Background image",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "leaves",
+          "label": "Sunny leaves (built-in)"
+        },
+        {
+          "value": "scene",
+          "label": "Lemonade scene (built-in)"
+        },
+        {
+          "value": "custom",
+          "label": "Custom image"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Custom background image"
+    },
+    {
+      "type": "range",
+      "id": "bg_opacity",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Background image opacity",
+      "default": 100
+    },
+    {
+      "type": "select",
+      "id": "bg_position",
+      "label": "Background image position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "bg_fixed",
+      "label": "Fixed background while scrolling",
+      "info": "Parallax effect: the image stays still and the page scrolls over it.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "wave_top",
+      "label": "Wavy top edge",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "wave_bottom",
+      "label": "Wavy bottom edge",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "wave_color",
+      "label": "Top wave colour",
+      "info": "Match the background of the section above.",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "color",
+      "id": "wave_bottom_color",
+      "label": "Bottom wave colour",
+      "info": "Match the background of the section below.",
+      "default": "#FFFDF7"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli image banner"
+    }
+  ]
+}
+{% endschema %}
