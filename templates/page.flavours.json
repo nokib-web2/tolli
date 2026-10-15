@@ -33,6 +33,7 @@
           "type": "flavour",
           "settings": {
             "product": "",
+            "image": "shopify://shop_images/TolliStrawberryLemonadeHydrationMix.png",
             "name": "Yuzu Lime",
             "status": "soon",
             "badge": "Coming soon",
@@ -43,6 +44,7 @@
           "type": "flavour",
           "settings": {
             "product": "",
+            "image": "shopify://shop_images/TolliStrawberryLemonadeHydrationMix.png",
             "name": "Mango Passionfruit",
             "status": "soon",
             "badge": "Coming soon",
@@ -53,6 +55,7 @@
           "type": "flavour",
           "settings": {
             "product": "",
+            "image": "shopify://shop_images/TolliStrawberryLemonadeHydrationMix.png",
             "name": "White Peach",
             "status": "soon",
             "badge": "Coming soon",
@@ -63,6 +66,7 @@
           "type": "flavour",
           "settings": {
             "product": "",
+            "image": "shopify://shop_images/TolliStrawberryLemonadeHydrationMix.png",
             "name": "Raspberry Kiwi",
             "status": "soon",
             "badge": "Coming soon",
@@ -73,6 +77,7 @@
           "type": "flavour",
           "settings": {
             "product": "",
+            "image": "shopify://shop_images/TolliStrawberryLemonadeHydrationMix.png",
             "name": "Watermelon",
             "status": "soon",
             "badge": "Coming soon",
