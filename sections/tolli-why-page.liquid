@@ -1,0 +1,1466 @@
+{%- comment -%}
+  Tolli "Why it matters" page
+  - Hero with an uploadable background image (leaves placeholder until one is set),
+    tilted title, swoosh subtitle, sun and "Just add water." sticker
+  - "Why it matters": benefit rows ("Benefit row" = title + 3 points,
+    "Highlight row" = title + one icon with heading, text and a small note)
+  - "Pick your sip.": product cards with an icon feature list and a shop button
+{%- endcomment -%}
+
+{%- liquid
+  assign is_first = false
+  if section.index == 1
+    assign is_first = true
+  endif
+  assign why_title_html = section.settings.why_title | escape | replace: '[', '<span class="twy__hl">' | replace: ']', '</span>'
+  assign sip_title_html = section.settings.sip_title | escape | replace: '[', '<span class="twy__hl">' | replace: ']', '</span>'
+  assign sticker_html = section.settings.sticker_text | escape | replace: '|', '<br>'
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .twy {
+    --twy-bg: {{ section.settings.background | default: '#FFFDF7' }};
+    --twy-top-offset: {% if is_first %}var(--tolli-header-offset, 0px){% else %}0px{% endif %};
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+  }
+  #shopify-section-{{ section.id }} .twy__hero {
+    padding-top: calc(var(--twy-top-offset) + {{ section.settings.padding_top_mobile }}px);
+  }
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .twy {
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+    #shopify-section-{{ section.id }} .twy__hero {
+      padding-top: calc(var(--twy-top-offset) + {{ section.settings.padding_top_desktop }}px);
+    }
+  }
+{%- endstyle -%}
+
+<style>
+  .twy {
+    --twy-navy: var(--tolli-navy, #003E55);
+    --twy-navy-rgb: var(--tolli-navy-rgb, 0, 62, 85);
+    --twy-pink: var(--tolli-pink, #ED0056);
+    --twy-yellow: var(--tolli-yellow, #FFDC32);
+    background: var(--twy-bg);
+    color: var(--twy-navy);
+    overflow: hidden;
+    overflow: clip;
+  }
+  .twy h1,
+  .twy h2,
+  .twy h3,
+  .twy p,
+  .twy ul {
+    margin: 0;
+  }
+  .twy__hl {
+    color: var(--twy-pink);
+  }
+  .twy__nowrap {
+    white-space: nowrap;
+  }
+  .twy__burst {
+    display: inline-block;
+    flex: none;
+    width: 0.6em;
+    height: 0.6em;
+    color: var(--twy-pink);
+    pointer-events: none;
+  }
+  .twy__burst svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .twy__swoosh {
+    display: block;
+    height: 0.9rem;
+    color: var(--twy-yellow);
+  }
+  .twy__swoosh svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Icon tones (soft circle + coloured line icon) */
+  .twy__tone--blue { --tone: #2B9FD9; --tone-bg: #DDF1FB; }
+  .twy__tone--yellow { --tone: #F2B400; --tone-bg: #FFF3C8; }
+  .twy__tone--green { --tone: #2DA36A; --tone-bg: #DDF3E7; }
+  .twy__tone--pink { --tone: #ED0056; --tone-bg: #FDE1EB; }
+  .twy__tone--purple { --tone: #8A5CF6; --tone-bg: #ECE4FD; }
+  .twy__tone--red { --tone: #E2231A; --tone-bg: #FDE2E1; }
+  .twy__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    border-radius: 50%;
+    background: var(--tone-bg, #fff);
+    color: var(--tone, var(--twy-navy));
+  }
+  .twy__icon svg,
+  .twy__icon img {
+    width: 52%;
+    height: 52%;
+    object-fit: contain;
+  }
+
+  /* ---------- Hero ---------- */
+  .twy__hero {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    min-height: calc(var(--twy-top-offset) + 34rem);
+    padding-bottom: 7.2rem;
+  }
+  .twy__hero > .tolli-container {
+    width: 100%;
+  }
+  .twy__hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+  }
+  .twy__hero-bg img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--twy-hero-focal, center);
+  }
+  .twy__hero-bg--mobile {
+    display: none;
+  }
+  @media screen and (max-width: 749px) {
+    .twy__hero-bg--has-mobile {
+      display: none;
+    }
+    .twy__hero-bg--has-mobile + .twy__hero-bg--mobile {
+      display: block;
+    }
+  }
+  .twy__hero-inner {
+    position: relative;
+    max-width: 64rem;
+  }
+  .twy__title {
+    display: inline-block;
+    font-family: var(--tolli-font-display);
+    font-weight: 400;
+    font-size: clamp(3.6rem, 11.6vw, 9.6rem);
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+    color: var(--twy-navy);
+    transform: rotate(-4deg);
+    transform-origin: left bottom;
+  }
+  .twy__title-line {
+    display: block;
+    white-space: nowrap;
+  }
+  .twy__title-line--hl {
+    color: var(--twy-pink);
+  }
+  .twy__title .twy__burst {
+    margin-left: 0.08em;
+    vertical-align: -0.35em;
+    transform: rotate(100deg);
+  }
+  .twy__subtitle {
+    display: inline-block;
+    margin-top: 1.6rem !important;
+    font-size: clamp(1.4rem, 3.9vw, 2.4rem);
+    font-weight: 800;
+    line-height: 1.25;
+    transform: rotate(-2deg);
+    transform-origin: left center;
+  }
+  .twy__subtitle .twy__swoosh {
+    width: 55%;
+    margin-top: 0.6rem;
+  }
+  .twy__sun {
+    position: absolute;
+    top: calc(var(--twy-top-offset) + 0.4rem);
+    right: 1.6rem;
+    width: 7.2rem;
+    color: var(--twy-yellow);
+    pointer-events: none;
+    animation: twySpin 40s linear infinite;
+  }
+  .twy__sun svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  @keyframes twySpin {
+    to { transform: rotate(360deg); }
+  }
+  .twy__sticker {
+    position: absolute;
+    right: 1.2rem;
+    bottom: 9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 10.4rem;
+    height: 7.2rem;
+    border-radius: 50%;
+    background: var(--twy-yellow);
+    color: var(--twy-navy);
+    font-family: var(--tolli-font-script);
+    font-size: 1.7rem;
+    line-height: 1.05;
+    text-align: center;
+    transform: rotate(-14deg);
+    box-shadow: 0 0.6rem 1.4rem rgba(var(--twy-navy-rgb), 0.12);
+  }
+  .twy__wave {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: 3.6rem;
+    color: var(--twy-bg);
+    pointer-events: none;
+  }
+  .twy__wave path {
+    fill: currentColor;
+  }
+
+  /* ---------- Section headings ---------- */
+  .twy__heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.1em;
+    margin: 0.8rem 0 1.8rem !important;
+    font-family: var(--tolli-font-display);
+    font-weight: 400;
+    font-size: clamp(3.2rem, 9.6vw, 6.4rem);
+    line-height: 1;
+    text-align: center;
+    color: var(--twy-navy);
+  }
+  .twy__heading .twy__burst {
+    width: 0.55em;
+    height: 0.55em;
+    align-self: flex-start;
+    transform: rotate(100deg);
+  }
+
+  /* ---------- Benefit rows ---------- */
+  .twy__rows {
+    display: grid;
+    gap: 1.2rem;
+  }
+  .twy__row {
+    display: grid;
+    gap: 1.6rem;
+    padding: 2rem 1.6rem;
+    border-radius: 2.4rem;
+    background: var(--twy-row-bg);
+  }
+  .twy__row-title {
+    position: relative;
+    align-self: center;
+    justify-self: start;
+    font-family: var(--tolli-font-display);
+    font-weight: 400;
+    font-size: clamp(2.6rem, 7.4vw, 4.8rem);
+    line-height: 1;
+    color: var(--twy-navy);
+    white-space: nowrap;
+    transform: rotate(-4deg);
+  }
+  .twy__row-title .twy__burst {
+    width: 0.5em;
+    height: 0.5em;
+    margin-left: 0.04em;
+    vertical-align: top;
+    color: var(--twy-row-burst);
+    transform: rotate(100deg);
+  }
+  .twy__row-title .twy__swoosh {
+    width: 85%;
+    margin-top: 0.6rem;
+    color: var(--twy-row-line);
+  }
+  .twy__points {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 0;
+    list-style: none;
+  }
+  .twy__point {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0 0.6rem;
+    text-align: center;
+    font-size: clamp(1.25rem, 3.4vw, 1.8rem);
+    line-height: 1.3;
+  }
+  .twy__point + .twy__point {
+    border-left: 1.5px solid rgba(var(--twy-navy-rgb), 0.1);
+  }
+  .twy__point .twy__icon {
+    width: clamp(4.8rem, 13vw, 7.6rem);
+    height: clamp(4.8rem, 13vw, 7.6rem);
+  }
+  .twy__highlight {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+  }
+  .twy__highlight .twy__icon {
+    width: clamp(6.4rem, 18vw, 10.4rem);
+    height: clamp(6.4rem, 18vw, 10.4rem);
+  }
+  .twy__highlight-body {
+    padding-left: 1.4rem;
+    border-left: 1.5px solid rgba(var(--twy-navy-rgb), 0.1);
+  }
+  .twy__highlight-heading {
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    font-weight: 800;
+    line-height: 1.25;
+  }
+  .twy__highlight-text {
+    margin-top: 0.6rem !important;
+    font-size: clamp(1.4rem, 3.8vw, 2rem);
+    line-height: 1.3;
+  }
+  .twy__highlight-note {
+    margin-top: 0.6rem !important;
+    font-size: 1.25rem;
+    opacity: 0.75;
+  }
+
+  /* ---------- Product cards ---------- */
+  .twy__sips {
+    margin-top: 3.2rem;
+  }
+  .twy__cards {
+    display: grid;
+    gap: 1.2rem;
+  }
+  .twy__card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: 1rem;
+    padding: 1.6rem 1.4rem;
+    border-radius: 2.4rem;
+    background: var(--twy-card-bg);
+  }
+  .twy__card-media {
+    position: relative;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 18rem;
+  }
+  .twy__card-media img {
+    display: block;
+    width: 100%;
+    max-width: 36rem;
+    height: auto;
+    max-height: 38rem;
+    object-fit: contain;
+    filter: drop-shadow(0 1.2rem 1.6rem rgba(var(--twy-navy-rgb), 0.16));
+    transition: transform 0.4s ease;
+  }
+  .twy__card:hover .twy__card-media img {
+    transform: translateY(-4px) rotate(-1.5deg);
+  }
+  .twy__card-media .twy__burst {
+    position: absolute;
+    left: 0;
+    top: 22%;
+    width: 3rem;
+    height: 3rem;
+    color: var(--twy-yellow);
+    transform: scaleX(-1);
+  }
+  .twy__card-title {
+    font-family: var(--tolli-font-display);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 7vw, 4.4rem);
+    line-height: 1;
+    color: var(--twy-navy);
+  }
+  .twy__card-title .twy__burst {
+    width: 0.55em;
+    height: 0.55em;
+    margin-left: 0.1em;
+    vertical-align: middle;
+    transform: rotate(100deg);
+  }
+  .twy__card-title .twy__swoosh {
+    width: 6.4rem;
+    height: 0.7rem;
+    margin-top: 0.4rem;
+    color: var(--twy-card-line);
+  }
+  .twy__features {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 1.2rem !important;
+    padding: 0;
+    list-style: none;
+  }
+  .twy__feature {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: clamp(1.2rem, 3.4vw, 1.8rem);
+    line-height: 1.25;
+  }
+  .twy__feature .twy__icon {
+    width: clamp(2.4rem, 6.4vw, 3.4rem);
+    height: clamp(2.4rem, 6.4vw, 3.4rem);
+  }
+  .twy__feature .twy__icon svg {
+    width: 62%;
+    height: 62%;
+  }
+  .twy .twy__card .tolli-btn {
+    margin-top: 1.4rem;
+    min-height: 4.2rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 99rem;
+    font-size: clamp(1.3rem, 3.6vw, 1.9rem);
+    white-space: nowrap;
+  }
+
+  /* Small phones: give the product image a little less room than the text */
+  @media screen and (max-width: 419px) {
+    .twy__card {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    }
+  }
+  @media screen and (min-width: 600px) {
+    .twy__row {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      column-gap: 2.4rem;
+    }
+    .twy__row-title {
+      font-size: clamp(2.4rem, 4.4vw, 4.8rem);
+    }
+  }
+
+  /* ---------- Tablet ---------- */
+  @media screen and (min-width: 750px) {
+    .twy__hero {
+      min-height: calc(var(--twy-top-offset) + 48rem);
+      padding-bottom: 10rem;
+    }
+    .twy__sun {
+      top: calc(var(--twy-top-offset) + 2.4rem);
+      right: 6%;
+      width: 11rem;
+    }
+    .twy__sticker {
+      right: 6%;
+      bottom: 12rem;
+      width: 15rem;
+      height: 10.4rem;
+      font-size: 2.4rem;
+    }
+    .twy__wave {
+      height: 5.6rem;
+    }
+    .twy__heading {
+      margin-bottom: 3.2rem !important;
+    }
+    .twy__rows,
+    .twy__cards {
+      gap: 2rem;
+    }
+    .twy__row {
+      padding: 3.2rem 3.2rem;
+      border-radius: 3.2rem;
+    }
+    .twy__highlight {
+      gap: 2.8rem;
+    }
+    .twy__highlight-body {
+      padding-left: 2.8rem;
+    }
+    .twy__sips {
+      margin-top: 5.6rem;
+    }
+    .twy__card {
+      gap: 2.4rem;
+      padding: 2.4rem 3.2rem;
+      border-radius: 3.2rem;
+    }
+    .twy .twy__card .tolli-btn {
+      width: auto;
+      min-width: 26rem;
+      min-height: 5rem;
+      padding: 0.8rem 2.8rem;
+    }
+  }
+
+  /* ---------- Desktop ---------- */
+  @media screen and (min-width: 990px) {
+    .twy__hero {
+      min-height: calc(var(--twy-top-offset) + 56rem);
+    }
+    .twy__rows {
+      max-width: 112rem;
+      margin: 0 auto;
+    }
+    .twy__row {
+      column-gap: 4rem;
+      padding: 3.6rem 4.8rem;
+    }
+    .twy__point {
+      padding: 0 2rem;
+    }
+    .twy__cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      max-width: 128rem;
+      margin: 0 auto;
+    }
+    .twy__card {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      padding: 2.8rem;
+    }
+    .twy__card-title {
+      font-size: 4rem;
+    }
+    .twy__feature {
+      font-size: 1.6rem;
+    }
+    .twy .twy__card .tolli-btn {
+      min-width: 0;
+      width: 100%;
+      font-size: 1.7rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .twy__sun {
+      animation: none;
+    }
+    .twy__card-media img {
+      transition: none;
+    }
+  }
+</style>
+
+{%- capture burst_svg -%}{%- render 'tolli-icon', icon: 'burst' -%}{%- endcapture -%}
+{%- capture swoosh_svg -%}{%- render 'tolli-icon', icon: 'swoosh' -%}{%- endcapture -%}
+
+<div class="tolli-section twy">
+  {%- comment -%} 1. Hero {%- endcomment -%}
+  <div class="twy__hero">
+    {%- liquid
+      assign hero_bg = section.settings.hero_bg_image
+      assign hero_bg_mobile = section.settings.hero_bg_image_mobile
+    -%}
+    {%- if hero_bg != blank -%}
+      {%- assign hero_focal = hero_bg.presentation.focal_point | default: 'center' -%}
+      <div
+        class="twy__hero-bg{% if hero_bg_mobile != blank %} twy__hero-bg--has-mobile{% endif %}"
+        style="--twy-hero-focal: {{ hero_focal }};"
+        aria-hidden="true"
+      >
+        {{
+          hero_bg
+          | image_url: width: 3000
+          | image_tag:
+            widths: '750, 1100, 1500, 2000, 2500, 3000',
+            sizes: '100vw',
+            loading: 'eager',
+            fetchpriority: 'high',
+            alt: ''
+        }}
+      </div>
+      {%- if hero_bg_mobile != blank -%}
+        {%- assign hero_focal_mobile = hero_bg_mobile.presentation.focal_point | default: 'center' -%}
+        <div class="twy__hero-bg twy__hero-bg--mobile" style="--twy-hero-focal: {{ hero_focal_mobile }};" aria-hidden="true">
+          {{
+            hero_bg_mobile
+            | image_url: width: 1500
+            | image_tag: widths: '375, 550, 750, 1100, 1500', sizes: '100vw', loading: 'eager', alt: ''
+          }}
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      {%- comment -%} Placeholder until a hero background is uploaded {%- endcomment -%}
+      <div class="twy__hero-bg" style="--twy-hero-focal: left top;" aria-hidden="true">
+        <img src="{{ 'tolli-bg-leaves.jpg' | asset_url }}" width="2000" height="803" alt="" loading="eager">
+      </div>
+    {%- endif -%}
+
+    <div class="tolli-container">
+      <div class="twy__hero-inner">
+        <h1 class="twy__title">
+          <span class="twy__title-line">{{ section.settings.title_line_1 | escape }}</span>
+          <span class="twy__title-line twy__title-line--hl">
+            {{- section.settings.title_line_2 | escape -}}
+            {%- if section.settings.show_bursts -%}
+              <span class="twy__burst" aria-hidden="true">{{ burst_svg }}</span>
+            {%- endif -%}
+          </span>
+        </h1>
+        {%- if section.settings.subtitle != blank -%}
+          <div>
+            <p class="twy__subtitle">
+              {{ section.settings.subtitle | escape }}
+              <span class="twy__swoosh" aria-hidden="true">{{ swoosh_svg }}</span>
+            </p>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if section.settings.show_sun -%}
+      <span class="twy__sun" aria-hidden="true">{%- render 'tolli-icon', icon: 'sun' -%}</span>
+    {%- endif -%}
+    {%- if section.settings.show_sticker and section.settings.sticker_text != blank -%}
+      <p class="twy__sticker">{{ sticker_html }}</p>
+    {%- endif -%}
+    <svg class="twy__wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 34C190 8 420 2 660 18s470 30 780 6V60H0Z"/></svg>
+  </div>
+
+  <div class="tolli-container">
+    {%- comment -%} 2. Why it matters {%- endcomment -%}
+    {%- if section.settings.why_title != blank -%}
+      <h2 class="twy__heading">
+        <span>{{ why_title_html }}</span>
+        {%- if section.settings.show_bursts -%}<span class="twy__burst" aria-hidden="true">{{ burst_svg }}</span>{%- endif -%}
+      </h2>
+    {%- endif -%}
+
+    <div class="twy__rows">
+      {%- for block in section.blocks -%}
+        {%- unless block.type == 'benefit_row' or block.type == 'highlight_row' -%}{%- continue -%}{%- endunless -%}
+        {%- assign row_title_html = block.settings.title | escape | replace: '[', '<span class="twy__hl">' | replace: ']', '</span>' | replace: '|', '<br>' -%}
+        <div
+          class="twy__row"
+          style="--twy-row-bg: {{ block.settings.panel_bg }}; --twy-row-line: {{ block.settings.underline_color }}; --twy-row-burst: {{ block.settings.burst_color }};"
+          {{ block.shopify_attributes }}
+        >
+          <h3 class="twy__row-title">
+            {{ row_title_html }}
+            {%- if block.settings.show_burst -%}<span class="twy__burst" aria-hidden="true">{{ burst_svg }}</span>{%- endif -%}
+            <span class="twy__swoosh" aria-hidden="true">{{ swoosh_svg }}</span>
+          </h3>
+
+          {%- if block.type == 'benefit_row' -%}
+            <ul class="twy__points" role="list">
+              {%- for i in (1..3) -%}
+                {%- liquid
+                  assign k_text = 'text_' | append: i
+                  assign k_icon = 'icon_' | append: i
+                  assign k_tone = 'tone_' | append: i
+                  assign k_img = 'icon_image_' | append: i
+                -%}
+                {%- if block.settings[k_text] != blank -%}
+                  <li class="twy__point">
+                    <span class="twy__icon twy__tone--{{ block.settings[k_tone] }}" aria-hidden="true">
+                      {%- if block.settings[k_img] != blank -%}
+                        {{ block.settings[k_img] | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}
+                      {%- else -%}
+                        {%- render 'tolli-icon', icon: block.settings[k_icon] -%}
+                      {%- endif -%}
+                    </span>
+                    <span>{{ block.settings[k_text] | escape }}</span>
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          {%- else -%}
+            <div class="twy__highlight">
+              <span class="twy__icon twy__tone--{{ block.settings.tone }}" aria-hidden="true">
+                {%- if block.settings.icon_image != blank -%}
+                  {{ block.settings.icon_image | image_url: width: 220 | image_tag: loading: 'lazy', alt: '' }}
+                {%- else -%}
+                  {%- render 'tolli-icon', icon: block.settings.icon -%}
+                {%- endif -%}
+              </span>
+              <div class="twy__highlight-body">
+                {%- if block.settings.heading != blank -%}
+                  <p class="twy__highlight-heading">{{ block.settings.heading | escape }}</p>
+                {%- endif -%}
+                {%- if block.settings.text != blank -%}
+                  <p class="twy__highlight-text">{{ block.settings.text | escape | newline_to_br }}</p>
+                {%- endif -%}
+                {%- if block.settings.note != blank -%}
+                  <p class="twy__highlight-note">{{ block.settings.note | escape }}</p>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- comment -%} 3. Pick your sip {%- endcomment -%}
+    <div class="twy__sips">
+      {%- if section.settings.sip_title != blank -%}
+        <h2 class="twy__heading">
+          <span>{{ sip_title_html }}</span>
+          {%- if section.settings.show_bursts -%}<span class="twy__burst" aria-hidden="true">{{ burst_svg }}</span>{%- endif -%}
+        </h2>
+      {%- endif -%}
+
+      <div class="twy__cards">
+        {%- for block in section.blocks -%}
+          {%- if block.type != 'sip' -%}{%- continue -%}{%- endif -%}
+          {%- liquid
+            assign sip_number = sip_number | default: 0 | plus: 1
+            assign s_product = block.settings.product
+            assign s_title = block.settings.title
+            if s_title == blank and s_product != blank
+              assign s_title = s_product.title
+            endif
+            assign s_link = block.settings.button_link
+            if s_link == blank and s_product != blank
+              assign s_link = s_product.url
+            endif
+            if s_link == blank
+              assign s_link = routes.all_products_collection_url
+            endif
+            assign s_image = block.settings.image
+            if s_image == blank and s_product != blank
+              assign s_image = s_product.featured_media.preview_image
+            endif
+          -%}
+          <article
+            class="twy__card"
+            style="--twy-card-bg: {{ block.settings.card_bg }};{% if block.settings.underline_color != blank %} --twy-card-line: {{ block.settings.underline_color }};{% endif %}"
+            {{ block.shopify_attributes }}
+          >
+            <div class="twy__card-media">
+              {%- if s_image != blank -%}
+                {{
+                  s_image
+                  | image_url: width: 900
+                  | image_tag:
+                    widths: '360, 540, 720, 900',
+                    sizes: '(min-width: 990px) 22vw, 45vw',
+                    loading: 'lazy',
+                    alt: s_title
+                }}
+              {%- elsif sip_number == 2 -%}
+                <img src="{{ 'tolli-pouch-protein.png' | asset_url }}" width="293" height="366" alt="{{ s_title | escape }}" loading="lazy">
+              {%- else -%}
+                <img src="{{ 'tolli-pouch-hydration.png' | asset_url }}" width="374" height="522" alt="{{ s_title | escape }}" loading="lazy">
+              {%- endif -%}
+              {%- if block.settings.show_image_burst -%}
+                <span class="twy__burst" aria-hidden="true">{{ burst_svg }}</span>
+              {%- endif -%}
+            </div>
+            <div class="twy__card-body">
+              {%- liquid
+                assign s_last_word = s_title | split: ' ' | last
+                assign s_first_words = s_title | remove_last: s_last_word
+              -%}
+              <h3 class="twy__card-title">
+                {{ s_first_words | escape -}}
+                <span class="twy__nowrap">
+                  {{- s_last_word | escape -}}
+                  {%- if block.settings.show_burst -%}<span class="twy__burst" aria-hidden="true">{{ burst_svg }}</span>{%- endif -%}
+                </span>
+                {%- if block.settings.underline_color != blank -%}
+                  <span class="twy__swoosh" aria-hidden="true">{{ swoosh_svg }}</span>
+                {%- endif -%}
+              </h3>
+              <ul class="twy__features" role="list">
+                {%- for i in (1..4) -%}
+                  {%- liquid
+                    assign k_text = 'feature_' | append: i
+                    assign k_icon = 'feature_icon_' | append: i
+                    assign k_tone = 'feature_tone_' | append: i
+                  -%}
+                  {%- if block.settings[k_text] != blank -%}
+                    <li class="twy__feature">
+                      <span class="twy__icon twy__tone--{{ block.settings[k_tone] }}" aria-hidden="true">
+                        {%- render 'tolli-icon', icon: block.settings[k_icon] -%}
+                      </span>
+                      <span>{{ block.settings[k_text] | escape }}</span>
+                    </li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+              {%- if block.settings.button_label != blank -%}
+                <a class="tolli-btn" href="{{ s_link }}">
+                  <span>{{ block.settings.button_label | escape }}</span>
+                  {%- render 'tolli-icon', icon: 'arrow', class: 'tolli-btn__arrow' -%}
+                </a>
+              {%- endif -%}
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Tolli why page",
+  "tag": "section",
+  "class": "tolli-why-page-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_bg_image",
+      "label": "Hero background image",
+      "info": "Fills the whole hero behind the title (about 2400 × 1000 px), e.g. the glass scene on the right. Keep the left side light so the title stays readable. The leaves backdrop shows until you upload one."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_bg_image_mobile",
+      "label": "Hero background image (mobile)",
+      "info": "Optional. Shown below 750px wide instead of the image above."
+    },
+    {
+      "type": "text",
+      "id": "title_line_1",
+      "label": "Title line 1",
+      "default": "Big refresh."
+    },
+    {
+      "type": "text",
+      "id": "title_line_2",
+      "label": "Title line 2 (pink)",
+      "default": "Good vibes."
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Hydration. Protein. Immune support."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sun",
+      "label": "Show sun doodle",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sticker",
+      "label": "Show sticker",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sticker_text",
+      "label": "Sticker text",
+      "info": "Use | for a line break.",
+      "default": "Just|add water."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bursts",
+      "label": "Show accent strokes after headings",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Headings"
+    },
+    {
+      "type": "text",
+      "id": "why_title",
+      "label": "Benefits heading",
+      "info": "Wrap words in [brackets] to make them pink.",
+      "default": "Why it matters"
+    },
+    {
+      "type": "text",
+      "id": "sip_title",
+      "label": "Products heading",
+      "info": "Wrap words in [brackets] to make them pink.",
+      "default": "Pick your [sip.]"
+    },
+    {
+      "type": "header",
+      "content": "Colours & spacing"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Page background",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Hero top padding mobile",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Hero top padding desktop",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding mobile",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding desktop",
+      "default": 72
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit_row",
+      "name": "Benefit row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "info": "Use | for a line break and [brackets] for pink words.",
+          "default": "Hydration,|every day."
+        },
+        {
+          "type": "checkbox",
+          "id": "show_burst",
+          "label": "Show accent strokes",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "burst_color",
+          "label": "Accent strokes colour",
+          "default": "#2DA36A"
+        },
+        {
+          "type": "color",
+          "id": "underline_color",
+          "label": "Underline colour",
+          "default": "#2DA36A"
+        },
+        {
+          "type": "color",
+          "id": "panel_bg",
+          "label": "Panel background",
+          "default": "#EAF6F0"
+        },
+        {
+          "type": "header",
+          "content": "Point 1"
+        },
+        {
+          "type": "select",
+          "id": "icon_1",
+          "label": "Icon",
+          "options": [
+            { "value": "drop", "label": "Drop" },
+            { "value": "sun", "label": "Sun" },
+            { "value": "molecule", "label": "Electrolytes" },
+            { "value": "dumbbell", "label": "Dumbbell" },
+            { "value": "run", "label": "Runner" },
+            { "value": "strawberry-line", "label": "Strawberry" },
+            { "value": "shield-line", "label": "Shield" },
+            { "value": "plus", "label": "Plus" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "cube", "label": "Cube" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "sparkle", "label": "Sparkle" }
+          ],
+          "default": "drop"
+        },
+        {
+          "type": "select",
+          "id": "tone_1",
+          "label": "Icon colour",
+          "options": [
+            { "value": "blue", "label": "Blue" },
+            { "value": "yellow", "label": "Yellow" },
+            { "value": "green", "label": "Green" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "red", "label": "Red" }
+          ],
+          "default": "blue"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image_1",
+          "label": "Custom icon image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "text_1",
+          "label": "Text",
+          "default": "Fluids support everyday body functions."
+        },
+        {
+          "type": "header",
+          "content": "Point 2"
+        },
+        {
+          "type": "select",
+          "id": "icon_2",
+          "label": "Icon",
+          "options": [
+            { "value": "drop", "label": "Drop" },
+            { "value": "sun", "label": "Sun" },
+            { "value": "molecule", "label": "Electrolytes" },
+            { "value": "dumbbell", "label": "Dumbbell" },
+            { "value": "run", "label": "Runner" },
+            { "value": "strawberry-line", "label": "Strawberry" },
+            { "value": "shield-line", "label": "Shield" },
+            { "value": "plus", "label": "Plus" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "cube", "label": "Cube" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "sparkle", "label": "Sparkle" }
+          ],
+          "default": "sun"
+        },
+        {
+          "type": "select",
+          "id": "tone_2",
+          "label": "Icon colour",
+          "options": [
+            { "value": "blue", "label": "Blue" },
+            { "value": "yellow", "label": "Yellow" },
+            { "value": "green", "label": "Green" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "red", "label": "Red" }
+          ],
+          "default": "yellow"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image_2",
+          "label": "Custom icon image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "text_2",
+          "label": "Text",
+          "default": "Heat and movement increase fluid loss."
+        },
+        {
+          "type": "header",
+          "content": "Point 3"
+        },
+        {
+          "type": "select",
+          "id": "icon_3",
+          "label": "Icon",
+          "options": [
+            { "value": "drop", "label": "Drop" },
+            { "value": "sun", "label": "Sun" },
+            { "value": "molecule", "label": "Electrolytes" },
+            { "value": "dumbbell", "label": "Dumbbell" },
+            { "value": "run", "label": "Runner" },
+            { "value": "strawberry-line", "label": "Strawberry" },
+            { "value": "shield-line", "label": "Shield" },
+            { "value": "plus", "label": "Plus" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "cube", "label": "Cube" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "sparkle", "label": "Sparkle" }
+          ],
+          "default": "molecule"
+        },
+        {
+          "type": "select",
+          "id": "tone_3",
+          "label": "Icon colour",
+          "options": [
+            { "value": "blue", "label": "Blue" },
+            { "value": "yellow", "label": "Yellow" },
+            { "value": "green", "label": "Green" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "red", "label": "Red" }
+          ],
+          "default": "green"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image_3",
+          "label": "Custom icon image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "text_3",
+          "label": "Text",
+          "default": "Electrolytes help replace what you lose through sweat."
+        }
+      ]
+    },
+    {
+      "type": "highlight_row",
+      "name": "Highlight row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "info": "Use | for a line break and [brackets] for pink words.",
+          "default": "Immune|support, too."
+        },
+        {
+          "type": "checkbox",
+          "id": "show_burst",
+          "label": "Show accent strokes",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "burst_color",
+          "label": "Accent strokes colour",
+          "default": "#ED0056"
+        },
+        {
+          "type": "color",
+          "id": "underline_color",
+          "label": "Underline colour",
+          "default": "#2B9FD9"
+        },
+        {
+          "type": "color",
+          "id": "panel_bg",
+          "label": "Panel background",
+          "default": "#E6F4FB"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "shield-line", "label": "Shield" },
+            { "value": "drop", "label": "Drop" },
+            { "value": "sun", "label": "Sun" },
+            { "value": "molecule", "label": "Electrolytes" },
+            { "value": "dumbbell", "label": "Dumbbell" },
+            { "value": "run", "label": "Runner" },
+            { "value": "strawberry-line", "label": "Strawberry" },
+            { "value": "plus", "label": "Plus" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "cube", "label": "Cube" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "sparkle", "label": "Sparkle" }
+          ],
+          "default": "shield-line"
+        },
+        {
+          "type": "select",
+          "id": "tone",
+          "label": "Icon colour",
+          "options": [
+            { "value": "blue", "label": "Blue" },
+            { "value": "yellow", "label": "Yellow" },
+            { "value": "green", "label": "Green" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "red", "label": "Red" }
+          ],
+          "default": "pink"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Custom icon image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Vitamin C supports normal immune function."
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "A little daily support.\nA refreshing sip."
+        },
+        {
+          "type": "text",
+          "id": "note",
+          "label": "Small note",
+          "default": "Vitamin C in both blends."
+        }
+      ]
+    },
+    {
+      "type": "sip",
+      "name": "Product card",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product",
+          "info": "Fills in the title, image and link. The fields below override it."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "A transparent PNG of the pouch with fruit works best."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "info": "Leave empty to use the product title.",
+          "default": "Daily Hydration"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_burst",
+          "label": "Show accent strokes after title",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "underline_color",
+          "label": "Title underline colour",
+          "info": "Clear it to hide the underline."
+        },
+        {
+          "type": "checkbox",
+          "id": "show_image_burst",
+          "label": "Show accent strokes beside image",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "card_bg",
+          "label": "Card background",
+          "default": "#EAF6F0"
+        },
+        {
+          "type": "header",
+          "content": "Features"
+        },
+        {
+          "type": "select",
+          "id": "feature_icon_1",
+          "label": "Feature 1 icon",
+          "options": [
+            { "value": "drop", "label": "Drop" },
+            { "value": "plus", "label": "Plus" },
+            { "value": "shield-line", "label": "Shield" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "strawberry-line", "label": "Strawberry" },
+            { "value": "dumbbell", "label": "Dumbbell" },
+            { "value": "cube", "label": "Cube" },
+            { "value": "molecule", "label": "Electrolytes" },
+            { "value": "sun", "label": "Sun" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "sparkle", "label": "Sparkle" }
+          ],
+          "default": "drop"
+        },
+        {
+          "type": "select",
+          "id": "feature_tone_1",
+          "label": "Feature 1 icon colour",
+          "options": [
+            { "value": "blue", "label": "Blue" },
+            { "value": "yellow", "label": "Yellow" },
+            { "value": "green", "label": "Green" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "red", "label": "Red" }
+          ],
+          "default": "blue"
+        },
+        {
+          "type": "text",
+          "id": "feature_1",
+          "label": "Feature 1",
+          "default": "Strawberry Lemonade"
+        },
+        {
+          "type": "select",
+          "id": "feature_icon_2",
+          "label": "Feature 2 icon",
+          "options": [
+            { "value": "drop", "label": "Drop" },
+            { "value": "plus", "label": "Plus" },
+            { "value": "shield-line", "label": "Shield" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "strawberry-line", "label": "Strawberry" },
+            { "value": "dumbbell", "label": "Dumbbell" },
+            { "value": "cube", "label": "Cube" },
+            { "value": "molecule", "label": "Electrolytes" },
+            { "value": "sun", "label": "Sun" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "sparkle", "label": "Sparkle" }
+          ],
+          "default": "plus"
+        },
+        {
+          "type": "select",
+          "id": "feature_tone_2",
+          "label": "Feature 2 icon colour",
+          "options": [
+            { "value": "blue", "label": "Blue" },
+            { "value": "yellow", "label": "Yellow" },
+            { "value": "green", "label": "Green" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "red", "label": "Red" }
+          ],
+          "default": "pink"
+        },
+        {
+          "type": "text",
+          "id": "feature_2",
+          "label": "Feature 2",
+          "default": "5 electrolytes + 3 vitamins"
+        },
+        {
+          "type": "select",
+          "id": "feature_icon_3",
+          "label": "Feature 3 icon",
+          "options": [
+            { "value": "drop", "label": "Drop" },
+            { "value": "plus", "label": "Plus" },
+            { "value": "shield-line", "label": "Shield" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "strawberry-line", "label": "Strawberry" },
+            { "value": "dumbbell", "label": "Dumbbell" },
+            { "value": "cube", "label": "Cube" },
+            { "value": "molecule", "label": "Electrolytes" },
+            { "value": "sun", "label": "Sun" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "sparkle", "label": "Sparkle" }
+          ],
+          "default": "shield-line"
+        },
+        {
+          "type": "select",
+          "id": "feature_tone_3",
+          "label": "Feature 3 icon colour",
+          "options": [
+            { "value": "blue", "label": "Blue" },
+            { "value": "yellow", "label": "Yellow" },
+            { "value": "green", "label": "Green" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "red", "label": "Red" }
+          ],
+          "default": "yellow"
+        },
+        {
+          "type": "text",
+          "id": "feature_3",
+          "label": "Feature 3",
+          "default": "Vitamin C • Immune support"
+        },
+        {
+          "type": "select",
+          "id": "feature_icon_4",
+          "label": "Feature 4 icon",
+          "options": [
+            { "value": "drop", "label": "Drop" },
+            { "value": "plus", "label": "Plus" },
+            { "value": "shield-line", "label": "Shield" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "strawberry-line", "label": "Strawberry" },
+            { "value": "dumbbell", "label": "Dumbbell" },
+            { "value": "cube", "label": "Cube" },
+            { "value": "molecule", "label": "Electrolytes" },
+            { "value": "sun", "label": "Sun" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "sparkle", "label": "Sparkle" }
+          ],
+          "default": "leaf"
+        },
+        {
+          "type": "select",
+          "id": "feature_tone_4",
+          "label": "Feature 4 icon colour",
+          "options": [
+            { "value": "blue", "label": "Blue" },
+            { "value": "yellow", "label": "Yellow" },
+            { "value": "green", "label": "Green" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "red", "label": "Red" }
+          ],
+          "default": "green"
+        },
+        {
+          "type": "text",
+          "id": "feature_4",
+          "label": "Feature 4",
+          "default": "Zero sugar • 15 servings"
+        },
+        {
+          "type": "header",
+          "content": "Button"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Shop hydration"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link",
+          "info": "Defaults to the product above."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli why page",
+      "blocks": [
+        { "type": "benefit_row" },
+        { "type": "highlight_row" },
+        { "type": "sip" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -126,6 +126,9 @@
   if section.settings.transparent_on_faq and request.page_type == 'page' and template.suffix == 'faq'
     assign tolli_transparent = true
   endif
+  if section.settings.transparent_on_why and request.page_type == 'page' and template.suffix == 'why-tolli'
+    assign tolli_transparent = true
+  endif
 
   # Light text over the transparent header means the backdrop is dark
   assign overlay_on_dark = nil
@@ -1005,6 +1008,13 @@
       "id": "transparent_on_faq",
       "label": "Make header transparent on the FAQ page",
       "info": "Floats over the Tolli FAQ hero on pages using the 'faq' template.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_on_why",
+      "label": "Make header transparent on the Why tolli page",
+      "info": "Floats over the hero on pages using the 'why-tolli' template.",
       "default": true
     },
     {
