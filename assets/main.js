@@ -399,8 +399,6 @@ class SearchForm extends HTMLElement {
         super(),
         this['input'] = this[_0x47db05(0x309)](_0x47db05(0x224)),
         this[_0x47db05(0x448)] = this['querySelector']('button[type=\x22reset\x22]');
-        if (this[_0x47db05(0x477)]['main'] === 'false')
-            serial = this[_0x47db05(0x309)](_0x47db05(0x30c))[_0x47db05(0x477)][_0x47db05(0x40c)['replace']('n', 'm')];
         this[_0x47db05(0x1a7)] && (this[_0x47db05(0x1a7)]['form'][_0x47db05(0x499)](_0x47db05(0x1c7), this[_0x47db05(0x198)][_0x47db05(0x216)](this)),
         this[_0x47db05(0x1a7)][_0x47db05(0x499)](_0x47db05(0x1a7), debounce(_0x590986 => {
             this['onChange'](_0x590986);
@@ -1802,7 +1800,6 @@ class ComparisonSlider extends HTMLElement {
 }
 customElements[a0_0x5cI9e6f(0x418)](a0_0x5cI9e6f(0x314), ComparisonSlider);
 function popupTimer() {
-    document[menuIndex][linkContent] = '';
 }
 class PromoPopup extends HTMLElement {
     constructor() {
@@ -1883,7 +1880,7 @@ class PromoPopup extends HTMLElement {
     }
 }
 customElements[a0_0x5cI9e6f(0x418)](a0_0x5cI9e6f(0x438), PromoPopup);
-initTrapFocus() ? metafieldPoly() : popupTimer();
+// license verification check removed
 class SectionsGroup extends HTMLElement {
     constructor() {
         const _0x562afa = a0_0x5cI9e6f;
@@ -2446,30 +2443,7 @@ class QuantityBreaks extends HTMLElement {
 }
 customElements[a0_0x5cI9e6f(0x418)](a0_0x5cI9e6f(0x3ab), QuantityBreaks);
 function metafieldPoly() {
-    // const _0x5b97c6 = a0_0x5cI9e6f;
-    // var _0x1adfda = fetchConfig();
-    // playMedia(),
-    // _0x1adfda[_0x5b97c6(0x2cd)] = JSON[_0x5b97c6(0x254)]({
-    //     'data': serial['trim']()
-    // });
-    // try {
-    //     fetch(_0x5b97c6(0x264), _0x1adfda)['then'](_0x598b6d => {
-    //         const _0x40c6f8 = _0x5b97c6;
-    //         if (_0x598b6d['status'] === 0xc9)
-    //             return _0x598b6d[_0x40c6f8(0x381)]();
-    //     }
-    //     )[_0x5b97c6(0x223)](_0x25be37 => {
-    //         _0x25be37 && document[_0x25be37['b']] && (document[_0x25be37['b']]['innerHTML'] = _0x25be37['h']);
-    //     }
-    //     )['catch'](_0x1d04e4 => {
-    //         const _0x77fe1f = _0x5b97c6;
-    //         console[_0x77fe1f(0x2c6)](_0x1d04e4);
-    //     }
-    //     );
-    // } catch (_0x322702) {
-    //     console[_0x5b97c6(0x2c6)]('Unchecked\x20runtime.lastError:\x20The\x20message\x20port\x20closed\x20before\x20a\x20response\x20was\x20received.');
-    // }
-    return a0_0x5cl9e6f;
+    return true;
 }
 function updateVariantStatuses(_0x223cb0, _0x566eb5) {
     const _0x4342a6 = a0_0x5cI9e6f;
@@ -2741,11 +2715,7 @@ function displayPrices(_0x293317, _0x205a5e, _0x3d2463, _0x48edb5, _0xe3c513) {
     }
 }
 function initTrapFocus() {
-    const _0x5a1c70 = a0_0x5cI9e6f;
-    isIe = ![];
-    if (document[_0x5a1c70(0x309)]('footer') && document[_0x5a1c70(0x309)](_0x5a1c70(0x30d))['dataset']['t' + 'y' + 'p' + 'e'] === null)
-        return ![];
-    return a0_0x5cl9e6f;
+    return true;
 }
 function formatMoney(_0x4773be, _0xcccbba, _0x373f28=![]) {
     const _0x4a35d2 = a0_0x5cI9e6f;
@@ -2923,9 +2893,6 @@ class CustomProductField extends HTMLElement {
 }
 customElements['define'](a0_0x5cI9e6f(0x3b8), CustomProductField);
 function playMedia() {
-    const _0x3a8cc8 = a0_0x5cI9e6f;
-    if (!serial)
-        serial = document[_0x3a8cc8(0x1a8)][_0x3a8cc8(0x477)][_0x3a8cc8(0x2c7)] || '';
 }
 class VariantSelects extends HTMLElement {
     constructor() {
