@@ -779,10 +779,11 @@
   <div class="tolli-container">
     {%- comment -%} 2. Product lines {%- endcomment -%}
     <div class="tfl__lines">
+      {%- assign line_number = 0 -%}
       {%- for line in section.blocks -%}
         {%- if line.type != 'line' -%}{%- continue -%}{%- endif -%}
         {%- liquid
-          assign line_number = line_number | default: 0 | plus: 1
+          assign line_number = line_number | plus: 1
           assign flavour_offset = forloop.index
 
           assign l_product = line.settings.product

@@ -519,10 +519,6 @@
     .twy__hero {
       min-height: calc(var(--twy-top-offset) + 56rem);
     }
-    .twy__rows {
-      max-width: 112rem;
-      margin: 0 auto;
-    }
     .twy__row {
       column-gap: 4rem;
       padding: 3.6rem 4.8rem;
@@ -532,8 +528,6 @@
     }
     .twy__cards {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      max-width: 128rem;
-      margin: 0 auto;
     }
     .twy__card {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
@@ -721,10 +715,11 @@
       {%- endif -%}
 
       <div class="twy__cards">
+        {%- assign sip_number = 0 -%}
         {%- for block in section.blocks -%}
           {%- if block.type != 'sip' -%}{%- continue -%}{%- endif -%}
           {%- liquid
-            assign sip_number = sip_number | default: 0 | plus: 1
+            assign sip_number = sip_number | plus: 1
             assign s_product = block.settings.product
             assign s_title = block.settings.title
             if s_title == blank and s_product != blank

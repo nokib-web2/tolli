@@ -15,6 +15,13 @@
   assign flavour = mf.flavour.value | default: parsed_flavour
 
   assign servings = mf.servings.value | default: 0 | plus: 0
+  assign per_serving_label = 'per serving'
+  for b in section.blocks
+    if b.settings.per_serving_label != blank
+      assign per_serving_label = b.settings.per_serving_label
+      break
+    endif
+  endfor
   assign per_serving_cents = 0
   if servings > 0
     assign per_serving_cents = current_variant.price | divided_by: servings
@@ -1062,7 +1069,7 @@
       <div class="tolli-sticky-atc__price">
         <strong data-tolli-price>{%- render 'tolli-money', cents: current_variant.price, prefix: prefix -%}</strong>
         {%- if per_serving_cents > 0 -%}
-          <span><span data-tolli-per>{%- render 'tolli-money', cents: per_serving_cents, prefix: prefix -%}</span> per serving</span>
+          <span><span data-tolli-per>{%- render 'tolli-money', cents: per_serving_cents, prefix: prefix -%}</span> {{ per_serving_label | escape }}</span>
         {%- endif -%}
       </div>
       <button type="submit" form="{{ product_form_id }}" class="tolli-btn" tabindex="-1" data-tolli-sticky-btn{% unless current_variant.available %} disabled{% endunless %}>

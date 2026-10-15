@@ -123,11 +123,15 @@
   if section.settings.transparent_on_product and request.page_type == 'product'
     assign tolli_transparent = true
   endif
-  if section.settings.transparent_on_faq and request.page_type == 'page' and template.suffix == 'faq'
-    assign tolli_transparent = true
-  endif
-  if section.settings.transparent_on_why and request.page_type == 'page' and template.suffix == 'why-tolli'
-    assign tolli_transparent = true
+  if request.page_type == 'page'
+    case template.suffix
+      when 'faq'
+        assign tolli_transparent = section.settings.transparent_on_faq
+      when 'why-tolli'
+        assign tolli_transparent = section.settings.transparent_on_why
+      when 'contact'
+        assign tolli_transparent = section.settings.transparent_on_contact
+    endcase
   endif
 
   # Light text over the transparent header means the backdrop is dark
@@ -1015,6 +1019,13 @@
       "id": "transparent_on_why",
       "label": "Make header transparent on the Why tolli page",
       "info": "Floats over the hero on pages using the 'why-tolli' template.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_on_contact",
+      "label": "Make header transparent on the Contact page",
+      "info": "Floats over the hero on pages using the 'contact' template.",
       "default": true
     },
     {

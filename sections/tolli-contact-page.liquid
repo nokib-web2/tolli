@@ -1,0 +1,1147 @@
+{%- comment -%}
+  Tolli contact page
+  - Hero with an uploadable background image (leaves placeholder until one is set)
+  - Contact form card (name, email, optional phone and order number, topic, message)
+  - "Contact card" blocks beside the form: icon, title, text and an optional link
+  - Optional FAQ banner at the bottom
+{%- endcomment -%}
+
+{%- liquid
+  assign is_first = false
+  if section.index == 1
+    assign is_first = true
+  endif
+  assign topics = section.settings.topics | split: ','
+  assign faq_title_html = section.settings.faq_title | escape | replace: '[', '<span class="tct__hl">' | replace: ']', '</span>'
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .tct {
+    --tct-bg: {{ section.settings.background | default: '#FFFDF7' }};
+    --tct-top-offset: {% if is_first %}var(--tolli-header-offset, 0px){% else %}0px{% endif %};
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+  }
+  #shopify-section-{{ section.id }} .tct__hero {
+    padding-top: calc(var(--tct-top-offset) + {{ section.settings.padding_top_mobile }}px);
+  }
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .tct {
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+    #shopify-section-{{ section.id }} .tct__hero {
+      padding-top: calc(var(--tct-top-offset) + {{ section.settings.padding_top_desktop }}px);
+    }
+  }
+{%- endstyle -%}
+
+<style>
+  .tct {
+    --tct-navy: var(--tolli-navy, #003E55);
+    --tct-navy-rgb: var(--tolli-navy-rgb, 0, 62, 85);
+    --tct-pink: var(--tolli-pink, #ED0056);
+    --tct-yellow: var(--tolli-yellow, #FFDC32);
+    background: var(--tct-bg);
+    color: var(--tct-navy);
+    overflow: hidden;
+    overflow: clip;
+  }
+  .tct h1,
+  .tct h2,
+  .tct h3,
+  .tct p {
+    margin: 0;
+  }
+  .tct__hl {
+    color: var(--tct-pink);
+  }
+  .tct__burst {
+    display: inline-block;
+    flex: none;
+    width: 0.6em;
+    height: 0.6em;
+    color: var(--tct-pink);
+    pointer-events: none;
+  }
+  .tct__burst svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  /* Icon tones (same palette as the other Tolli pages) */
+  .tct__tone--blue { --tone: #2B9FD9; --tone-bg: #DDF1FB; }
+  .tct__tone--yellow { --tone: #E0A400; --tone-bg: #FFF3C8; }
+  .tct__tone--green { --tone: #2DA36A; --tone-bg: #DDF3E7; }
+  .tct__tone--pink { --tone: #ED0056; --tone-bg: #FDE1EB; }
+  .tct__tone--purple { --tone: #8A5CF6; --tone-bg: #ECE4FD; }
+  .tct__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 4.8rem;
+    height: 4.8rem;
+    border-radius: 50%;
+    background: var(--tone-bg, #fff);
+    color: var(--tone, var(--tct-navy));
+  }
+  .tct__icon svg,
+  .tct__icon img {
+    width: 52%;
+    height: 52%;
+    object-fit: contain;
+  }
+
+  /* ---------- Hero ---------- */
+  .tct__hero {
+    position: relative;
+    isolation: isolate;
+    padding-bottom: 6.4rem;
+  }
+  .tct__hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+  }
+  .tct__hero-bg img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--tct-hero-focal, center);
+  }
+  .tct__hero-bg--mobile {
+    display: none;
+  }
+  @media screen and (max-width: 749px) {
+    .tct__hero-bg--has-mobile {
+      display: none;
+    }
+    .tct__hero-bg--has-mobile + .tct__hero-bg--mobile {
+      display: block;
+    }
+  }
+  .tct__hero-inner {
+    max-width: 64rem;
+  }
+  .tct__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.8rem !important;
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--tct-pink);
+  }
+  .tct__eyebrow .tct__burst {
+    width: 2rem;
+    height: 2rem;
+    transform: scaleX(-1) rotate(-8deg);
+  }
+  .tct__title {
+    font-family: var(--tolli-font-display);
+    font-weight: 400;
+    font-size: clamp(3.4rem, 10.4vw, 8rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--tct-navy);
+  }
+  .tct__title-line {
+    display: block;
+  }
+  .tct__title-line--hl {
+    color: var(--tct-pink);
+  }
+  .tct__title .tct__burst {
+    margin-left: 0.12em;
+    vertical-align: -0.02em;
+    transform: rotate(78deg);
+  }
+  .tct__subtitle {
+    max-width: 48rem;
+    margin-top: 1.2rem !important;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    line-height: 1.35;
+  }
+  .tct__sun {
+    position: absolute;
+    top: calc(var(--tct-top-offset) + 0.8rem);
+    right: 1.6rem;
+    width: 6.4rem;
+    color: var(--tct-yellow);
+    pointer-events: none;
+    animation: tctSpin 40s linear infinite;
+  }
+  .tct__sun svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  @keyframes tctSpin {
+    to { transform: rotate(360deg); }
+  }
+  .tct__wave {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: 3.6rem;
+    color: var(--tct-bg);
+    pointer-events: none;
+  }
+  .tct__wave path {
+    fill: currentColor;
+  }
+
+  /* ---------- Body ---------- */
+  .tct__layout {
+    display: grid;
+    gap: 1.6rem;
+    margin-top: 0.8rem;
+  }
+
+  /* Form card */
+  .tct__form-card {
+    padding: 2.4rem 1.8rem;
+    border-radius: 2.4rem;
+    background: var(--tct-card-bg, #fff);
+    box-shadow: 0 1.2rem 3.2rem rgba(var(--tct-navy-rgb), 0.08);
+  }
+  .tct__form-title {
+    font-family: var(--tolli-font-display);
+    font-weight: 400;
+    font-size: clamp(2.6rem, 7vw, 3.8rem);
+    line-height: 1.05;
+    color: var(--tct-navy);
+  }
+  .tct__form-text {
+    margin-top: 0.6rem !important;
+    font-size: 1.5rem;
+    line-height: 1.45;
+    opacity: 0.85;
+  }
+  .tct__form {
+    display: grid;
+    gap: 1.4rem;
+    margin-top: 2rem;
+  }
+  .tct__row {
+    display: grid;
+    gap: 1.4rem;
+  }
+  .tct__field {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .tct__label {
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+  .tct__label span {
+    font-weight: 600;
+    opacity: 0.6;
+  }
+  .tct__input {
+    width: 100%;
+    min-height: 5rem;
+    padding: 1.2rem 1.6rem;
+    border: 1.5px solid rgba(var(--tct-navy-rgb), 0.18);
+    border-radius: 1.4rem;
+    background: #fff;
+    color: var(--tct-navy);
+    font-family: var(--tolli-font-body);
+    font-size: 1.6rem;
+    line-height: 1.4;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .tct__input::placeholder {
+    color: rgba(var(--tct-navy-rgb), 0.45);
+  }
+  .tct__input:focus {
+    outline: none;
+    border-color: var(--tct-pink);
+    box-shadow: 0 0 0 3px rgba(237, 0, 86, 0.14);
+  }
+  select.tct__input {
+    padding-right: 4rem;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23003E55' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9.5l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1.4rem center;
+    background-size: 1.8rem;
+  }
+  textarea.tct__input {
+    min-height: 15rem;
+    resize: vertical;
+  }
+  .tct .tct__form .tolli-btn {
+    border-radius: 99rem;
+  }
+  .tct__note {
+    font-size: 1.25rem;
+    line-height: 1.4;
+    opacity: 0.7;
+  }
+  .tct__msg {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1.4rem 1.6rem;
+    border-radius: 1.4rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .tct__msg svg {
+    flex: none;
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+  .tct__msg--success {
+    background: #DDF3E7;
+    color: #17784A;
+  }
+  .tct__msg--error {
+    background: #FDE1EB;
+    color: var(--tct-pink);
+  }
+  .tct__msg ul {
+    margin: 0.4rem 0 0;
+    padding-left: 1.8rem;
+    font-weight: 600;
+  }
+
+  /* Contact cards */
+  .tct__cards {
+    display: grid;
+    gap: 1.2rem;
+    align-content: start;
+  }
+  .tct__card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.4rem;
+    padding: 1.8rem;
+    border-radius: 2rem;
+    background: var(--tct-card-bg);
+    color: var(--tct-navy);
+    text-decoration: none;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  a.tct__card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 1rem 2.4rem rgba(var(--tct-navy-rgb), 0.1);
+  }
+  a.tct__card:focus-visible {
+    outline: 3px solid var(--tct-pink);
+    outline-offset: 3px;
+  }
+  .tct__card-title {
+    font-family: var(--tolli-font-display);
+    font-weight: 400;
+    font-size: 2.2rem;
+    line-height: 1.1;
+  }
+  .tct__card-text {
+    margin-top: 0.4rem !important;
+    font-size: 1.5rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+  .tct__card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.6rem !important;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--tct-pink);
+  }
+  .tct__card-link svg {
+    width: 1.6rem;
+    height: 1.6rem;
+    transition: transform 0.2s ease;
+  }
+  a.tct__card:hover .tct__card-link svg {
+    transform: translateX(3px);
+  }
+
+  /* FAQ banner */
+  .tct__faq {
+    display: grid;
+    justify-items: center;
+    gap: 1.6rem;
+    margin-top: 2.4rem;
+    padding: 2.8rem 2rem;
+    border-radius: 2.4rem;
+    background: var(--tct-faq-bg);
+    text-align: center;
+  }
+  .tct__faq-title {
+    font-family: var(--tolli-font-display);
+    font-weight: 400;
+    font-size: clamp(2.6rem, 7vw, 4rem);
+    line-height: 1.05;
+    color: var(--tct-navy);
+  }
+  .tct__faq-text {
+    margin-top: 0.6rem !important;
+    font-size: 1.6rem;
+    line-height: 1.4;
+  }
+  .tct .tct__faq .tolli-btn {
+    width: auto;
+    min-width: 20rem;
+    border-radius: 99rem;
+  }
+
+  /* ---------- Tablet ---------- */
+  @media screen and (min-width: 750px) {
+    .tct__hero {
+      padding-bottom: 9.6rem;
+    }
+    .tct__eyebrow {
+      font-size: 1.5rem;
+    }
+    .tct__sun {
+      top: calc(var(--tct-top-offset) + 2.4rem);
+      right: 6%;
+      width: 10.4rem;
+    }
+    .tct__wave {
+      height: 5.6rem;
+    }
+    .tct__form-card {
+      padding: 3.6rem 4rem;
+      border-radius: 3.2rem;
+    }
+    .tct__row {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .tct .tct__form .tolli-btn {
+      justify-self: start;
+      width: auto;
+      min-width: 24rem;
+      padding: 0.8rem 3.2rem;
+    }
+    .tct__cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.6rem;
+    }
+    .tct__faq {
+      grid-template-columns: minmax(0, 1fr) auto;
+      justify-items: start;
+      align-items: center;
+      gap: 3.2rem;
+      margin-top: 3.2rem;
+      padding: 3.6rem 4.8rem;
+      border-radius: 3.2rem;
+      text-align: left;
+    }
+  }
+
+  /* ---------- Desktop: form beside the cards ---------- */
+  @media screen and (min-width: 990px) {
+    .tct__layout {
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+      align-items: start;
+      gap: 3.2rem;
+    }
+    .tct__cards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tct__sun {
+      animation: none;
+    }
+    .tct__card,
+    .tct__card-link svg {
+      transition: none;
+    }
+  }
+</style>
+
+{%- capture burst_svg -%}{%- render 'tolli-icon', icon: 'burst' -%}{%- endcapture -%}
+
+<div class="tolli-section tct">
+  {%- comment -%} 1. Hero {%- endcomment -%}
+  <div class="tct__hero">
+    {%- liquid
+      assign hero_bg = section.settings.hero_bg_image
+      assign hero_bg_mobile = section.settings.hero_bg_image_mobile
+    -%}
+    {%- if hero_bg != blank -%}
+      {%- assign hero_focal = hero_bg.presentation.focal_point | default: 'center' -%}
+      <div
+        class="tct__hero-bg{% if hero_bg_mobile != blank %} tct__hero-bg--has-mobile{% endif %}"
+        style="--tct-hero-focal: {{ hero_focal }};"
+        aria-hidden="true"
+      >
+        {{
+          hero_bg
+          | image_url: width: 3000
+          | image_tag:
+            widths: '750, 1100, 1500, 2000, 2500, 3000',
+            sizes: '100vw',
+            loading: 'eager',
+            fetchpriority: 'high',
+            alt: ''
+        }}
+      </div>
+      {%- if hero_bg_mobile != blank -%}
+        {%- assign hero_focal_mobile = hero_bg_mobile.presentation.focal_point | default: 'center' -%}
+        <div class="tct__hero-bg tct__hero-bg--mobile" style="--tct-hero-focal: {{ hero_focal_mobile }};" aria-hidden="true">
+          {{
+            hero_bg_mobile
+            | image_url: width: 1500
+            | image_tag: widths: '375, 550, 750, 1100, 1500', sizes: '100vw', loading: 'eager', alt: ''
+          }}
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      {%- comment -%} Placeholder until a hero background is uploaded {%- endcomment -%}
+      <div class="tct__hero-bg" style="--tct-hero-focal: left top;" aria-hidden="true">
+        <img src="{{ 'tolli-bg-leaves.jpg' | asset_url }}" width="2000" height="803" alt="" loading="eager">
+      </div>
+    {%- endif -%}
+
+    <div class="tolli-container">
+      <div class="tct__hero-inner">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="tct__eyebrow">
+            <span class="tct__burst" aria-hidden="true">{{ burst_svg }}</span>
+            <span>{{ section.settings.eyebrow | escape }}</span>
+          </p>
+        {%- endif -%}
+        <h1 class="tct__title">
+          <span class="tct__title-line">{{ section.settings.title_line_1 | escape }}</span>
+          {%- if section.settings.title_line_2 != blank -%}
+            <span class="tct__title-line tct__title-line--hl">
+              {{- section.settings.title_line_2 | escape -}}
+              <span class="tct__burst" aria-hidden="true">{{ burst_svg }}</span>
+            </span>
+          {%- endif -%}
+        </h1>
+        {%- if section.settings.subtitle != blank -%}
+          <p class="tct__subtitle">{{ section.settings.subtitle | escape }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if section.settings.show_sun -%}
+      <span class="tct__sun" aria-hidden="true">{%- render 'tolli-icon', icon: 'sun' -%}</span>
+    {%- endif -%}
+    <svg class="tct__wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 34C190 8 420 2 660 18s470 30 780 6V60H0Z"/></svg>
+  </div>
+
+  <div class="tolli-container">
+    <div class="tct__layout">
+      {%- comment -%} 2. Form {%- endcomment -%}
+      <div class="tct__form-card" id="contact-form" style="--tct-card-bg: {{ section.settings.form_bg }};">
+        {%- if section.settings.form_title != blank -%}
+          <h2 class="tct__form-title">{{ section.settings.form_title | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.form_text != blank -%}
+          <p class="tct__form-text">{{ section.settings.form_text | escape }}</p>
+        {%- endif -%}
+
+        {%- assign form_id = 'TolliContactForm-' | append: section.id -%}
+        {%- form 'contact', id: form_id -%}
+          {%- if form.posted_successfully? -%}
+            <p class="tct__msg tct__msg--success" role="status" tabindex="-1" autofocus>
+              {%- render 'tolli-icon', icon: 'check' -%}
+              <span>{{ section.settings.success_message | escape }}</span>
+            </p>
+          {%- elsif form.errors -%}
+            <div class="tct__msg tct__msg--error" role="alert">
+              {%- render 'tolli-icon', icon: 'x' -%}
+              <div>
+                {{ section.settings.error_message | escape }}
+                <ul>
+                  {%- for field in form.errors -%}
+                    <li>
+                      {%- if field == 'form' -%}
+                        {{ form.errors.messages[field] }}
+                      {%- else -%}
+                        {{ form.errors.translated_fields[field] | capitalize }} {{ form.errors.messages[field] }}
+                      {%- endif -%}
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            </div>
+          {%- endif -%}
+
+          <div class="tct__form">
+            <div class="tct__row">
+              <div class="tct__field">
+                <label class="tct__label" for="{{ form_id }}-name">{{ section.settings.name_label | escape }}</label>
+                <input
+                  class="tct__input"
+                  id="{{ form_id }}-name"
+                  type="text"
+                  name="contact[name]"
+                  value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+                  autocomplete="name"
+                  placeholder="{{ section.settings.name_placeholder | escape }}"
+                >
+              </div>
+              <div class="tct__field">
+                <label class="tct__label" for="{{ form_id }}-email">{{ section.settings.email_label | escape }}</label>
+                <input
+                  class="tct__input"
+                  id="{{ form_id }}-email"
+                  type="email"
+                  name="contact[email]"
+                  value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+                  autocomplete="email"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  placeholder="{{ section.settings.email_placeholder | escape }}"
+                  required
+                  aria-required="true"
+                >
+              </div>
+            </div>
+
+            {%- if section.settings.show_phone or section.settings.show_order -%}
+              <div class="tct__row">
+                {%- if section.settings.show_phone -%}
+                  <div class="tct__field">
+                    <label class="tct__label" for="{{ form_id }}-phone">
+                      {{- section.settings.phone_label | escape }} <span>{{ section.settings.optional_text | escape }}</span>
+                    </label>
+                    <input
+                      class="tct__input"
+                      id="{{ form_id }}-phone"
+                      type="tel"
+                      name="contact[phone]"
+                      value="{{ form.phone }}"
+                      autocomplete="tel"
+                      pattern="[0-9\-\+\s\(\)]*"
+                    >
+                  </div>
+                {%- endif -%}
+                {%- if section.settings.show_order -%}
+                  <div class="tct__field">
+                    <label class="tct__label" for="{{ form_id }}-order">
+                      {{- section.settings.order_label | escape }} <span>{{ section.settings.optional_text | escape }}</span>
+                    </label>
+                    <input
+                      class="tct__input"
+                      id="{{ form_id }}-order"
+                      type="text"
+                      name="contact[{{ section.settings.order_label | escape }}]"
+                      placeholder="{{ section.settings.order_placeholder | escape }}"
+                    >
+                  </div>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+            {%- if section.settings.show_topic and topics.size > 0 -%}
+              <div class="tct__field">
+                <label class="tct__label" for="{{ form_id }}-topic">{{ section.settings.topic_label | escape }}</label>
+                <select class="tct__input" id="{{ form_id }}-topic" name="contact[{{ section.settings.topic_label | escape }}]">
+                  {%- for topic in topics -%}
+                    {%- assign topic_text = topic | strip -%}
+                    {%- if topic_text != blank -%}
+                      <option value="{{ topic_text | escape }}">{{ topic_text | escape }}</option>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </select>
+              </div>
+            {%- endif -%}
+
+            <div class="tct__field">
+              <label class="tct__label" for="{{ form_id }}-body">{{ section.settings.message_label | escape }}</label>
+              <textarea
+                class="tct__input"
+                id="{{ form_id }}-body"
+                name="contact[body]"
+                rows="6"
+                placeholder="{{ section.settings.message_placeholder | escape }}"
+                required
+                aria-required="true"
+              >
+                {{- form.body -}}
+              </textarea>
+            </div>
+
+            <button type="submit" class="tolli-btn">
+              <span>{{ section.settings.button_label | escape }}</span>
+              {%- render 'tolli-icon', icon: 'arrow', class: 'tolli-btn__arrow' -%}
+            </button>
+            {%- if section.settings.form_note != blank -%}
+              <p class="tct__note">{{ section.settings.form_note | escape }}</p>
+            {%- endif -%}
+          </div>
+        {%- endform -%}
+      </div>
+
+      {%- comment -%} 3. Contact cards {%- endcomment -%}
+      {%- if section.blocks.size > 0 -%}
+        <div class="tct__cards">
+          {%- for block in section.blocks -%}
+            {%- liquid
+              assign c_email = block.settings.email
+              if c_email == blank and block.settings.show_store_email
+                assign c_email = shop.email
+              endif
+              assign c_link = block.settings.link
+              if c_link == blank and c_email != blank
+                assign c_link = 'mailto:' | append: c_email
+              endif
+              assign c_tag = 'div'
+              if c_link != blank
+                assign c_tag = 'a'
+              endif
+            -%}
+            <{{ c_tag }}
+              class="tct__card"
+              {% if c_link != blank %}href="{{ c_link }}"{% endif %}
+              style="--tct-card-bg: {{ block.settings.card_bg }};"
+              {{ block.shopify_attributes }}
+            >
+              <span class="tct__icon tct__tone--{{ block.settings.tone }}" aria-hidden="true">
+                {%- if block.settings.icon_image != blank -%}
+                  {{ block.settings.icon_image | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}
+                {%- else -%}
+                  {%- render 'tolli-icon', icon: block.settings.icon -%}
+                {%- endif -%}
+              </span>
+              <span>
+                {%- if block.settings.title != blank -%}
+                  <span class="tct__card-title" role="heading" aria-level="3">{{ block.settings.title | escape }}</span>
+                {%- endif -%}
+                {%- if block.settings.text != blank -%}
+                  <span class="tct__card-text" style="display: block;">{{ block.settings.text | escape | newline_to_br }}</span>
+                {%- endif -%}
+                {%- if c_email != blank -%}
+                  <span class="tct__card-text" style="display: block;"><strong>{{ c_email | escape }}</strong></span>
+                {%- endif -%}
+                {%- if block.settings.link_label != blank and c_link != blank -%}
+                  <span class="tct__card-link">
+                    {{- block.settings.link_label | escape -}}
+                    {%- render 'tolli-icon', icon: 'arrow' -%}
+                  </span>
+                {%- endif -%}
+              </span>
+            </{{ c_tag }}>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} 4. FAQ banner {%- endcomment -%}
+    {%- if section.settings.show_faq -%}
+      <div class="tct__faq" style="--tct-faq-bg: {{ section.settings.faq_bg }};">
+        <div>
+          <h2 class="tct__faq-title">{{ faq_title_html }}</h2>
+          {%- if section.settings.faq_text != blank -%}
+            <p class="tct__faq-text">{{ section.settings.faq_text | escape }}</p>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.faq_button_label != blank -%}
+          <a class="tolli-btn" href="{{ section.settings.faq_button_link | default: '/pages/faq' }}">
+            <span>{{ section.settings.faq_button_label | escape }}</span>
+            {%- render 'tolli-icon', icon: 'arrow', class: 'tolli-btn__arrow' -%}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Tolli contact page",
+  "tag": "section",
+  "class": "tolli-contact-page-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_bg_image",
+      "label": "Hero background image",
+      "info": "Fills the whole hero behind the title (about 2400 × 800 px). Keep the left side light so the title stays readable. The leaves backdrop shows until you upload one."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_bg_image_mobile",
+      "label": "Hero background image (mobile)",
+      "info": "Optional. Shown below 750px wide instead of the image above."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Here to help"
+    },
+    {
+      "type": "text",
+      "id": "title_line_1",
+      "label": "Title line 1",
+      "default": "Say hello."
+    },
+    {
+      "type": "text",
+      "id": "title_line_2",
+      "label": "Title line 2 (pink)",
+      "default": "We're all ears."
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Questions, orders or good vibes — real people reply, usually within 1–2 business days."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sun",
+      "label": "Show sun doodle",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Form"
+    },
+    {
+      "type": "paragraph",
+      "content": "Messages are emailed to the sender email in Settings > Notifications."
+    },
+    {
+      "type": "text",
+      "id": "form_title",
+      "label": "Title",
+      "default": "Send us a message"
+    },
+    {
+      "type": "text",
+      "id": "form_text",
+      "label": "Text",
+      "default": "Fill in the form and we'll get back to you soon."
+    },
+    {
+      "type": "text",
+      "id": "name_label",
+      "label": "Name label",
+      "default": "Name"
+    },
+    {
+      "type": "text",
+      "id": "name_placeholder",
+      "label": "Name placeholder",
+      "default": "Your name"
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Email label",
+      "default": "Email"
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Email placeholder",
+      "default": "you@example.com"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_phone",
+      "label": "Show phone field",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "phone_label",
+      "label": "Phone label",
+      "default": "Phone"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_order",
+      "label": "Show order number field",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "order_label",
+      "label": "Order number label",
+      "default": "Order number"
+    },
+    {
+      "type": "text",
+      "id": "order_placeholder",
+      "label": "Order number placeholder",
+      "default": "#1001"
+    },
+    {
+      "type": "text",
+      "id": "optional_text",
+      "label": "\"Optional\" text",
+      "default": "(optional)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_topic",
+      "label": "Show topic dropdown",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "topic_label",
+      "label": "Topic label",
+      "default": "Topic"
+    },
+    {
+      "type": "textarea",
+      "id": "topics",
+      "label": "Topics",
+      "info": "Separate topics with commas.",
+      "default": "General question, My order, Products & ingredients, Wholesale & partnerships, Something else"
+    },
+    {
+      "type": "text",
+      "id": "message_label",
+      "label": "Message label",
+      "default": "Message"
+    },
+    {
+      "type": "text",
+      "id": "message_placeholder",
+      "label": "Message placeholder",
+      "default": "How can we help?"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Send message"
+    },
+    {
+      "type": "text",
+      "id": "form_note",
+      "label": "Small print",
+      "default": "We only use your details to reply to your message."
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Thanks for reaching out! We'll get back to you within 1–2 business days."
+    },
+    {
+      "type": "text",
+      "id": "error_message",
+      "label": "Error message",
+      "default": "Please check the following:"
+    },
+    {
+      "type": "color",
+      "id": "form_bg",
+      "label": "Form card background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "FAQ banner"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_faq",
+      "label": "Show FAQ banner",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "faq_title",
+      "label": "Title",
+      "info": "Wrap words in [brackets] to make them pink.",
+      "default": "Quick answers live in our [FAQ.]"
+    },
+    {
+      "type": "text",
+      "id": "faq_text",
+      "label": "Text",
+      "default": "Mixing, servings, shipping and more."
+    },
+    {
+      "type": "text",
+      "id": "faq_button_label",
+      "label": "Button label",
+      "default": "Visit the FAQ"
+    },
+    {
+      "type": "url",
+      "id": "faq_button_link",
+      "label": "Button link",
+      "info": "Defaults to /pages/faq."
+    },
+    {
+      "type": "color",
+      "id": "faq_bg",
+      "label": "Banner background",
+      "default": "#FDEDF2"
+    },
+    {
+      "type": "header",
+      "content": "Colours & spacing"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Page background",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Hero top padding mobile",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Hero top padding desktop",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding mobile",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding desktop",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Contact card",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "mail", "label": "Email" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "chat", "label": "Chat" },
+            { "value": "phone", "label": "Phone" },
+            { "value": "pin", "label": "Location" },
+            { "value": "truck-line", "label": "Delivery" },
+            { "value": "question", "label": "Question" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "star", "label": "Star" }
+          ],
+          "default": "mail"
+        },
+        {
+          "type": "select",
+          "id": "tone",
+          "label": "Icon colour",
+          "options": [
+            { "value": "blue", "label": "Blue" },
+            { "value": "yellow", "label": "Yellow" },
+            { "value": "green", "label": "Green" },
+            { "value": "pink", "label": "Pink" },
+            { "value": "purple", "label": "Purple" }
+          ],
+          "default": "pink"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon_image",
+          "label": "Custom icon image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Email us"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text"
+        },
+        {
+          "type": "text",
+          "id": "email",
+          "label": "Email address (optional)",
+          "info": "Shown on the card and opens the visitor's email app."
+        },
+        {
+          "type": "checkbox",
+          "id": "show_store_email",
+          "label": "Show the store's contact email",
+          "info": "Used when the email address above is empty.",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "color",
+          "id": "card_bg",
+          "label": "Card background",
+          "default": "#FDEDF2"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli contact page",
+      "blocks": [
+        { "type": "card", "settings": { "title": "Email us", "text": "Drop us a line any time.", "icon": "mail", "tone": "pink", "show_store_email": true } },
+        { "type": "card", "settings": { "title": "Quick replies", "text": "We reply within 1–2 business days.", "icon": "clock", "tone": "yellow", "card_bg": "#FFF8DC" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

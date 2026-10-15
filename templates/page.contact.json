@@ -134,10 +134,94 @@
         "custom_colors_text": "#2E2A39",
         "custom_colors_solid_button_background": "#dd1d1d",
         "custom_colors_solid_button_text": "#ffffff"
+      },
+      "disabled": true
+    },
+    "tolli_contact_page": {
+      "type": "tolli-contact-page",
+      "blocks": {
+        "card_email": {
+          "type": "card",
+          "settings": {
+            "icon": "mail",
+            "tone": "pink",
+            "title": "Email us",
+            "text": "Drop us a line any time.",
+            "show_store_email": true,
+            "card_bg": "#FDEDF2"
+          }
+        },
+        "card_time": {
+          "type": "card",
+          "settings": {
+            "icon": "clock",
+            "tone": "yellow",
+            "title": "Quick replies",
+            "text": "Real people reply within 1–2 business days.",
+            "card_bg": "#FFF8DC"
+          }
+        },
+        "card_order": {
+          "type": "card",
+          "settings": {
+            "icon": "truck-line",
+            "tone": "blue",
+            "title": "Where's my order?",
+            "text": "Check your delivery status any time.",
+            "link_label": "Track an order",
+            "link": "/pages/track-order",
+            "card_bg": "#E6F4FB"
+          }
+        }
+      },
+      "block_order": [
+        "card_email",
+        "card_time",
+        "card_order"
+      ],
+      "settings": {
+        "eyebrow": "Here to help",
+        "title_line_1": "Say hello.",
+        "title_line_2": "We're all ears.",
+        "subtitle": "Questions, orders or good vibes — real people reply, usually within 1–2 business days.",
+        "show_sun": true,
+        "form_title": "Send us a message",
+        "form_text": "Fill in the form and we'll get back to you soon.",
+        "name_label": "Name",
+        "name_placeholder": "Your name",
+        "email_label": "Email",
+        "email_placeholder": "you@example.com",
+        "show_phone": true,
+        "phone_label": "Phone",
+        "show_order": true,
+        "order_label": "Order number",
+        "order_placeholder": "#1001",
+        "optional_text": "(optional)",
+        "show_topic": true,
+        "topic_label": "Topic",
+        "topics": "General question, My order, Products & ingredients, Wholesale & partnerships, Something else",
+        "message_label": "Message",
+        "message_placeholder": "How can we help?",
+        "button_label": "Send message",
+        "form_note": "We only use your details to reply to your message.",
+        "success_message": "Thanks for reaching out! We'll get back to you within 1–2 business days.",
+        "error_message": "Please check the following:",
+        "form_bg": "#FFFFFF",
+        "show_faq": true,
+        "faq_title": "Quick answers live in our [FAQ.]",
+        "faq_text": "Mixing, servings, shipping and more.",
+        "faq_button_label": "Visit the FAQ",
+        "faq_bg": "#FDEDF2",
+        "background": "#FFFDF7",
+        "padding_top_mobile": 24,
+        "padding_top_desktop": 48,
+        "padding_bottom_mobile": 48,
+        "padding_bottom_desktop": 80
       }
     }
   },
   "order": [
+    "tolli_contact_page",
     "main",
     "60910267-55e8-4e0d-a9f9-79b26b3533dc",
     "contact_form_U9ptC4"
