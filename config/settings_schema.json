@@ -3,7 +3,8 @@
     "name": "theme_info",
     "theme_name": "Tolli",
     "theme_version": "1.0.0",
-    "theme_author": "Tolli"
+    "theme_author": "Tolli",
+    "theme_support_email": "support@tolli.com"
   },
   {
     "name": "Security",
