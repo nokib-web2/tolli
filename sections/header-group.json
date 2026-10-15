@@ -131,6 +131,7 @@
         "menu_type_desktop": "drawer",
         "display_account": false,
         "transparent_on_home": true,
+        "transparent_on_faq": true,
         "transparent_text_color": "#003E55",
         "logo_style": "brand_text",
         "logo_tagline": "Hydration & Clear Protein",

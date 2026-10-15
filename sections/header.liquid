@@ -105,6 +105,9 @@
   if section.settings.transparent_on_product and request.page_type == 'product'
     assign tolli_transparent = true
   endif
+  if section.settings.transparent_on_faq and request.page_type == 'page' and template.suffix == 'faq'
+    assign tolli_transparent = true
+  endif
 -%}
 
 {%- capture tolli_logo_block -%}
@@ -961,6 +964,13 @@
       "id": "transparent_on_product",
       "label": "Make header transparent on product pages",
       "info": "Floats over the product image on mobile (Tolli product page).",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_on_faq",
+      "label": "Make header transparent on the FAQ page",
+      "info": "Floats over the Tolli FAQ hero on pages using the 'faq' template.",
       "default": true
     },
     {
