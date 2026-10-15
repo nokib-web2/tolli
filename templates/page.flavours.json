@@ -1,0 +1,158 @@
+{
+  "sections": {
+    "tolli_flavours_page": {
+      "type": "tolli-flavours-page",
+      "blocks": {
+        "line_hydration": {
+          "type": "line",
+          "settings": {
+            "title": "Hydration + Immunity",
+            "specs": "5 electrolytes • 3 vitamins • zero sugar • 15 servings",
+            "accent": "yellow",
+            "badge": "Available now",
+            "feature_name": "Strawberry Lemonade",
+            "button_label": "Shop hydration",
+            "button_link": "/products/tolli-hydration-strawberry-lemonade",
+            "show_feature_bursts": true,
+            "panel_bg": "#E6F5F7",
+            "feature_bg": "#FCE1EA",
+            "badge_bg": "#D3EEF8"
+          }
+        },
+        "hydration_1": {
+          "type": "flavour",
+          "settings": {
+            "name": "Yuzu Lime",
+            "status": "soon",
+            "badge": "Coming soon"
+          }
+        },
+        "hydration_2": {
+          "type": "flavour",
+          "settings": {
+            "name": "Mango Passionfruit",
+            "status": "soon",
+            "badge": "Coming soon"
+          }
+        },
+        "hydration_3": {
+          "type": "flavour",
+          "settings": {
+            "name": "White Peach",
+            "status": "soon",
+            "badge": "Coming soon"
+          }
+        },
+        "hydration_4": {
+          "type": "flavour",
+          "settings": {
+            "name": "Raspberry Kiwi",
+            "status": "soon",
+            "badge": "Coming soon"
+          }
+        },
+        "hydration_5": {
+          "type": "flavour",
+          "settings": {
+            "name": "Watermelon",
+            "status": "soon",
+            "badge": "Coming soon"
+          }
+        },
+        "line_protein": {
+          "type": "line",
+          "settings": {
+            "title": "Clear Protein + Immunity",
+            "specs": "22g protein • 10 servings",
+            "accent": "pink",
+            "badge": "Available now",
+            "feature_name": "Raspberry Lemonade",
+            "button_label": "Shop clear protein",
+            "button_link": "/products/tolli-clear-protein-raspberry-lemonade",
+            "show_feature_bursts": true,
+            "panel_bg": "#FDEDF2",
+            "feature_bg": "#FBDCE6",
+            "badge_bg": "#D3EEF8"
+          }
+        },
+        "protein_1": {
+          "type": "flavour",
+          "settings": {
+            "name": "Passion Fruit",
+            "status": "soon",
+            "badge": "Coming soon"
+          }
+        },
+        "protein_2": {
+          "type": "flavour",
+          "settings": {
+            "name": "Strawberry Lemonade",
+            "status": "soon",
+            "badge": "Coming soon"
+          }
+        },
+        "protein_3": {
+          "type": "flavour",
+          "settings": {
+            "name": "Peach Pineapple",
+            "status": "soon",
+            "badge": "Coming soon"
+          }
+        },
+        "protein_4": {
+          "type": "flavour",
+          "settings": {
+            "name": "Grapefruit",
+            "status": "soon",
+            "badge": "Coming soon"
+          }
+        },
+        "protein_5": {
+          "type": "flavour",
+          "settings": {
+            "name": "Watermelon",
+            "status": "soon",
+            "badge": "Coming soon"
+          }
+        }
+      },
+      "block_order": [
+        "line_hydration",
+        "hydration_1",
+        "hydration_2",
+        "hydration_3",
+        "hydration_4",
+        "hydration_5",
+        "line_protein",
+        "protein_1",
+        "protein_2",
+        "protein_3",
+        "protein_4",
+        "protein_5"
+      ],
+      "settings": {
+        "title_line_1": "More flavours",
+        "title_line_2": "are on the way",
+        "subtitle": "Fresh new ways to feel good.",
+        "show_bursts": true,
+        "show_sun": true,
+        "show_notify": true,
+        "notify_title": "Be first to taste them.",
+        "notify_text": "Get an email when new flavours drop.",
+        "notify_placeholder": "Your email address",
+        "notify_button": "Notify me",
+        "notify_success": "You're on the list! We'll email you when new flavours drop.",
+        "notify_tag": "flavour-waitlist",
+        "notify_bg": "#E4F5FC",
+        "background": "#FFFDF7",
+        "padding_top_mobile": 24,
+        "padding_top_desktop": 48,
+        "padding_bottom_mobile": 48,
+        "padding_bottom_desktop": 80
+      }
+    }
+  },
+  "order": [
+    "tolli_flavours_page"
+  ]
+}

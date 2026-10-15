@@ -1,0 +1,1321 @@
+{%- comment -%}
+  Tolli flavours page ("More flavours are on the way")
+  - Hero with an uploadable background image (soft sky placeholder until one is set)
+  - One panel per product line: "Product line" block, followed by its "Flavour" blocks
+    (each flavour belongs to the product line block above it in the editor)
+  - Each panel: a featured "Available now" card and a grid of "Coming soon" flavour tiles
+  - "Be first to taste them." email signup (adds a customer tag)
+{%- endcomment -%}
+
+{%- liquid
+  assign is_first = false
+  if section.index == 1
+    assign is_first = true
+  endif
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .tfl {
+    --tfl-bg: {{ section.settings.background | default: '#FFFDF7' }};
+    --tfl-top-offset: {% if is_first %}var(--tolli-header-offset, 0px){% else %}0px{% endif %};
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+  }
+  #shopify-section-{{ section.id }} .tfl__hero {
+    padding-top: calc(var(--tfl-top-offset) + {{ section.settings.padding_top_mobile }}px);
+  }
+  @media screen and (min-width: 750px) {
+    #shopify-section-{{ section.id }} .tfl {
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+    #shopify-section-{{ section.id }} .tfl__hero {
+      padding-top: calc(var(--tfl-top-offset) + {{ section.settings.padding_top_desktop }}px);
+    }
+  }
+{%- endstyle -%}
+
+<style>
+  .tfl {
+    --tfl-navy: var(--tolli-navy, #003E55);
+    --tfl-navy-rgb: var(--tolli-navy-rgb, 0, 62, 85);
+    --tfl-pink: var(--tolli-pink, #ED0056);
+    --tfl-yellow: var(--tolli-yellow, #FFDC32);
+    --tfl-sky: var(--tolli-sky, #E4F5FC);
+    background: var(--tfl-bg);
+    color: var(--tfl-navy);
+    overflow: hidden;
+    overflow: clip;
+  }
+  .tfl h1,
+  .tfl h2,
+  .tfl h3,
+  .tfl p {
+    margin: 0;
+  }
+  .tfl__burst {
+    display: inline-block;
+    flex: none;
+    width: 3.2rem;
+    height: 3.2rem;
+    color: var(--tfl-yellow);
+    pointer-events: none;
+  }
+  .tfl__burst svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .tfl__burst--pink {
+    color: var(--tfl-pink);
+  }
+  .tfl__burst--mirror svg {
+    transform: scaleX(-1);
+  }
+
+  /* ---------- Hero ---------- */
+  .tfl__hero {
+    position: relative;
+    isolation: isolate;
+    padding-bottom: 6.4rem;
+    text-align: center;
+  }
+  .tfl__hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+  }
+  .tfl__hero-bg img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--tfl-hero-focal, center);
+  }
+  .tfl__hero-bg--placeholder {
+    background:
+      radial-gradient(60% 55% at 12% 70%, rgba(255, 255, 255, 0.9) 0, transparent 70%),
+      radial-gradient(50% 60% at 92% 30%, rgba(255, 255, 255, 0.7) 0, transparent 70%),
+      linear-gradient(180deg, var(--tfl-bg) 0%, var(--tfl-sky) 100%);
+  }
+  .tfl__hero-bg--mobile {
+    display: none;
+  }
+  @media screen and (max-width: 749px) {
+    .tfl__hero-bg--has-mobile {
+      display: none;
+    }
+    .tfl__hero-bg--has-mobile + .tfl__hero-bg--mobile {
+      display: block;
+    }
+  }
+  .tfl__hero-inner {
+    position: relative;
+    max-width: 82rem;
+    margin: 0 auto;
+  }
+  .tfl__title {
+    position: relative;
+    display: inline-block;
+    padding: 0 2rem;
+    font-family: var(--tolli-font-display);
+    font-weight: 400;
+    font-size: clamp(3.2rem, 11vw, 9.6rem);
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+    color: var(--tfl-navy);
+  }
+  .tfl__title-line {
+    display: block;
+    white-space: nowrap;
+  }
+  .tfl__title-line--hl {
+    color: var(--tfl-pink);
+  }
+  .tfl__title .tfl__burst {
+    position: absolute;
+    width: 0.48em;
+    height: 0.48em;
+  }
+  .tfl__title .tfl__burst--left {
+    top: 0.15em;
+    left: -0.1em;
+  }
+  .tfl__title .tfl__burst--right {
+    top: 0;
+    right: -0.15em;
+  }
+  .tfl__subtitle {
+    position: relative;
+    display: inline-block;
+    margin-top: 1.2rem !important;
+    padding-bottom: 0.6rem;
+    font-family: var(--tolli-font-script);
+    font-size: clamp(2.2rem, 6.2vw, 4rem);
+    line-height: 1.2;
+    color: var(--tfl-navy);
+    transform: rotate(-3deg);
+  }
+  .tfl__subtitle-swoosh {
+    position: absolute;
+    left: 38%;
+    right: 2%;
+    bottom: -0.2rem;
+    height: 0.9rem;
+    color: var(--tfl-yellow);
+  }
+  .tfl__subtitle-swoosh svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .tfl__sun {
+    position: absolute;
+    right: 1.2rem;
+    bottom: 1.6rem;
+    width: 6.4rem;
+    color: var(--tfl-yellow);
+    pointer-events: none;
+    animation: tflSpin 40s linear infinite;
+  }
+  .tfl__sun svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  @keyframes tflSpin {
+    to { transform: rotate(360deg); }
+  }
+  .tfl__wave {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: 3.6rem;
+    color: var(--tfl-bg);
+    pointer-events: none;
+  }
+  .tfl__wave path {
+    fill: currentColor;
+  }
+
+  /* ---------- Product line panels ---------- */
+  .tfl__lines {
+    display: grid;
+    gap: 1.6rem;
+  }
+  .tfl__line {
+    position: relative;
+    padding: 2.4rem 1.2rem 1.4rem;
+    border-radius: 2.4rem;
+    background: var(--tfl-line-bg);
+  }
+  .tfl__line-head {
+    margin-bottom: 1.8rem;
+    text-align: center;
+  }
+  .tfl__line-title {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    font-family: var(--tolli-font-display);
+    font-weight: 400;
+    font-size: clamp(1.8rem, 5.4vw, 4.4rem);
+    line-height: 1;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: var(--tfl-navy);
+  }
+  .tfl__line-title .tfl__burst {
+    width: 0.8em;
+    height: 0.8em;
+    color: var(--tfl-line-accent);
+  }
+  .tfl__line-specs {
+    margin-top: 0.8rem !important;
+    font-size: clamp(1.05rem, 2.9vw, 1.5rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+  .tfl__line-body {
+    display: grid;
+    gap: 1.2rem;
+  }
+
+  /* Featured "Available now" card */
+  .tfl__feature {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.4rem 1.4rem 1.8rem;
+    border-radius: 2rem;
+    background: var(--tfl-feature-bg);
+    text-align: center;
+  }
+  .tfl__badge {
+    display: inline-block;
+    padding: 0.4rem 1.2rem;
+    border-radius: 99rem;
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+  .tfl__badge--now {
+    align-self: flex-start;
+    padding: 0.6rem 1.6rem;
+    background: var(--tfl-pink);
+    color: #fff;
+    font-size: clamp(1.3rem, 3.4vw, 1.6rem);
+  }
+  .tfl__feature-media {
+    position: relative;
+    width: 100%;
+    max-width: 36rem;
+    aspect-ratio: 1 / 1;
+    margin: 0.4rem auto 0;
+  }
+  .tfl__feature-media img,
+  .tfl__feature-media svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 1.2rem 1.6rem rgba(var(--tfl-navy-rgb), 0.16));
+    transition: transform 0.4s ease;
+  }
+  .tfl__feature:hover .tfl__feature-media img {
+    transform: translateY(-4px) rotate(-1.5deg);
+  }
+  .tfl__feature-media .tfl__burst {
+    position: absolute;
+    width: 3.2rem;
+    height: 3.2rem;
+  }
+  .tfl__feature-media .tfl__burst--a {
+    top: 6%;
+    right: 2%;
+    color: var(--tfl-yellow);
+  }
+  .tfl__feature-media .tfl__burst--b {
+    left: 0;
+    top: 40%;
+    color: var(--tfl-pink);
+  }
+  .tfl__feature-name {
+    margin-top: 1rem !important;
+    font-family: var(--tolli-font-display);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 6.4vw, 3.6rem);
+    line-height: 1.05;
+    color: var(--tfl-navy);
+  }
+  .tfl .tfl__feature .tolli-btn {
+    width: 100%;
+    max-width: 32rem;
+    margin-top: 1.4rem;
+    border-radius: 99rem;
+  }
+
+  /* Flavour tiles */
+  .tfl__tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tfl__tiles > li {
+    display: flex;
+    margin: 0;
+  }
+  .tfl__tiles > li > .tfl__tile {
+    flex: 1;
+  }
+  .tfl__tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0.8rem 1.2rem;
+    border-radius: 1.6rem;
+    background: rgba(255, 255, 255, 0.86);
+    color: var(--tfl-navy);
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 0.4rem 1.2rem rgba(var(--tfl-navy-rgb), 0.05);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  a.tfl__tile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 1rem 2rem rgba(var(--tfl-navy-rgb), 0.1);
+  }
+  a.tfl__tile:focus-visible {
+    outline: 3px solid var(--tfl-pink);
+    outline-offset: 3px;
+  }
+  .tfl__tile .tfl__badge {
+    margin-top: 0.8rem;
+    background: var(--tfl-soon-bg);
+    color: var(--tfl-navy);
+    font-size: clamp(1.05rem, 2.8vw, 1.3rem);
+  }
+  .tfl__tile .tfl__badge--now {
+    align-self: center;
+    background: var(--tfl-pink);
+    color: #fff;
+  }
+  .tfl__tile-media {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    margin-top: 0.4rem;
+  }
+  .tfl__tile-media img,
+  .tfl__tile-media svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .tfl__tile-media svg {
+    border-radius: 1.2rem;
+    background: rgba(var(--tfl-navy-rgb), 0.04);
+    fill: rgba(var(--tfl-navy-rgb), 0.35);
+  }
+  .tfl__tile-name {
+    margin-top: 0.4rem !important;
+    font-size: clamp(1.35rem, 3.6vw, 1.7rem);
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  /* Fills the empty cell when a line has an odd number of flavours */
+  .tfl__fill {
+    position: relative;
+    min-height: 10rem;
+    pointer-events: none;
+  }
+  .tfl__fill .tfl__burst {
+    position: absolute;
+    width: 4.4rem;
+    height: 4.4rem;
+  }
+  .tfl__fill .tfl__burst--a {
+    left: 18%;
+    top: 22%;
+    color: var(--tfl-line-accent);
+  }
+  .tfl__fill .tfl__burst--b {
+    right: 14%;
+    top: 46%;
+    width: 3rem;
+    height: 3rem;
+    color: var(--tfl-pink);
+  }
+  .tfl__fill-wave {
+    position: absolute;
+    right: 0;
+    bottom: 8%;
+    width: 70%;
+    height: 40%;
+    color: var(--tfl-soon-bg);
+  }
+
+  /* ---------- Notify card ---------- */
+  .tfl__notify {
+    position: relative;
+    display: grid;
+    gap: 1.6rem;
+    margin-top: 1.6rem;
+    padding: 2.8rem 1.8rem;
+    border-radius: 2.4rem;
+    background: var(--tfl-notify-bg);
+    text-align: center;
+  }
+  .tfl__notify-icon {
+    position: relative;
+    display: none;
+    flex: none;
+    width: 6.4rem;
+    height: 6.4rem;
+    color: var(--tfl-navy);
+  }
+  .tfl__notify-icon > svg {
+    width: 100%;
+    height: 100%;
+  }
+  .tfl__notify-icon .tfl__burst {
+    position: absolute;
+    top: -1.4rem;
+    left: -1.6rem;
+    width: 2.8rem;
+    height: 2.8rem;
+  }
+  .tfl__notify-title {
+    font-family: var(--tolli-font-display);
+    font-weight: 400;
+    font-size: clamp(2.6rem, 7vw, 4.4rem);
+    line-height: 1.05;
+    color: var(--tfl-navy);
+  }
+  .tfl__notify-text {
+    margin-top: 0.6rem !important;
+    font-size: clamp(1.4rem, 3.6vw, 1.8rem);
+    line-height: 1.4;
+  }
+  .tfl__notify-burst {
+    position: absolute;
+    right: 1.4rem;
+    top: 1.4rem;
+    width: 3.2rem;
+    height: 3.2rem;
+  }
+  .tfl__form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 62rem;
+    margin: 0 auto;
+  }
+  .tfl__input {
+    flex: 1;
+    width: 100%;
+    min-height: 5rem;
+    padding: 0 2rem;
+    border: 1.5px solid rgba(var(--tfl-navy-rgb), 0.22);
+    border-radius: 99rem;
+    background: #fff;
+    color: var(--tfl-navy);
+    font-family: var(--tolli-font-body);
+    font-size: 1.6rem;
+  }
+  .tfl__input:focus {
+    outline: none;
+    border-color: var(--tfl-pink);
+    box-shadow: 0 0 0 3px rgba(237, 0, 86, 0.15);
+  }
+  .tfl .tfl__notify .tolli-btn {
+    min-height: 5rem;
+    border-radius: 99rem;
+    white-space: nowrap;
+  }
+  .tfl__msg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    max-width: 62rem;
+    margin: 0 auto 1.2rem;
+    padding: 1rem 1.4rem;
+    border-radius: 1.2rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  .tfl__msg--success {
+    background: rgba(255, 255, 255, 0.8);
+  }
+  .tfl__msg--error {
+    background: rgba(237, 0, 86, 0.1);
+    color: var(--tfl-pink);
+  }
+  .tfl__msg svg {
+    width: 2rem;
+    height: 2rem;
+    color: var(--tfl-pink);
+  }
+
+  /* ---------- From 360px: featured card beside the tiles (as in the mobile design) ---------- */
+  @media screen and (min-width: 360px) and (max-width: 749px) {
+    .tfl__line {
+      padding-left: 0.8rem;
+      padding-right: 0.8rem;
+    }
+    .tfl__line-body,
+    .tfl__tiles {
+      gap: 0.6rem;
+    }
+    .tfl__feature {
+      padding: 1rem 0.8rem 1.4rem;
+    }
+    .tfl__badge--now {
+      top: 1rem;
+      left: 1rem;
+      padding: 0.4rem 1.1rem;
+    }
+    .tfl__feature-media {
+      margin-top: 3rem;
+    }
+    .tfl__feature-media .tfl__burst {
+      width: 2.2rem;
+      height: 2.2rem;
+    }
+    .tfl__feature-name {
+      font-size: clamp(1.8rem, 5.4vw, 2.8rem);
+    }
+    .tfl .tfl__feature .tolli-btn {
+      min-height: 4rem;
+      padding: 0.6rem 1rem;
+      font-size: clamp(1.2rem, 3.4vw, 1.7rem);
+      white-space: nowrap;
+    }
+    .tfl__tile {
+      padding: 0 0.4rem 0.8rem;
+      border-radius: 1.2rem;
+    }
+    .tfl__tile .tfl__badge {
+      margin-top: 0.5rem;
+      padding: 0.3rem 0.8rem;
+      font-size: clamp(0.9rem, 2.6vw, 1.2rem);
+    }
+    .tfl__tile-name {
+      font-size: clamp(1.1rem, 3.2vw, 1.5rem);
+    }
+    .tfl__fill {
+      min-height: 6rem;
+    }
+  }
+  @media screen and (min-width: 360px) {
+    .tfl__line-body {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: stretch;
+    }
+    .tfl__feature {
+      justify-content: center;
+    }
+    .tfl__badge--now {
+      position: absolute;
+      top: 1.4rem;
+      left: 1.4rem;
+    }
+    .tfl__feature-media {
+      margin-top: 3.6rem;
+    }
+  }
+
+  /* ---------- Tablet ---------- */
+  @media screen and (min-width: 750px) {
+    .tfl__hero {
+      padding-bottom: 9.6rem;
+    }
+    .tfl__title {
+      padding: 0 6rem;
+    }
+    .tfl__sun {
+      right: 6%;
+      bottom: 3.2rem;
+      width: 9.6rem;
+    }
+    .tfl__wave {
+      height: 5.6rem;
+    }
+    .tfl__lines {
+      gap: 2.4rem;
+    }
+    .tfl__line {
+      padding: 3.6rem 2.4rem 2.4rem;
+      border-radius: 3.2rem;
+    }
+    .tfl__line-head {
+      margin-bottom: 2.8rem;
+    }
+    .tfl__line-body {
+      gap: 1.6rem;
+    }
+    .tfl__feature {
+      padding: 2rem 2.4rem 2.8rem;
+      border-radius: 2.4rem;
+    }
+    .tfl__badge--now {
+      top: 2rem;
+      left: 2rem;
+    }
+    .tfl__tiles {
+      gap: 1.4rem;
+    }
+    .tfl__tile {
+      padding: 0 1.2rem 1.6rem;
+      border-radius: 2rem;
+    }
+    .tfl__notify {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      column-gap: 2.8rem;
+      margin-top: 2.4rem;
+      padding: 3.6rem 4.8rem;
+      border-radius: 3.2rem;
+    }
+    .tfl__notify-icon {
+      display: block;
+      grid-row: span 2;
+    }
+    .tfl__notify-head,
+    .tfl__notify form {
+      text-align: center;
+    }
+    .tfl__form-row {
+      flex-direction: row;
+    }
+    .tfl .tfl__notify .tolli-btn {
+      width: auto;
+      min-width: 18rem;
+      padding: 0 3.2rem;
+    }
+    .tfl__notify-burst {
+      right: 2.4rem;
+      top: 50%;
+      width: 4.4rem;
+      height: 4.4rem;
+      transform: translateY(-50%);
+    }
+  }
+
+  /* ---------- Desktop ---------- */
+  @media screen and (min-width: 990px) {
+    .tfl__line-body {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      gap: 2rem;
+    }
+    .tfl__tiles {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.6rem;
+    }
+    .tfl__feature-media {
+      max-width: 40rem;
+    }
+    .tfl__notify {
+      padding: 4rem 9.6rem 4rem 6.4rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tfl__sun {
+      animation: none;
+    }
+    .tfl__feature-media img,
+    .tfl__tile {
+      transition: none;
+    }
+  }
+</style>
+
+{%- capture burst_svg -%}{%- render 'tolli-icon', icon: 'burst' -%}{%- endcapture -%}
+
+<div class="tolli-section tfl">
+  {%- comment -%} 1. Hero {%- endcomment -%}
+  <div class="tfl__hero">
+    {%- liquid
+      assign hero_bg = section.settings.hero_bg_image
+      assign hero_bg_mobile = section.settings.hero_bg_image_mobile
+    -%}
+    {%- if hero_bg != blank -%}
+      {%- assign hero_focal = hero_bg.presentation.focal_point | default: 'center' -%}
+      <div
+        class="tfl__hero-bg{% if hero_bg_mobile != blank %} tfl__hero-bg--has-mobile{% endif %}"
+        style="--tfl-hero-focal: {{ hero_focal }};"
+        aria-hidden="true"
+      >
+        {{
+          hero_bg
+          | image_url: width: 3000
+          | image_tag:
+            widths: '750, 1100, 1500, 2000, 2500, 3000',
+            sizes: '100vw',
+            loading: 'eager',
+            fetchpriority: 'high',
+            alt: ''
+        }}
+      </div>
+      {%- if hero_bg_mobile != blank -%}
+        {%- assign hero_focal_mobile = hero_bg_mobile.presentation.focal_point | default: 'center' -%}
+        <div class="tfl__hero-bg tfl__hero-bg--mobile" style="--tfl-hero-focal: {{ hero_focal_mobile }};" aria-hidden="true">
+          {{
+            hero_bg_mobile
+            | image_url: width: 1500
+            | image_tag: widths: '375, 550, 750, 1100, 1500', sizes: '100vw', loading: 'eager', alt: ''
+          }}
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      {%- comment -%} Placeholder until a hero background is uploaded {%- endcomment -%}
+      <div class="tfl__hero-bg tfl__hero-bg--placeholder" aria-hidden="true"></div>
+    {%- endif -%}
+
+    <div class="tolli-container">
+      <div class="tfl__hero-inner">
+        <h1 class="tfl__title">
+          {%- if section.settings.show_bursts -%}
+            <span class="tfl__burst tfl__burst--left tfl__burst--mirror" aria-hidden="true">{{ burst_svg }}</span>
+          {%- endif -%}
+          <span class="tfl__title-line">{{ section.settings.title_line_1 | escape }}</span>
+          <span class="tfl__title-line tfl__title-line--hl">{{ section.settings.title_line_2 | escape }}</span>
+          {%- if section.settings.show_bursts -%}
+            <span class="tfl__burst tfl__burst--right tfl__burst--pink" aria-hidden="true">{{ burst_svg }}</span>
+          {%- endif -%}
+        </h1>
+        {%- if section.settings.subtitle != blank -%}
+          <div>
+            <p class="tfl__subtitle">
+              {{ section.settings.subtitle | escape }}
+              <span class="tfl__subtitle-swoosh" aria-hidden="true">{%- render 'tolli-icon', icon: 'swoosh' -%}</span>
+            </p>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if section.settings.show_sun -%}
+      <span class="tfl__sun" aria-hidden="true">{%- render 'tolli-icon', icon: 'sun' -%}</span>
+    {%- endif -%}
+    <svg class="tfl__wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 30C220 4 460 0 720 20s500 32 720 8V60H0Z"/></svg>
+  </div>
+
+  <div class="tolli-container">
+    {%- comment -%} 2. Product lines {%- endcomment -%}
+    <div class="tfl__lines">
+      {%- for line in section.blocks -%}
+        {%- if line.type != 'line' -%}{%- continue -%}{%- endif -%}
+        {%- liquid
+          assign line_number = line_number | default: 0 | plus: 1
+          assign flavour_offset = forloop.index
+
+          assign l_product = line.settings.product
+          assign feature_name = line.settings.feature_name
+          if feature_name == blank and l_product != blank
+            assign feature_name = l_product.title
+          endif
+          assign feature_link = line.settings.button_link
+          if feature_link == blank and l_product != blank
+            assign feature_link = l_product.url
+          endif
+          if feature_link == blank
+            assign feature_link = routes.all_products_collection_url
+          endif
+
+          assign accent = 'yellow'
+          if line.settings.accent == 'pink'
+            assign accent = 'pink'
+          endif
+
+          assign flavour_count = 0
+          for b in section.blocks offset: flavour_offset
+            if b.type == 'line'
+              break
+            endif
+            assign flavour_count = flavour_count | plus: 1
+          endfor
+          assign flavour_odd = flavour_count | modulo: 2
+        -%}
+        <section
+          class="tfl__line"
+          id="flavours-{{ line.id }}"
+          style="--tfl-line-bg: {{ line.settings.panel_bg }}; --tfl-feature-bg: {{ line.settings.feature_bg }}; --tfl-soon-bg: {{ line.settings.badge_bg }}; --tfl-line-accent: var(--tfl-{{ accent }});"
+          aria-labelledby="flavours-title-{{ line.id }}"
+          {{ line.shopify_attributes }}
+        >
+          <div class="tfl__line-head">
+            <h2 class="tfl__line-title" id="flavours-title-{{ line.id }}">
+              <span class="tfl__burst tfl__burst--mirror" aria-hidden="true">{{ burst_svg }}</span>
+              <span>{{ line.settings.title | escape }}</span>
+              <span class="tfl__burst" aria-hidden="true">{{ burst_svg }}</span>
+            </h2>
+            {%- if line.settings.specs != blank -%}
+              <p class="tfl__line-specs">{{ line.settings.specs | escape }}</p>
+            {%- endif -%}
+          </div>
+
+          <div class="tfl__line-body">
+            <article class="tfl__feature">
+              {%- if line.settings.badge != blank -%}
+                <span class="tfl__badge tfl__badge--now">{{ line.settings.badge | escape }}</span>
+              {%- endif -%}
+              <div class="tfl__feature-media">
+                {%- liquid
+                  assign feature_image = line.settings.image
+                  if feature_image == blank and l_product != blank
+                    assign feature_image = l_product.featured_media.preview_image
+                  endif
+                  assign feature_alt = feature_name | default: line.settings.title
+                -%}
+                {%- if feature_image != blank -%}
+                  {{
+                    feature_image
+                    | image_url: width: 900
+                    | image_tag:
+                      widths: '360, 540, 720, 900',
+                      sizes: '(min-width: 990px) 36vw, (min-width: 600px) 45vw, 90vw',
+                      loading: 'lazy',
+                      alt: feature_alt
+                  }}
+                {%- elsif line_number == 2 -%}
+                  <img src="{{ 'tolli-pouch-protein.png' | asset_url }}" width="293" height="366" alt="{{ feature_alt | escape }}" loading="lazy">
+                {%- else -%}
+                  <img src="{{ 'tolli-pouch-hydration.png' | asset_url }}" width="374" height="522" alt="{{ feature_alt | escape }}" loading="lazy">
+                {%- endif -%}
+                {%- if line.settings.show_feature_bursts -%}
+                  <span class="tfl__burst tfl__burst--a" aria-hidden="true">{{ burst_svg }}</span>
+                  <span class="tfl__burst tfl__burst--b tfl__burst--mirror" aria-hidden="true">{{ burst_svg }}</span>
+                {%- endif -%}
+              </div>
+              {%- if feature_name != blank -%}
+                <h3 class="tfl__feature-name">{{ feature_name | escape }}</h3>
+              {%- endif -%}
+              {%- if line.settings.button_label != blank -%}
+                <a class="tolli-btn" href="{{ feature_link }}">
+                  <span>{{ line.settings.button_label | escape }}</span>
+                  {%- render 'tolli-icon', icon: 'arrow', class: 'tolli-btn__arrow' -%}
+                </a>
+              {%- endif -%}
+            </article>
+
+            {%- if flavour_count > 0 -%}
+              <ul class="tfl__tiles" role="list">
+                {%- for flavour in section.blocks offset: flavour_offset -%}
+                  {%- if flavour.type == 'line' -%}{%- break -%}{%- endif -%}
+                  {%- liquid
+                    assign f_product = flavour.settings.product
+                    assign f_name = flavour.settings.name
+                    if f_name == blank and f_product != blank
+                      assign f_name = f_product.title
+                    endif
+                    assign f_image = flavour.settings.image
+                    if f_image == blank and f_product != blank
+                      assign f_image = f_product.featured_media.preview_image
+                    endif
+                    assign f_link = flavour.settings.link
+                    if f_link == blank and f_product != blank
+                      assign f_link = f_product.url
+                    endif
+                    assign f_tag = 'div'
+                    if f_link != blank
+                      assign f_tag = 'a'
+                    endif
+                  -%}
+                  <li {{ flavour.shopify_attributes }}>
+                    <{{ f_tag }} class="tfl__tile"{% if f_link != blank %} href="{{ f_link }}"{% endif %}>
+                      {%- if flavour.settings.badge != blank -%}
+                        <span class="tfl__badge{% if flavour.settings.status == 'available' %} tfl__badge--now{% endif %}">{{ flavour.settings.badge | escape }}</span>
+                      {%- endif -%}
+                      <div class="tfl__tile-media">
+                        {%- if f_image != blank -%}
+                          {{
+                            f_image
+                            | image_url: width: 500
+                            | image_tag:
+                              widths: '200, 300, 400, 500',
+                              sizes: '(min-width: 990px) 16vw, (min-width: 600px) 22vw, 45vw',
+                              loading: 'lazy',
+                              alt: f_name
+                          }}
+                        {%- else -%}
+                          {{ 'product-1' | placeholder_svg_tag }}
+                        {%- endif -%}
+                      </div>
+                      {%- if f_name != blank -%}
+                        <p class="tfl__tile-name">{{ f_name | escape }}</p>
+                      {%- endif -%}
+                    </{{ f_tag }}>
+                  </li>
+                {%- endfor -%}
+                {%- if flavour_odd == 1 -%}
+                  <li class="tfl__fill" aria-hidden="true">
+                    <span class="tfl__burst tfl__burst--a">{{ burst_svg }}</span>
+                    <span class="tfl__burst tfl__burst--b tfl__burst--mirror">{{ burst_svg }}</span>
+                    <svg class="tfl__fill-wave" viewBox="0 0 120 60" preserveAspectRatio="none" focusable="false"><path fill="currentColor" d="M120 0C96 10 84 26 62 32 40 38 18 34 0 50v10h120Z"/></svg>
+                  </li>
+                {%- endif -%}
+              </ul>
+            {%- endif -%}
+          </div>
+        </section>
+      {%- endfor -%}
+    </div>
+
+    {%- comment -%} 3. Notify signup {%- endcomment -%}
+    {%- if section.settings.show_notify -%}
+      <div class="tfl__notify" style="--tfl-notify-bg: {{ section.settings.notify_bg }};">
+        <span class="tfl__notify-icon" aria-hidden="true">
+          <span class="tfl__burst">{{ burst_svg }}</span>
+          {%- render 'tolli-icon', icon: 'mail' -%}
+        </span>
+        <div class="tfl__notify-head">
+          <h2 class="tfl__notify-title">{{ section.settings.notify_title | escape }}</h2>
+          {%- if section.settings.notify_text != blank -%}
+            <p class="tfl__notify-text">{{ section.settings.notify_text | escape }}</p>
+          {%- endif -%}
+        </div>
+        {%- assign notify_form_id = 'TolliFlavourNotify-' | append: section.id -%}
+        {%- form 'customer', id: notify_form_id -%}
+          <input type="hidden" name="contact[tags]" value="{{ section.settings.notify_tag | default: 'flavour-waitlist' | escape }}">
+          {%- if form.posted_successfully? -%}
+            <p class="tfl__msg tfl__msg--success" role="status" tabindex="-1" autofocus>
+              {%- render 'tolli-icon', icon: 'check' -%}
+              {{ section.settings.notify_success | escape }}
+            </p>
+          {%- elsif form.errors -%}
+            <p class="tfl__msg tfl__msg--error" role="alert">
+              {{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}
+            </p>
+          {%- endif -%}
+          <div class="tfl__form-row">
+            <label class="visually-hidden" for="{{ notify_form_id }}-email">{{ section.settings.notify_placeholder | escape }}</label>
+            <input
+              class="tfl__input"
+              id="{{ notify_form_id }}-email"
+              type="email"
+              name="contact[email]"
+              value="{{ form.email }}"
+              placeholder="{{ section.settings.notify_placeholder | escape }}"
+              autocomplete="email"
+              autocorrect="off"
+              autocapitalize="off"
+              required
+            >
+            <button type="submit" class="tolli-btn">{{ section.settings.notify_button | escape }}</button>
+          </div>
+        {%- endform -%}
+        <span class="tfl__burst tfl__notify-burst tfl__burst--pink" aria-hidden="true">{{ burst_svg }}</span>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Tolli flavours page",
+  "tag": "section",
+  "class": "tolli-flavours-page-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_bg_image",
+      "label": "Hero background image",
+      "info": "Fills the whole hero behind the title (about 2400 × 900 px). Keep the middle light so the title stays readable. A soft sky gradient shows until you upload one."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_bg_image_mobile",
+      "label": "Hero background image (mobile)",
+      "info": "Optional. Shown below 750px wide instead of the image above."
+    },
+    {
+      "type": "text",
+      "id": "title_line_1",
+      "label": "Title line 1",
+      "default": "More flavours"
+    },
+    {
+      "type": "text",
+      "id": "title_line_2",
+      "label": "Title line 2 (pink)",
+      "default": "are on the way"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle (script)",
+      "default": "Fresh new ways to feel good."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bursts",
+      "label": "Show accent strokes beside the title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sun",
+      "label": "Show sun doodle",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Product lines"
+    },
+    {
+      "type": "paragraph",
+      "content": "Add a \"Product line\" block, then the \"Flavour\" blocks for it right below. Flavours belong to the product line above them."
+    },
+    {
+      "type": "header",
+      "content": "Notify signup"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_notify",
+      "label": "Show notify signup",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "notify_title",
+      "label": "Title",
+      "default": "Be first to taste them."
+    },
+    {
+      "type": "text",
+      "id": "notify_text",
+      "label": "Text",
+      "default": "Get an email when new flavours drop."
+    },
+    {
+      "type": "text",
+      "id": "notify_placeholder",
+      "label": "Email placeholder",
+      "default": "Your email address"
+    },
+    {
+      "type": "text",
+      "id": "notify_button",
+      "label": "Button label",
+      "default": "Notify me"
+    },
+    {
+      "type": "text",
+      "id": "notify_success",
+      "label": "Success message",
+      "default": "You're on the list! We'll email you when new flavours drop."
+    },
+    {
+      "type": "text",
+      "id": "notify_tag",
+      "label": "Customer tag",
+      "info": "Sign-ups are saved in Customers with this tag and email marketing consent.",
+      "default": "flavour-waitlist"
+    },
+    {
+      "type": "color",
+      "id": "notify_bg",
+      "label": "Card background",
+      "default": "#E4F5FC"
+    },
+    {
+      "type": "header",
+      "content": "Colours & spacing"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Page background",
+      "default": "#FFFDF7"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Hero top padding mobile",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Hero top padding desktop",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding mobile",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding desktop",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "line",
+      "name": "Product line",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Hydration + Immunity"
+        },
+        {
+          "type": "text",
+          "id": "specs",
+          "label": "Specs line",
+          "default": "5 electrolytes • 3 vitamins • zero sugar • 15 servings"
+        },
+        {
+          "type": "select",
+          "id": "accent",
+          "label": "Accent strokes",
+          "options": [
+            {
+              "value": "yellow",
+              "label": "Yellow"
+            },
+            {
+              "value": "pink",
+              "label": "Pink"
+            }
+          ],
+          "default": "yellow"
+        },
+        {
+          "type": "header",
+          "content": "Featured flavour"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product",
+          "info": "Fills in the name, image and link. Everything below overrides it."
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge",
+          "default": "Available now"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "A transparent PNG of the pouch (and fruit) works best."
+        },
+        {
+          "type": "text",
+          "id": "feature_name",
+          "label": "Flavour name",
+          "info": "Leave empty to use the product title."
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Shop hydration"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link",
+          "info": "Defaults to the product above."
+        },
+        {
+          "type": "checkbox",
+          "id": "show_feature_bursts",
+          "label": "Show accent strokes around the image",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "Colours"
+        },
+        {
+          "type": "color",
+          "id": "panel_bg",
+          "label": "Panel background",
+          "default": "#E6F5F7"
+        },
+        {
+          "type": "color",
+          "id": "feature_bg",
+          "label": "Featured card background",
+          "default": "#FCE1EA"
+        },
+        {
+          "type": "color",
+          "id": "badge_bg",
+          "label": "\"Coming soon\" badge background",
+          "default": "#D3EEF8"
+        }
+      ]
+    },
+    {
+      "type": "flavour",
+      "name": "Flavour",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product (optional)",
+          "info": "Fills in the name, image and link once the flavour is live."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "A transparent PNG of the pouch works best."
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "info": "Leave empty to use the product title."
+        },
+        {
+          "type": "select",
+          "id": "status",
+          "label": "Badge style",
+          "options": [
+            {
+              "value": "soon",
+              "label": "Coming soon (light)"
+            },
+            {
+              "value": "available",
+              "label": "Available (pink)"
+            }
+          ],
+          "default": "soon"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge",
+          "default": "Coming soon"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (optional)",
+          "info": "Defaults to the product above. Leave both empty for a tile that isn't clickable."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tolli flavours page",
+      "blocks": [
+        { "type": "line", "settings": { "feature_name": "Strawberry Lemonade" } },
+        { "type": "flavour", "settings": { "name": "Yuzu Lime" } },
+        { "type": "flavour", "settings": { "name": "Mango Passionfruit" } },
+        { "type": "flavour", "settings": { "name": "White Peach" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
