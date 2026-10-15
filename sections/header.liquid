@@ -115,7 +115,7 @@
     href="{{ section.settings.logo_link | default: routes.root_url }}"
     class="header__heading-link header__heading-link--tolli link link--text focus-inset"
   >
-    {%- render 'tolli-logo', tagline: section.settings.logo_tagline -%}
+    {%- render 'tolli-logo', tagline: section.settings.logo_tagline, image: section.settings.brand_logo_image -%}
   </a>
 {%- endcapture -%}
 
@@ -990,7 +990,7 @@
       "options": [
         {
           "value": "brand_text",
-          "label": "Tolli wordmark (brand font)"
+          "label": "Tolli logo (wordmark or uploaded image)"
         },
         {
           "value": "image",
@@ -1000,9 +1000,15 @@
       "default": "brand_text"
     },
     {
+      "type": "image_picker",
+      "id": "brand_logo_image",
+      "label": "Logo image",
+      "info": "Optional. Replaces the tolli wordmark; the tagline stays underneath. A transparent PNG or SVG works best. Height follows the logo size settings below."
+    },
+    {
       "type": "text",
       "id": "logo_tagline",
-      "label": "Wordmark tagline",
+      "label": "Logo tagline",
       "default": "Hydration & Clear Protein"
     },
     {
@@ -1012,7 +1018,7 @@
       "max": 72,
       "step": 1,
       "unit": "px",
-      "label": "Wordmark size on mobile",
+      "label": "Logo size on mobile",
       "default": 40
     },
     {
@@ -1022,7 +1028,7 @@
       "max": 100,
       "step": 2,
       "unit": "px",
-      "label": "Wordmark size on desktop",
+      "label": "Logo size on desktop",
       "default": 58
     },
     {

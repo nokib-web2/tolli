@@ -1,12 +1,27 @@
 {%- comment -%}
   Tolli wordmark rendered in the brand display font, so it stays sharp and
   can be recoloured (e.g. white on navy in the footer).
-  Params: tagline (string), class (string), tag (default 'span')
+  Params: tagline (string), class (string), tag (default 'span'),
+          image (image, optional; replaces the wordmark with an uploaded logo)
 {%- endcomment -%}
 {%- assign logo_tag = tag | default: 'span' -%}
 <{{ logo_tag }} class="tolli-logo {{ class }}">
-  <span class="tolli-logo__word" aria-hidden="true">toll<span class="tolli-logo__i">ı<span class="tolli-logo__dot"></span></span></span>
-  <span class="visually-hidden">{{ shop.name }}</span>
+  {%- if image != blank -%}
+    {%- assign logo_alt = image.alt | default: shop.name -%}
+    {{
+      image
+      | image_url: width: 600
+      | image_tag:
+        class: 'tolli-logo__img',
+        widths: '200, 300, 400, 600',
+        sizes: '300px',
+        loading: 'eager',
+        alt: logo_alt
+    }}
+  {%- else -%}
+    <span class="tolli-logo__word" aria-hidden="true">toll<span class="tolli-logo__i">ı<span class="tolli-logo__dot"></span></span></span>
+    <span class="visually-hidden">{{ shop.name }}</span>
+  {%- endif -%}
   {%- if tagline != blank -%}
     <span class="tolli-logo__tagline">{{ tagline }}</span>
   {%- endif -%}

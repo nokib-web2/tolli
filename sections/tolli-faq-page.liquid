@@ -1,6 +1,7 @@
 {%- comment -%}
   Tolli FAQ page
-  - Sunny hero over the leaves backdrop (glass + sun scene on the right, floats under a transparent header)
+  - Full-bleed hero background image set from the editor (floats under a transparent header);
+    the leaves backdrop stands in as a placeholder until one is uploaded
   - Three FAQ categories, each one white accordion card with line icons and doodle bursts
   - "Still curious?" contact banner and "Pick your sip." product cards
   - Desktop: sticky category sidebar that highlights the category in view
@@ -92,59 +93,32 @@
     pointer-events: none;
   }
   .tfaq__hero-bg img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: left top;
-  }
-  /* Glass scene, sun doodle and strawberry, sized from the hero height below the header */
-  .tfaq__art {
-    position: absolute;
-    z-index: -1;
-    top: calc(var(--faq-top-offset) - 2.4rem);
-    bottom: 1.4rem;
-    right: -2.5rem;
-    aspect-ratio: 614 / 659;
-    max-width: 58%;
-    pointer-events: none;
-  }
-  .tfaq__scene {
-    position: absolute;
-    inset: 0;
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 38%), linear-gradient(to bottom, transparent 0, #000 22%);
-    -webkit-mask-composite: source-in;
-    mask-image: linear-gradient(to right, transparent 0, #000 38%), linear-gradient(to bottom, transparent 0, #000 22%);
-    mask-composite: intersect;
-  }
-  .tfaq__scene-img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: var(--faq-scene-focal, center bottom);
+    object-position: var(--faq-hero-focal, left top);
   }
-  .tfaq__sun {
-    position: absolute;
-    top: 9%;
-    left: 4%;
-    width: 28%;
-    color: var(--faq-yellow);
-    filter: drop-shadow(0 0.2rem 0.4rem rgba(255, 190, 0, 0.25));
+  .tfaq__hero-bg--mobile {
+    display: none;
   }
-  .tfaq__sun svg {
+  .tfaq__hero-bg--has-mobile + .tfaq__hero-bg--mobile {
     display: block;
-    width: 100%;
-    height: auto;
+  }
+  @media screen and (max-width: 749px) {
+    .tfaq__hero-bg--has-mobile {
+      display: none;
+    }
+  }
+  @media screen and (min-width: 750px) {
+    .tfaq__hero-bg--has-mobile + .tfaq__hero-bg--mobile {
+      display: none;
+    }
   }
   .tfaq__strawberry {
     position: absolute;
     pointer-events: none;
     filter: drop-shadow(0 0.6rem 0.8rem rgba(120, 20, 30, 0.18));
-  }
-  .tfaq__art .tfaq__strawberry {
-    left: 22%;
-    bottom: 0;
-    width: 27%;
   }
   .tfaq__hero-inner {
     position: relative;
@@ -582,11 +556,6 @@
     .tfaq__hero {
       padding-bottom: 8rem;
     }
-    .tfaq__art {
-      right: 0;
-      bottom: 2.4rem;
-      max-width: 48%;
-    }
     .tfaq__hero-inner {
       max-width: 60%;
       margin-left: 0;
@@ -687,16 +656,6 @@
     }
     .tfaq__hero > .tolli-container {
       width: 100%;
-    }
-    .tfaq__art {
-      top: calc(var(--faq-top-offset) - 4rem);
-      bottom: 3.2rem;
-      right: 0;
-      max-width: 50%;
-    }
-    .tfaq__sun {
-      top: 16%;
-      width: 22%;
     }
     .tfaq__hero-inner {
       max-width: 62rem;
@@ -857,39 +816,52 @@
 <div class="tolli-section tfaq">
   {%- comment -%} 1. Hero {%- endcomment -%}
   <div class="tfaq__hero">
-    <div class="tfaq__hero-bg" aria-hidden="true">
-      <img src="{{ 'tolli-bg-leaves.jpg' | asset_url }}" width="2000" height="803" alt="" loading="eager">
-    </div>
-
-    <div class="tfaq__art" aria-hidden="true">
-    <div class="tfaq__scene">
-      {%- if section.settings.hero_image != blank -%}
-        {%- liquid
-          assign focal = section.settings.hero_image.presentation.focal_point | default: 'center'
-          assign scene_style = '--faq-scene-focal: ' | append: focal
-        -%}
+    {%- liquid
+      assign hero_bg = section.settings.hero_bg_image
+      assign hero_bg_mobile = section.settings.hero_bg_image_mobile
+    -%}
+    {%- if hero_bg != blank -%}
+      {%- assign hero_focal = hero_bg.presentation.focal_point | default: 'center' -%}
+      <div
+        class="tfaq__hero-bg{% if hero_bg_mobile != blank %} tfaq__hero-bg--has-mobile{% endif %}"
+        style="--faq-hero-focal: {{ hero_focal }};"
+        aria-hidden="true"
+      >
         {{
-          section.settings.hero_image
-          | image_url: width: 1000
+          hero_bg
+          | image_url: width: 3000
           | image_tag:
-            class: 'tfaq__scene-img',
-            widths: '400, 600, 800, 1000',
-            sizes: '(min-width: 990px) 36vw, 50vw',
+            widths: '750, 1100, 1500, 2000, 2500, 3000',
+            sizes: '100vw',
             loading: 'eager',
-            style: scene_style,
+            fetchpriority: 'high',
             alt: ''
         }}
-      {%- else -%}
-        <img class="tfaq__scene-img" src="{{ 'tolli-faq-hero.jpg' | asset_url }}" width="614" height="659" alt="" loading="eager">
+      </div>
+      {%- if hero_bg_mobile != blank -%}
+        {%- assign hero_focal_mobile = hero_bg_mobile.presentation.focal_point | default: 'center' -%}
+        <div
+          class="tfaq__hero-bg tfaq__hero-bg--mobile"
+          style="--faq-hero-focal: {{ hero_focal_mobile }};"
+          aria-hidden="true"
+        >
+          {{
+            hero_bg_mobile
+            | image_url: width: 1500
+            | image_tag:
+              widths: '375, 550, 750, 1100, 1500',
+              sizes: '100vw',
+              loading: 'eager',
+              alt: ''
+          }}
+        </div>
       {%- endif -%}
-    </div>
-    {%- if section.settings.show_sun -%}
-      <span class="tfaq__sun">{%- render 'tolli-icon', icon: 'sun' -%}</span>
+    {%- else -%}
+      {%- comment -%} Placeholder until a hero background is uploaded {%- endcomment -%}
+      <div class="tfaq__hero-bg" aria-hidden="true">
+        <img src="{{ 'tolli-bg-leaves.jpg' | asset_url }}" width="2000" height="803" alt="" loading="eager">
+      </div>
     {%- endif -%}
-    {%- if section.settings.hero_image == blank and section.settings.show_fruit -%}
-      <img class="tfaq__strawberry" src="{{ 'tolli-strawberry.png' | asset_url }}" width="190" height="181" alt="" loading="eager">
-    {%- endif -%}
-    </div>
 
     <div class="tolli-container">
       <div class="tfaq__hero-inner">
@@ -1224,20 +1196,20 @@
     },
     {
       "type": "image_picker",
-      "id": "hero_image",
-      "label": "Hero scene image",
-      "info": "Optional. Replaces the iced lemonade scene on the right. Use the focal point to frame it."
+      "id": "hero_bg_image",
+      "label": "Hero background image",
+      "info": "Fills the whole hero behind the text, so upload the full scene as one image (about 2400 × 1000 px). Keep the left side light so the headline stays readable. Use the focal point to frame it."
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_bg_image_mobile",
+      "label": "Hero background image (mobile)",
+      "info": "Optional. Shown below 750px wide instead of the image above."
     },
     {
       "type": "checkbox",
       "id": "show_fruit",
-      "label": "Show strawberry accents",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_sun",
-      "label": "Show sun doodle",
+      "label": "Show strawberry accent on product card",
       "default": true
     },
     {
