@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "tolli_why_page": {
@@ -8,9 +17,9 @@
           "settings": {
             "title": "Hydration,|every day.",
             "show_burst": true,
-            "burst_color": "#2DA36A",
-            "underline_color": "#2DA36A",
-            "panel_bg": "#EAF6F0",
+            "burst_color": "#2da36a",
+            "underline_color": "#2da36a",
+            "panel_bg": "#eaf6f0",
             "icon_1": "drop",
             "tone_1": "blue",
             "text_1": "Fluids support everyday body functions.",
@@ -27,9 +36,9 @@
           "settings": {
             "title": "Protein,|[your way.]",
             "show_burst": true,
-            "burst_color": "#ED0056",
-            "underline_color": "#ED0056",
-            "panel_bg": "#FDEDF2",
+            "burst_color": "#ed0056",
+            "underline_color": "#ed0056",
+            "panel_bg": "#fdedf2",
             "icon_1": "dumbbell",
             "tone_1": "pink",
             "text_1": "Protein supports muscle maintenance and growth.",
@@ -46,9 +55,9 @@
           "settings": {
             "title": "Immune|support, too.",
             "show_burst": true,
-            "burst_color": "#ED0056",
-            "underline_color": "#2B9FD9",
-            "panel_bg": "#E6F4FB",
+            "burst_color": "#ed0056",
+            "underline_color": "#2b9fd9",
+            "panel_bg": "#e6f4fb",
             "icon": "shield-line",
             "tone": "pink",
             "heading": "Vitamin C supports normal immune function.",
@@ -59,10 +68,12 @@
         "sip_hydration": {
           "type": "sip",
           "settings": {
+            "product": "",
             "title": "Daily Hydration",
             "show_burst": true,
+            "underline_color": "",
             "show_image_burst": true,
-            "card_bg": "#EAF6F0",
+            "card_bg": "#eaf6f0",
             "feature_icon_1": "drop",
             "feature_tone_1": "blue",
             "feature_1": "Strawberry Lemonade",
@@ -82,11 +93,12 @@
         "sip_protein": {
           "type": "sip",
           "settings": {
+            "product": "",
             "title": "Clear Protein",
             "show_burst": true,
-            "underline_color": "#ED0056",
+            "underline_color": "#ed0056",
             "show_image_burst": false,
-            "card_bg": "#FDEDF2",
+            "card_bg": "#fdedf2",
             "feature_icon_1": "strawberry-line",
             "feature_tone_1": "red",
             "feature_1": "Raspberry Lemonade",
@@ -112,6 +124,7 @@
         "sip_protein"
       ],
       "settings": {
+        "hero_bg_image": "shopify://shop_images/Tropical_Strawberry_Lemonade_Product_Scene_1_1.png",
         "title_line_1": "Big refresh.",
         "title_line_2": "Good vibes.",
         "subtitle": "Hydration. Protein. Immune support.",
@@ -121,7 +134,7 @@
         "show_bursts": true,
         "why_title": "Why it matters",
         "sip_title": "Pick your [sip.]",
-        "background": "#FFFDF7",
+        "background": "#fffdf7",
         "padding_top_mobile": 16,
         "padding_top_desktop": 32,
         "padding_bottom_mobile": 40,
