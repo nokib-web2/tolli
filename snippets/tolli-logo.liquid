@@ -1,27 +1,52 @@
 {%- comment -%}
-  Tolli wordmark rendered in the brand display font, so it stays sharp and
-  can be recoloured (e.g. white on navy in the footer).
-  Params: tagline (string), class (string), tag (default 'span'),
-          image (image, optional; replaces the wordmark with an uploaded logo)
+  Tolli logo. Uses the logo uploaded in Theme settings > Logo for the
+  background it sits on (light or dark); without an upload it falls back to the
+  wordmark in the brand display font, which stays sharp and can be recoloured.
+  Params:
+  - tagline (string)
+  - class (string)
+  - tag (default 'span')
+  - on_dark (boolean): the logo sits on a dark background
+  - image (image, optional): overrides the Theme settings logo
+  - overlay_on_dark (boolean, optional): when set, also renders the logo for a
+    second state (the transparent header) as .tolli-logo__mark--overlay;
+    the caller decides which state shows
 {%- endcomment -%}
-{%- assign logo_tag = tag | default: 'span' -%}
+{%- liquid
+  assign logo_tag = tag | default: 'span'
+
+  assign logo_image = image
+  if logo_image == blank
+    if on_dark
+      assign logo_image = settings.tolli_logo_dark
+    else
+      assign logo_image = settings.tolli_logo_light
+    endif
+  endif
+
+  assign has_overlay = false
+  if overlay_on_dark != nil
+    if overlay_on_dark
+      assign overlay_image = settings.tolli_logo_dark
+    else
+      assign overlay_image = settings.tolli_logo_light
+    endif
+    if image != blank
+      assign overlay_image = image
+    endif
+    if overlay_image != logo_image
+      assign has_overlay = true
+    endif
+  endif
+-%}
 <{{ logo_tag }} class="tolli-logo {{ class }}">
-  {%- if image != blank -%}
-    {%- assign logo_alt = image.alt | default: shop.name -%}
-    {{
-      image
-      | image_url: width: 600
-      | image_tag:
-        class: 'tolli-logo__img',
-        widths: '200, 300, 400, 600',
-        sizes: '300px',
-        loading: 'eager',
-        alt: logo_alt
-    }}
+  {%- if has_overlay -%}
+    <span class="tolli-logo__mark tolli-logo__mark--solid">{% render 'tolli-logo-mark', image: logo_image %}</span>
+    <span class="tolli-logo__mark tolli-logo__mark--overlay">{% render 'tolli-logo-mark', image: overlay_image %}</span>
   {%- else -%}
-    <span class="tolli-logo__word" aria-hidden="true">toll<span class="tolli-logo__i">ı<span class="tolli-logo__dot"></span></span></span>
-    <span class="visually-hidden">{{ shop.name }}</span>
+    {%- render 'tolli-logo-mark', image: logo_image -%}
   {%- endif -%}
+  <span class="visually-hidden">{{ shop.name }}</span>
   {%- if tagline != blank -%}
     <span class="tolli-logo__tagline">{{ tagline }}</span>
   {%- endif -%}

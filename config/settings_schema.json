@@ -70,6 +70,26 @@
         "info": "Used for the transparent header option, if needed."
       },
       {
+        "type": "header",
+        "content": "Tolli logo"
+      },
+      {
+        "type": "paragraph",
+        "content": "Used by the header, footer and comparison table. Each spot picks the version that matches its background. Leave one empty to show the tolli wordmark there instead."
+      },
+      {
+        "type": "image_picker",
+        "id": "tolli_logo_light",
+        "label": "Logo for light backgrounds",
+        "info": "Usually the navy logo. Transparent PNG or SVG works best."
+      },
+      {
+        "type": "image_picker",
+        "id": "tolli_logo_dark",
+        "label": "Logo for dark backgrounds",
+        "info": "Usually the white logo. Shown on the navy footer, dark sections and a transparent header with light text."
+      },
+      {
         "type": "range",
         "id": "logo_width",
         "min": 50,

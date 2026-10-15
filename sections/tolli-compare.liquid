@@ -171,7 +171,14 @@
     <div class="tolli-compare__table" role="table" aria-label="{{ section.settings.title | remove: '[' | remove: ']' | replace: '|', ' ' | escape }}">
       <div class="tolli-compare__cell tolli-compare__cell--head tolli-compare__cell--label" role="columnheader"><span class="visually-hidden">Feature</span></div>
       <div class="tolli-compare__cell tolli-compare__cell--head tolli-compare__cell--us" role="columnheader">
-        {%- render 'tolli-logo' -%}
+        {%- liquid
+          assign us_on_dark = false
+          assign us_bg_brightness = section.settings.us_bg | color_brightness
+          if us_bg_brightness < 128
+            assign us_on_dark = true
+          endif
+          render 'tolli-logo', on_dark: us_on_dark
+        -%}
       </div>
       <div class="tolli-compare__cell tolli-compare__cell--head" role="columnheader">{{ section.settings.competitor_1 | escape }}</div>
       {%- if others > 1 -%}

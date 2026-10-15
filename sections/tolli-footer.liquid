@@ -225,11 +225,14 @@
           {%- if section.settings.show_leaf -%}
             {% render 'tolli-icon', icon: 'leaf', class: 'tolli-footer__leaf' %}
           {%- endif -%}
-          {%- if section.settings.logo_image != blank -%}
-            {{ section.settings.logo_image | image_url: width: 500 | image_tag: widths: '200, 300, 400, 500', sizes: '220px', style: 'height: auto; max-width: 220px;', alt: shop.name }}
-          {%- else -%}
-            {%- render 'tolli-logo', tagline: section.settings.logo_tagline -%}
-          {%- endif -%}
+          {%- liquid
+            assign footer_on_dark = false
+            assign footer_bg_brightness = section.settings.footer_background | color_brightness
+            if footer_bg_brightness < 128
+              assign footer_on_dark = true
+            endif
+            render 'tolli-logo', tagline: section.settings.logo_tagline, on_dark: footer_on_dark, image: section.settings.logo_image
+          -%}
         </a>
 
         {%- if section.settings.menu != blank and section.settings.menu.links.size > 0 -%}
@@ -357,8 +360,8 @@
     {
       "type": "image_picker",
       "id": "logo_image",
-      "label": "Logo image (optional)",
-      "info": "Leave empty to use the Tolli wordmark in white."
+      "label": "Logo image override (optional)",
+      "info": "Leave empty to use the logo from Theme settings > Logo > Tolli logo (the dark-background version on a dark footer)."
     },
     {
       "type": "text",

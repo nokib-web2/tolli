@@ -1,0 +1,20 @@
+{%- comment -%}
+  One visual state of the Tolli logo: the uploaded image if given, otherwise
+  the wordmark in the brand display font (it takes --tolli-logo-color).
+  The accessible name is set once by 'tolli-logo'.
+  Params: image (image, optional)
+{%- endcomment -%}
+{%- if image != blank -%}
+  {{
+    image
+    | image_url: width: 600
+    | image_tag:
+      class: 'tolli-logo__img',
+      widths: '200, 300, 400, 600',
+      sizes: '300px',
+      loading: 'eager',
+      alt: ''
+  }}
+{%- else -%}
+  <span class="tolli-logo__word" aria-hidden="true">toll<span class="tolli-logo__i">ı<span class="tolli-logo__dot"></span></span></span>
+{%- endif -%}

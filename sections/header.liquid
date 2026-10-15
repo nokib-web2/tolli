@@ -98,6 +98,24 @@
     assign use_brand_logo = true
   endif
 
+  case section.settings.color_scheme
+    when 'accent-1'
+      assign header_bg = settings.colors_accent_1
+    when 'accent-2'
+      assign header_bg = settings.colors_accent_2
+    when 'background-2'
+      assign header_bg = settings.colors_background_2
+    when 'inverse'
+      assign header_bg = settings.colors_text
+    else
+      assign header_bg = settings.colors_background_1
+  endcase
+  assign header_on_dark = false
+  assign header_bg_brightness = header_bg | color_brightness
+  if header_bg_brightness < 128
+    assign header_on_dark = true
+  endif
+
   assign tolli_transparent = false
   if section.settings.transparent_on_home and request.page_type == 'index'
     assign tolli_transparent = true
@@ -108,6 +126,16 @@
   if section.settings.transparent_on_faq and request.page_type == 'page' and template.suffix == 'faq'
     assign tolli_transparent = true
   endif
+
+  # Light text over the transparent header means the backdrop is dark
+  assign overlay_on_dark = nil
+  if tolli_transparent
+    assign overlay_on_dark = false
+    assign transparent_text_brightness = section.settings.transparent_text_color | color_brightness
+    if transparent_text_brightness >= 128
+      assign overlay_on_dark = true
+    endif
+  endif
 -%}
 
 {%- capture tolli_logo_block -%}
@@ -115,7 +143,7 @@
     href="{{ section.settings.logo_link | default: routes.root_url }}"
     class="header__heading-link header__heading-link--tolli link link--text focus-inset"
   >
-    {%- render 'tolli-logo', tagline: section.settings.logo_tagline, image: section.settings.brand_logo_image -%}
+    {%- render 'tolli-logo', tagline: section.settings.logo_tagline, on_dark: header_on_dark, overlay_on_dark: overlay_on_dark -%}
   </a>
 {%- endcapture -%}
 
@@ -188,6 +216,12 @@
       --color-foreground: {{ section.settings.transparent_text_color.red }}, {{ section.settings.transparent_text_color.green }}, {{ section.settings.transparent_text_color.blue }};
       background: transparent;
       border-bottom-color: transparent;
+    }
+    #shopify-section-{{ section.id }}:not(.scrolled-past-header):not(.menu-open) .tolli-logo__mark--solid {
+      display: none;
+    }
+    #shopify-section-{{ section.id }}:not(.scrolled-past-header):not(.menu-open) .tolli-logo__mark--overlay {
+      display: contents;
     }
     #shopify-section-{{ section.id }}.scrolled-past-header .header-wrapper {
       box-shadow: 0 0.4rem 1.6rem rgba(0, 0, 0, 0.06);
@@ -1000,10 +1034,8 @@
       "default": "brand_text"
     },
     {
-      "type": "image_picker",
-      "id": "brand_logo_image",
-      "label": "Logo image",
-      "info": "Optional. Replaces the tolli wordmark; the tagline stays underneath. A transparent PNG or SVG works best. Height follows the logo size settings below."
+      "type": "paragraph",
+      "content": "Upload the logo files in Theme settings > Logo > Tolli logo. The header switches between the light and dark versions to match its background."
     },
     {
       "type": "text",
