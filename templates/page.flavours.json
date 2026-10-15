@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "tolli_flavours_page": {
@@ -9,54 +18,65 @@
             "title": "Hydration + Immunity",
             "specs": "5 electrolytes • 3 vitamins • zero sugar • 15 servings",
             "accent": "yellow",
+            "product": "",
             "badge": "Available now",
             "feature_name": "Strawberry Lemonade",
             "button_label": "Shop hydration",
             "button_link": "/products/tolli-hydration-strawberry-lemonade",
             "show_feature_bursts": true,
-            "panel_bg": "#E6F5F7",
-            "feature_bg": "#FCE1EA",
-            "badge_bg": "#D3EEF8"
+            "panel_bg": "#e6f5f7",
+            "feature_bg": "#fce1ea",
+            "badge_bg": "#d3eef8"
           }
         },
         "hydration_1": {
           "type": "flavour",
           "settings": {
+            "product": "",
             "name": "Yuzu Lime",
             "status": "soon",
-            "badge": "Coming soon"
+            "badge": "Coming soon",
+            "link": ""
           }
         },
         "hydration_2": {
           "type": "flavour",
           "settings": {
+            "product": "",
             "name": "Mango Passionfruit",
             "status": "soon",
-            "badge": "Coming soon"
+            "badge": "Coming soon",
+            "link": ""
           }
         },
         "hydration_3": {
           "type": "flavour",
           "settings": {
+            "product": "",
             "name": "White Peach",
             "status": "soon",
-            "badge": "Coming soon"
+            "badge": "Coming soon",
+            "link": ""
           }
         },
         "hydration_4": {
           "type": "flavour",
           "settings": {
+            "product": "",
             "name": "Raspberry Kiwi",
             "status": "soon",
-            "badge": "Coming soon"
+            "badge": "Coming soon",
+            "link": ""
           }
         },
         "hydration_5": {
           "type": "flavour",
           "settings": {
+            "product": "",
             "name": "Watermelon",
             "status": "soon",
-            "badge": "Coming soon"
+            "badge": "Coming soon",
+            "link": ""
           }
         },
         "line_protein": {
@@ -65,54 +85,65 @@
             "title": "Clear Protein + Immunity",
             "specs": "22g protein • 10 servings",
             "accent": "pink",
+            "product": "",
             "badge": "Available now",
             "feature_name": "Raspberry Lemonade",
             "button_label": "Shop clear protein",
             "button_link": "/products/tolli-clear-protein-raspberry-lemonade",
             "show_feature_bursts": true,
-            "panel_bg": "#FDEDF2",
-            "feature_bg": "#FBDCE6",
-            "badge_bg": "#D3EEF8"
+            "panel_bg": "#fdedf2",
+            "feature_bg": "#fbdce6",
+            "badge_bg": "#d3eef8"
           }
         },
         "protein_1": {
           "type": "flavour",
           "settings": {
+            "product": "",
             "name": "Passion Fruit",
             "status": "soon",
-            "badge": "Coming soon"
+            "badge": "Coming soon",
+            "link": ""
           }
         },
         "protein_2": {
           "type": "flavour",
           "settings": {
+            "product": "",
             "name": "Strawberry Lemonade",
             "status": "soon",
-            "badge": "Coming soon"
+            "badge": "Coming soon",
+            "link": ""
           }
         },
         "protein_3": {
           "type": "flavour",
           "settings": {
+            "product": "",
             "name": "Peach Pineapple",
             "status": "soon",
-            "badge": "Coming soon"
+            "badge": "Coming soon",
+            "link": ""
           }
         },
         "protein_4": {
           "type": "flavour",
           "settings": {
+            "product": "",
             "name": "Grapefruit",
             "status": "soon",
-            "badge": "Coming soon"
+            "badge": "Coming soon",
+            "link": ""
           }
         },
         "protein_5": {
           "type": "flavour",
           "settings": {
+            "product": "",
             "name": "Watermelon",
             "status": "soon",
-            "badge": "Coming soon"
+            "badge": "Coming soon",
+            "link": ""
           }
         }
       },
@@ -131,6 +162,7 @@
         "protein_5"
       ],
       "settings": {
+        "hero_bg_image": "shopify://shop_images/Minimal_Mint_Wave_with_Leafy_Branch.png",
         "title_line_1": "More flavours",
         "title_line_2": "are on the way",
         "subtitle": "Fresh new ways to feel good.",
@@ -143,8 +175,8 @@
         "notify_button": "Notify me",
         "notify_success": "You're on the list! We'll email you when new flavours drop.",
         "notify_tag": "flavour-waitlist",
-        "notify_bg": "#E4F5FC",
-        "background": "#FFFDF7",
+        "notify_bg": "#e4f5fc",
+        "background": "#fffdf7",
         "padding_top_mobile": 24,
         "padding_top_desktop": 48,
         "padding_bottom_mobile": 48,
